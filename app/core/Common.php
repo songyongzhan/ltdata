@@ -64,8 +64,10 @@ if (!function_exists('getRequest')) {
 
 if (!function_exists('logMessage')) {
   function logMessage($level, $message) {
-    if (!Yaf_Registry::has('log'))
+    if (!Yaf_Registry::has('log')) {
       throw new Exceptions('No log log class was found. Please check if it is registered.', 500);
+    }
+
 
     Yaf_Registry::get('log')->write_log($level, $message);
   }
@@ -693,6 +695,12 @@ function _getJson($code, $msg, $url) {
   return $result;
 }
 
+if (!function_exists('isDevelop')) {
+  function isDevelop($env = 'develop') { //MSIE 10.0;
+    return strtolower($env) === strtolower(ENVIRONMENT);
+  }
+}
+
 
 /**
  * Convert PHP tags to entities
@@ -751,4 +759,35 @@ function DESDecrypt($data, $key, $urlsafe = FALSE) {
   }
 
   return $data;
+}
+
+
+function array_change_value_case_recursive(array $data, $case = CASE_LOWER) {
+  foreach ($data as &$item) {
+    if (is_array($item)) $item = array_change_value_case_recursive($item, $case);
+    elseif (is_string($item)) $item = $case ? strtoupper($item) : strtolower($item);
+  }
+
+  return $data;
+}
+
+function array_change_key_case_recursive(array $data, $case = CASE_LOWER) {
+  $result = [];
+  foreach ($data as $key => &$item) {
+    is_array($item) && $item = array_change_key_case_recursive($item, $case);
+
+    if (is_string($key)) $result[$case ? strtoupper($key) : strtolower($key)] = $item;
+    else $result[$key] = $item;
+  }
+
+  return $result;
+}
+
+
+/**
+ * ip转换为数字 解决出现负值
+ * @param $ip
+ */
+function ip_long($ip) {
+  return sprintf('%u', ip2long($ip));
 }

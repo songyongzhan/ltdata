@@ -88,18 +88,18 @@ trait TraitCommon {
     setcookie($name, '', time() - 1, $path);
   }
 
-  public function _setSession(String $key, $value = NULL) {
+  public function _setSession($key, $value = NULL) {
     $this->_initSession();
     (self::$_session)->set($key, $value);
   }
 
-  public function _getSession(String $key) {
+  public function _getSession($key) {
     $this->_initSession();
     if (!$this->_hasSession($key)) return FALSE;
     return (self::$_session)->get($key);
   }
 
-  public function _hasSession(String $key) {
+  public function _hasSession($key) {
     $this->_initSession();
     return (self::$_session)->has($key);
   }

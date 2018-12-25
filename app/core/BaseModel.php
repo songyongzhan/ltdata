@@ -60,7 +60,7 @@ class BaseModel extends CoreModel {
   public function insert($data, $table = NULL) {
     is_null($table) || $this->table = $table;
     $insertId = $this->_db->insert($this->table, $this->autoAddtimeData($data, 'insert'));
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_querySqls[] = $this->getLastQuery();
     return $insertId;
   }
 
@@ -73,7 +73,7 @@ class BaseModel extends CoreModel {
   public function inserMulti($data, $table = NULL) {
     is_null($table) || $this->table = $table;
     $ids = $this->_db->insertMulti($this->table, $data);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     if (!$ids)
       return FALSE;
     else
@@ -86,7 +86,7 @@ class BaseModel extends CoreModel {
     $data = $this->autoAddtimeData($data);
     $this->setCond($where);
     $result = $this->_db->update($this->table, $data);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     return $result;
   }
 
@@ -95,7 +95,7 @@ class BaseModel extends CoreModel {
     is_null($table) || $this->table = $table;
     $this->setCond($where);
     $result = $this->_db->delete($this->table);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     return $result;
   }
 
@@ -104,7 +104,7 @@ class BaseModel extends CoreModel {
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
     $result = $this->_db->getOne($this->table, $fileds);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     return $result;
   }
 
@@ -124,7 +124,7 @@ class BaseModel extends CoreModel {
     list($orderField, $orderType) = explode(' ', $order);
     $this->_db->orderBy($orderField, $orderType);
     $result = $this->_db->get($this->table, [0, 100], $fileds);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     return $result;
   }
 
@@ -145,7 +145,7 @@ class BaseModel extends CoreModel {
     $this->_db->orderBy($orderField, $orderType);
     $this->_db->pageLimit = $pageSize;
     $result = $this->_db->paginate($this->table, $pageNum, $fileds);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_logSql();
     return [
       'totalPage' => $this->_db->totalPages,
       'totalCount' => $this->_db->totalCount,
@@ -155,6 +155,14 @@ class BaseModel extends CoreModel {
     ];
   }
 
+  /**
+   * 记录并处理sql
+   */
+  private function _logSql(){
+    $lastQuerySql=$this->getLastQuery();
+    $this->_querySqls[] = $lastQuerySql;
+    isDevelop() && debugMessage($lastQuerySql);
+  }
 
   /**
    * 拼装where条件
@@ -219,7 +227,7 @@ class BaseModel extends CoreModel {
   public function query($sql, $params = []) {
     if (empty($sql)) throw new InvalideException('sql param error.', 500);
     $result = $this->_db->rawQuery($sql, $params);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_querySqls[] = $this->getLastQuery();
     return $result;
   }
 
@@ -233,7 +241,7 @@ class BaseModel extends CoreModel {
   public function exec($sql, $params = []) {
     if (empty($sql)) throw new InvalideException('sql param error.', 500);
     $this->_db->rawQuery($sql, $params);
-    $this->_querySqls[] = $this->getLasqQuery();
+    $this->_querySqls[] = $this->getLastQuery();
     return $this->_db->count;
   }
 
@@ -249,7 +257,7 @@ class BaseModel extends CoreModel {
    * 放回当前处理的url
    * @return string
    */
-  public function getLasqQuery() {
+  public function getLastQuery() {
     return $this->_db->getLastQuery();
   }
 

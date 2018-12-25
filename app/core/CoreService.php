@@ -10,10 +10,10 @@
 class CoreService{
 
   public final function __construct() {
-    $this->init();
+    $this->_init();
   }
 
-  public function init(){
+  public function _init(){
 
   }
 }

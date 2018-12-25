@@ -11,6 +11,14 @@ class BaseService extends CoreService {
 
   private static $_object = [];
 
+
+  /**
+   * 自动初始化
+   */
+  public function _init(){
+
+  }
+
   /**
    * 统一返回格式化数据
    * @param int $code 业务响应码
@@ -53,6 +61,12 @@ class BaseService extends CoreService {
         (strtolower(getRequest()->getModuleName()) != strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule'))) && checkInclude($nameClass);
         $value = new ProxyModel(new $nameClass());
         $this->$name = $value;
+      }else if(strpos($name, 'Model')){
+        //若model不存在，就直接赋值base_model
+
+
+
+
       }
     }
     return $value;

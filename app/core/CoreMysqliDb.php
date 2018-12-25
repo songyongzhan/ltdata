@@ -7,8 +7,12 @@
  * Email: songyongzhan@qianbao.com
  */
 
-class CoreMysqliDb extends MysqliDb {
 
+/**
+ * 帮助文档 https://packagist.org/packages/joshcam/mysqli-database-class
+ * Class CoreMysqliDb
+ */
+class CoreMysqliDb extends MysqliDb {
 
   public function rawQuery($query, $bindParams = NULL) {
     $params = array(''); // Create the empty 0 index

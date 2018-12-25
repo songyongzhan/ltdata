@@ -24,19 +24,19 @@ return [
     'ApiDispatch' => 'ApiDispatch',
   ],
 
-
-  'db' => [
-    'slave1' => [
-      'host' => '172.28.66.198',
-      'username' => 'song',
-      'password' => '123',
-      'db' => 'test',
-      'port' => 3306,
-      'prefix' => '',
-      'charset' => 'utf8',
-      'enable' => TRUE
-    ]
-  ]
+  //扩展从数据库
+  //'db' => [
+  //  'slave1' => [
+  //    'host' => '172.28.66.198',
+  //    'username' => 'song',
+  //    'password' => '123',
+  //    'db' => 'test',
+  //    'port' => 3306,
+  //    'prefix' => '',
+  //    'charset' => 'utf8',
+  //    'enable' => TRUE
+  //  ]
+  //]
 
 
 ];

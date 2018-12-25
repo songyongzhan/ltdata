@@ -151,6 +151,178 @@ class IndexController extends BaseController {
     P($result);
 
 
+    /**
+     *
+     *
+     *
+     *
+    帮助文档 https://packagist.org/packages/joshcam/mysqli-database-class
+     *
+     *
+     *
+     * $db->setQueryOption ('SQL_NO_CACHE');
+    $db->get("users");
+    // GIVES: SELECT SQL_NO_CACHE * FROM USERS;
+    Optionally you can use method chaining to call where multiple times without referencing your object over and over:
+
+    $results = $db
+    ->where('id', 1)
+    ->where('login', 'admin')
+    ->get('users');
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * BETWEEN / NOT BETWEEN:
+
+    $db->where('id', Array (4, 20), 'BETWEEN');
+    // or $db->where ('id', Array ('BETWEEN' => Array(4, 20)));
+
+    $results = $db->get('users');
+    // Gives: SELECT * FROM users WHERE id BETWEEN 4 AND 20
+    IN / NOT IN:
+
+    $db->where('id', Array(1, 5, 27, -1, 'd'), 'IN');
+    // or $db->where('id', Array( 'IN' => Array(1, 5, 27, -1, 'd') ) );
+
+    $results = $db->get('users');
+    // Gives: SELECT * FROM users WHERE id IN (1, 5, 27, -1, 'd');
+    OR CASE:
+
+    $db->where ('firstName', 'John');
+    $db->orWhere ('firstName', 'Peter');
+    $results = $db->get ('users');
+    // Gives: SELECT * FROM users WHERE firstName='John' OR firstName='peter'
+    NULL comparison:
+
+    $db->where ("lastName", NULL, 'IS NOT');
+    $results = $db->get("users");
+    // Gives: SELECT * FROM users where lastName IS NOT NULL
+    LIKE comparison:
+
+    $db->where ("fullName", 'John%', 'like');
+    $results = $db->get("users");
+    // Gives: SELECT * FROM users where fullName like 'John%'
+    Also you can use raw where conditions:
+
+    $db->where ("id != companyId");
+    $db->where ("DATE(createdAt) = DATE(lastLogin)");
+    $results = $db->get("users");
+    Or raw condition with variables:
+
+    $db->where ("(id = ? or id = ?)", Array(6,2));
+    $db->where ("login","mike")
+    $res = $db->get ("users");
+    // Gives: SELECT * FROM users WHERE (id = 6 or id = 2) and login='mike';
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *Order by values example:
+
+    $db->orderBy('userGroup', 'ASC', array('superuser', 'admin', 'users'));
+    $db->get('users');
+    // Gives: SELECT * FROM users ORDER BY FIELD (userGroup, 'superuser', 'admin', 'users') ASC;
+    If you are using setPrefix () functionality and need to use table names in orderBy() method make sure that table names are escaped with ``.
+
+    $db->setPrefix ("t_");
+    $db->orderBy ("users.id","asc");
+    $results = $db->get ('users');
+    // WRONG: That will give: SELECT * FROM t_users ORDER BY users.id ASC;
+
+    $db->setPrefix ("t_");
+    $db->orderBy ("`users`.id", "asc");
+    $results = $db->get ('users');
+     *
+     *
+    A subquery with an alias specified to use in JOINs . Eg. (select * from users) sq
+
+    $sq = $db->subQuery("sq");
+    $sq->get ("users");
+    Subquery in selects:
+
+    $ids = $db->subQuery ();
+    $ids->where ("qty", 2, ">");
+    $ids->get ("products", null, "userId");
+
+    $db->where ("id", $ids, 'in');
+    $res = $db->get ("users");
+    // Gives SELECT * FROM users WHERE id IN (SELECT userId FROM products WHERE qty > 2)
+    Subquery in inserts:
+
+    $userIdQ = $db->subQuery ();
+    $userIdQ->where ("id", 6);
+    $userIdQ->getOne ("users", "name"),
+
+    $data = Array (
+    "productName" => "test product",
+    "userId" => $userIdQ,
+    "lastUpdated" => $db->now()
+    );
+    $id = $db->insert ("products", $data);
+    // Gives INSERT INTO PRODUCTS (productName, userId, lastUpdated) values ("test product", (SELECT name FROM users WHERE id = 6), NOW());
+    Subquery in joins:
+
+    $usersQ = $db->subQuery ("u");
+    $usersQ->where ("active", 1);
+    $usersQ->get ("users");
+
+    $db->join($usersQ, "p.userId=u.id", "LEFT");
+    $products = $db->get ("products p", null, "u.login, p.productName");
+    print_r ($products);
+    // SELECT u.login, p.productName FROM products p LEFT JOIN (SELECT * FROM t_users WHERE active = 1) u on p.userId=u.id;
+    EXISTS / NOT EXISTS condition
+    $sub = $db->subQuery();
+    $sub->where("company", 'testCompany');
+    $sub->get ("users", null, 'userId');
+    $db->where (null, $sub, 'exists');
+    $products = $db->get ("products");
+    // Gives SELECT * FROM products WHERE EXISTS (select userId from users where company='testCompany')
+    Has method
+    A convenient function that returns TRUE if exists at least an element that satisfy the where condition specified calling the "where" method before this one.
+
+    $db->where("user", $user);
+    $db->where("password", md5($password));
+    if($db->has("users")) {
+    return "You are logged";
+    } else {
+    return "Wrong user/password";
+    }
+     *
+     *
+     *
+     * 总数
+     * $offset = 10;
+     *
+    $count = 15;
+    $users = $db->withTotalCount()->get('users', Array ($offset, $count));
+    echo "Showing {$count} from {$db->totalCount}";
+     */
+
     exit;
 
 
