@@ -33,8 +33,7 @@ class BaseController extends CoreController {
   public function assign($key, $val) {
     $this->getView()->assign($key, $val);
   }
-
-
+  
   public final function __set($name, $value) {
     (self::$_object)[$name] = $value;
   }
@@ -56,6 +55,13 @@ class BaseController extends CoreController {
         (strtolower(getRequest()->getModuleName()) != strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule'))) && checkInclude($nameClass);
         $value = new ProxyModel(new $nameClass());
         $this->$name = $value;
+      } else if (strpos($name, 'Model')) { //若调用model不存在，就new BaseModel并重新设置table
+        if ((strtolower(getRequest()->getModuleName()) != strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule')))) {
+          $baseModel = new BaseModel();
+          $baseModel->setTable(strtolower(substr($name, 0, -5)));
+          $value = new ProxyModel($baseModel);
+          $this->$name = $value;
+        }
       }
     }
     return $value;

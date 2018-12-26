@@ -226,6 +226,8 @@ if (!function_exists('checkInclude')) {
    */
   function checkInclude($class) {
     $result = FALSE;
+
+
     $moduleName = Tools_Request::getModuleName();
     if (strtolower($moduleName) !== strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule'))) {   //只是加载models 和services
       $loadtype = NULL; //判断加载类型
@@ -783,6 +785,10 @@ function array_change_key_case_recursive(array $data, $case = CASE_LOWER) {
   return $result;
 }
 
+
+function password_encrypt($pwd,$salt=PWD_SALT){
+  return sha1(md5($pwd.PWD_SALT));
+}
 
 /**
  * ip转换为数字 解决出现负值

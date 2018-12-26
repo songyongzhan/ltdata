@@ -17,20 +17,21 @@ class ManageModel extends BaseModel {
    * @param $username
    * @param $password
    * @param $platform_id
-   * @return array|bool code 1 认证失败   2 用户不存在
+   * @return array|bool code 1 登录成功   0 密码错误  -1 用户不存在
    */
-  public function login($username, $password, $platform_id) {
-    $login = $this->_login($username, $platform_id);
+  public function login($username, $password, $field = ['*']) {
+    $login = $this->getOne(['username' => $username, 'password' => $password], $field);
     if ($login) {
       if ($login['password'] == $password) {
         unset($login['password']);
-        $login['login'] = TRUE;
+        $login['login'] = TRUE; //登录成功
+        $login['status'] = 1; //登录成功
         return $login;
       } else {
-        return $this->_returnLoginStatus(1);
+        return ['login' => FALSE, 'status' => 0]; //密码输入错误
       }
     } else {
-      return $this->_returnLoginStatus(2);
+      return ['login' => FALSE, 'status' => -1]; //用户不存在
     }
   }
 
@@ -38,10 +39,8 @@ class ManageModel extends BaseModel {
    * 根据用户ID得到验证token的数据
    */
   public function check_token($manage_id) {
-    $result = $this->db->select(['id', 'token', 'timeout'])->get_where($this->table, ['id' => $manage_id], 1);
-    if ($result->num_rows() > 0) {
-      return $result->row_array();
-    }
+    $result = $this->getOne(['id' => $manage_id], ['id', 'token', 'timeout']);
+    return $result;
   }
 
   /**
@@ -51,12 +50,9 @@ class ManageModel extends BaseModel {
    * @return int
    */
   public function update_token_timeout($manage_id, $timeout) {
-    $this->db->update($this->table, ['timeout' => $timeout], ['id' => $manage_id]);
-    return $this->db->affected_rows();
+    return $this->update($manage_id, ['timeout' => $timeout]);
   }
-
-
-
+  
   /**
    * 返回登录失败信息
    * @param $status

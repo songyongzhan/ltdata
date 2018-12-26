@@ -234,40 +234,12 @@ class ManageController extends ApiBaseController {
 
   //test
   public function aaAction() {
-    $cachePath = config_item('cache_path');
 
-    if (is_file($file = $cachePath . STATUS_CODE_FILE)) {
-
-      print_r(stat($file));
-
-    } else {
-
-      echo '不存在';
-    }
-
-    var_dump($file);
     exit;
   }
 
-  /**
-   * token 验证
-   * @return bool
-   * @throws Exception
-   */
-  public function checkTokenAction() {
-    $result = check_admin_token('13123');
-    return $result;
-  }
 
-  /**
-   * 获取当前用户登录平台下的所有用户
-   * @name 平台用户user
-   * @return array
-   */
-  public function getPlatformUsersAction() {
-    $result = $this->manageService->getPlatformUsers();
-    return $result;
-  }
+
 
 
   /**

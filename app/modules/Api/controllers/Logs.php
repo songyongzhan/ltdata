@@ -11,7 +11,7 @@
 
 class LogsController extends ApiBaseController {
 
-  public function getList() {
+  public function getListAction() {
     $page_size = $this->_post('page_size', PAGE_SIZE_DEFAULT);
     $page_num = $this->_post('page_num', 1);
     $ip = $this->_post('ip');
@@ -51,7 +51,7 @@ class LogsController extends ApiBaseController {
    * @param int $id <POST> id
    * @return mixed
    */
-  public function getOne() {
+  public function getOneAction() {
     $id = $this->_post('id');
     $result = $this->Logs_service->getOne($id);
     return $result;

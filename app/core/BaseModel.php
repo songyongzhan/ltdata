@@ -158,8 +158,8 @@ class BaseModel extends CoreModel {
   /**
    * 记录并处理sql
    */
-  private function _logSql(){
-    $lastQuerySql=$this->getLastQuery();
+  private function _logSql() {
+    $lastQuerySql = $this->getLastQuery();
     $this->_querySqls[] = $lastQuerySql;
     isDevelop() && debugMessage($lastQuerySql);
   }
@@ -303,6 +303,12 @@ class BaseModel extends CoreModel {
    */
   public function getTrace() {
     return $this->_db->trace;
+  }
+
+  public function setTable($table) {
+    if (!$table) return FALSE;
+    $this->table = $this->prefix . strtolower($table);
+    return TRUE;
   }
 
 }

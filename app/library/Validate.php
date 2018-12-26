@@ -79,6 +79,7 @@ class Validate {
   // 验证字段描述
   protected $field = [];
 
+  //使用文档 https://www.kancloud.cn/manual/thinkphp5/129356
   // 验证规则默认提示信息
   protected static $typeMsg = [
     'require' => ':attribute require',

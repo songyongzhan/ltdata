@@ -43,12 +43,14 @@ class Bootstrap extends CoreBootstrap {
 
     $initConfig = Yaf_Registry::get('initConfig');
 
-    $dbConnections = $initConfig->get('db')->toArray();
-
-    foreach ($dbConnections as $dbSlaveName => $dbSlave) {
-      if ($dbSlave['enable'])
-        $db->addConnection($dbSlaveName, $dbSlave);
+    if ($initConfig->get('db') && ($dbConnections = $initConfig->get('db')->toArray()) && is_array($dbConnections)) {
+      foreach ($dbConnections as $dbSlaveName => $dbSlave) {
+        if ($dbSlave['enable'])
+          $db->addConnection($dbSlaveName, $dbSlave);
+      }
     }
+
+
     //$db->setQueryOption([MYSQLI_OPT_INT_AND_FLOAT_NATIVE => TRUE]);
     Yaf_Registry::set('db', $db);
   }

@@ -11,6 +11,8 @@ class LogsService extends BaseService {
 
   const FIELD = ['id', 'controller', 'method', 'ip', 'exe_type', 'manage_id', 'createtime'];
 
+
+
   /**
    * 获取日志记录
    * @param array $where 搜索条件
