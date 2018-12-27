@@ -17,8 +17,8 @@ define('MODULES_PATH', APP_PATH . DS . 'app/modules'); //多模块位置
 
 define('COOKIE_KEY', 'asfd654987'); //10
 
-define('API_SUCCESS', 200000000);
-define('API_FAILURE', 999999999);
+define('API_SUCCESS', 20000000);
+define('API_FAILURE', 99999999);
 define('API_FAILURE_MSG', '系统错误请联系管理员!');
 
 //是否模拟数据 如果没有定义(index.php入口文件)，则这里定义
@@ -67,6 +67,8 @@ define('PWD_SALT', 'ltdata20181226');
 define('TOKEN_EXPIRE_LONG', 1800); //token存在30分钟
 
 define('PAGESIZE', 10);
+
+
 
 define('IS_CHECK_TOKEN', TRUE);
 

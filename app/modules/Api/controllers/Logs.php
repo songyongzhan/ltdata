@@ -2,17 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/5/7
- * Time: 16:35
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
  *
- * 栏目相关操作
  */
 
 class LogsController extends ApiBaseController {
 
   public function getListAction() {
-    $page_size = $this->_post('page_size', PAGE_SIZE_DEFAULT);
+    $page_size = $this->_post('page_size', PAGE_SIZE);
     $page_num = $this->_post('page_num', 1);
     $ip = $this->_post('ip');
     $data = [
@@ -42,7 +41,7 @@ class LogsController extends ApiBaseController {
       }
     }
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
-    $result = $this->Logs_service->getList($where, $page_num, $page_size);
+    $result = $this->logsService->getList($where, $page_num, $page_size);
     return $result;
   }
 
@@ -53,7 +52,7 @@ class LogsController extends ApiBaseController {
    */
   public function getOneAction() {
     $id = $this->_post('id');
-    $result = $this->Logs_service->getOne($id);
+    $result = $this->logsService->getOne($id);
     return $result;
   }
 

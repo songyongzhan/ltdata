@@ -2,21 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/5/7
- * Time: 16:35
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
  *
- * 栏目相关操作
  */
 
-class ManageController extends ApiBaseController {
+defined('APP_PATH') OR exit('No direct script access allowed');
+
+class MenuController extends ApiBaseController {
 
 
   /**
    * 获取栏目列表
    * @name 列表
    * @param int $platform_id 平台id
-   * @param int useType 用途 如果是1 显示栏目列表用于修改 ,不传值 或传0 用于左侧栏目显示
+   * @param int user_type 用途 如果是1 显示栏目列表用于修改 ,不传值 或传0 用于左侧栏目显示
    * @return mixed
    */
   public function getListAction() {

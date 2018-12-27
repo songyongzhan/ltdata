@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class LogsService extends BaseService {
 
   const FIELD = ['id', 'controller', 'method', 'ip', 'exe_type', 'manage_id', 'createtime'];
@@ -22,7 +24,7 @@ class LogsService extends BaseService {
    */
   public function getList($where, $page_num, $page_size) {
     //$where = platform_where($where, 'log.');
-    $result = $this->Logs_model->getLogsPage($where, self::FIELD, $page_num, $page_size);
+    $result = $this->logsModel->getLogsPage($where, self::FIELD, $page_num, $page_size);
     if ($result) {
       foreach ($result['list'] as &$val) {
         if ($val['ip'] != '') $val['ip'] = long2ip($val['ip']);
@@ -42,7 +44,7 @@ class LogsService extends BaseService {
       $field = self::FIELD;
       $field = array_merge($field, ['detail', 'exe_sql']);
     }
-    $result = $this->Logs_model->getOne($id, $field);
+    $result = $this->logsModel->getOne($id, $field);
     if (isset($result['ip']) && $result['ip']) $result['ip'] = long2ip($result['ip']);
     if (isset($result['detail']) && $result['detail']) $result['detail'] = jsondecode($result['detail']);
     return $result ? $this->show($result) : $this->show([]);

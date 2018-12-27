@@ -39,5 +39,38 @@ class CoreMysqliDb extends MysqliDb {
     return $res;
   }
 
+  /**
+   * 复写删除，返回受影响的条数
+   * @param string $tableName
+   * @param null $numRows
+   * @return bool|int|void
+   */
+  public function delete($tableName, $numRows = NULL) {
+    if ($this->isSubQuery) {
+      return;
+    }
+
+    $table = self::$prefix . $tableName;
+
+    if (count($this->_join)) {
+      $this->_query = "DELETE " . preg_replace('/.* (.*)/', '$1', $table) . " FROM " . $table;
+    } else {
+      $this->_query = "DELETE FROM " . $table;
+    }
+
+    $stmt = $this->_buildQuery($numRows);
+    $stmt->execute();
+    $this->_stmtError = $stmt->error;
+    $this->_stmtErrno = $stmt->errno;
+    $this->reset();
+
+    return $stmt->affected_rows;  //	affected_rows returns 0 if nothing matched where statement, or required updating, -1 if error
+  }
+
+
+  public function getWhere(){
+    return $this->_where;
+  }
+
 
 }

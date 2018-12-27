@@ -23,12 +23,23 @@ class Exceptions extends Yaf_Exception {
 
 
   public function show_exception($exception, $template = NULL) {
+
+    if (isAjax() && isEnv())
+      showJsonMsg($exception->getCode(), $exception->getMessage());
+
+    if (isAjax())
+      showJsonMsg(API_FAILURE, API_FAILURE_MSG);
+
+
+    isEnv('product') && set_status_header($status_code);
+
     is_null($template) || $this->exceptionFileName = $template;
-    
+
     $message = $exception->getMessage();
     if (empty($message)) {
       $message = '(null)';
     }
+
 
     ob_start();
     $file = $this->errorTemplatePath . DS . trim($this->exceptionFileName, '/');
@@ -43,14 +54,14 @@ class Exceptions extends Yaf_Exception {
     is_null($file) && $file = $this->getFile();
     is_null($line) && $line = $this->getLine();
 
-    debugMessage(sprintf('异常信息:%s in %s line %s', $message, $file, $line));
+    debugMessage(sprintf("异常信息: 文件:%s 行号:%s 信息:%s", $file, $line, $message));
   }
 
   public function log_error($severity, $message = NULL, $file = NULL, $line = NULL) {
     is_null($message) && $message = $this->getMessage();
     is_null($file) && $file = $this->getFile();
     is_null($line) && $line = $this->getLine();
-    debugMessage(sprintf('severity:%s 错误信息:%s in %s line %s', $severity, $message, $file, $line));
+    debugMessage(sprintf("错误级别: %s 错误信息:%s in %s line %s", $severity, $message, $file, $line));
   }
 
   public function show_error($exception, $message, $template = NULL, $status_code = 500) {
@@ -62,7 +73,9 @@ class Exceptions extends Yaf_Exception {
       exit;
     }
 
-    set_status_header($status_code);
+    isEnv('product') && set_status_header($status_code);
+    //set_status_header($status_code);
+
     $message = '<p>' . (is_array($message) ? implode('</p><p>', $message) : $message) . '</p>';
     ob_start();
     $file = $this->errorTemplatePath . DS . trim($this->errorFileName, '/');
@@ -76,8 +89,8 @@ class Exceptions extends Yaf_Exception {
 }
 
 
-class InvalideException extends Exceptions{
-  
+class InvalideException extends Exceptions {
+
 }
 
 

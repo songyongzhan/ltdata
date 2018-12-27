@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class BaseModel extends CoreModel {
 
   use TraitCommon;
@@ -14,9 +16,13 @@ class BaseModel extends CoreModel {
   /**
    * @var MysqliDb
    */
-  private $_db;
+  protected $_db;
 
+  /**
+   * @var table
+   */
   protected $table;
+
   protected $id = 'id'; //表主键
 
   private $_querySqls; //执行过的sql语句
@@ -38,7 +44,13 @@ class BaseModel extends CoreModel {
    * 如果设置true 则所有表中必须包含此字段，否则报错
    * @var bool
    */
-  protected $autoaddtime = FALSE;
+  protected $autoaddtime = TRUE;
+
+  /**
+   * 是否真实删除，默认为false  逻辑删除
+   * @var bool
+   */
+  protected $realDelete = FALSE;
 
   public static $header = [
 
@@ -59,9 +71,9 @@ class BaseModel extends CoreModel {
    */
   public function insert($data, $table = NULL) {
     is_null($table) || $this->table = $table;
-    $insertId = $this->_db->insert($this->table, $this->autoAddtimeData($data, 'insert'));
+    $result = $this->_db->insert($this->table, $this->autoAddtimeData($data, 'insert'));
     $this->_querySqls[] = $this->getLastQuery();
-    return $insertId;
+    return $result ? $this->_db->getInsertId() : 0;
   }
 
   /**
@@ -91,10 +103,17 @@ class BaseModel extends CoreModel {
   }
 
 
-  public function del($where, $table = NULL) {
+  /**
+   * 删除
+   * @param $where
+   * @param null $table
+   * @return bool
+   * @throws InvalideException
+   */
+  public function delete($where, $table = NULL) {
     is_null($table) || $this->table = $table;
     $this->setCond($where);
-    $result = $this->_db->delete($this->table);
+    $result = $this->realDelete ? $this->_db->delete($this->table) : $this->update($where, ['status' => -1]);
     $this->_logSql();
     return $result;
   }
@@ -113,17 +132,36 @@ class BaseModel extends CoreModel {
    * @param $where
    * @param array $fileds
    * @param null $table
+   * @param int $maxSize 系统默认做了一个限制，如果不限制请传递0
    * @return array
    * @throws InvalideException
    */
-  public function getList($where, $fileds = [], $order = '', $table = NULL) {
+  public function getList($where, $fileds = [], $order = '', $table = NULL, $maxSize = 1000) {
     is_null($table) || $this->table = $table;
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
     empty($order) && $order = $this->id . ' desc';
     list($orderField, $orderType) = explode(' ', $order);
     $this->_db->orderBy($orderField, $orderType);
-    $result = $this->_db->get($this->table, [0, 100], $fileds);
+    $rowNum = [0, abs($maxSize)];
+    $maxSize === 0 && $rowNum = NULL;
+    $result = $this->_db->get($this->table, $rowNum, $fileds);
+    $this->_logSql();
+    return $result;
+  }
+
+
+  /**
+   * 返回搜索条件中的总数量
+   * @param $where
+   * @param null $table
+   * @return mixed
+   * @throws InvalideException
+   */
+  public function getCount($where, $table = NULL) {
+    is_null($table) || $this->table = $table;
+    $this->setCond($where);
+    $result = $this->_db->getValue($this->table, "count(id)");
     $this->_logSql();
     return $result;
   }
@@ -146,22 +184,17 @@ class BaseModel extends CoreModel {
     $this->_db->pageLimit = $pageSize;
     $result = $this->_db->paginate($this->table, $pageNum, $fileds);
     $this->_logSql();
-    return [
-      'totalPage' => $this->_db->totalPages,
-      'totalCount' => $this->_db->totalCount,
-      'result' => $result,
-      'pageNum' => $pageNum,
-      'pageSize' => $pageSize
-    ];
+    return page_data($result, $this->_db->totalCount, $pageNum, $pageSize, $this->_db->totalPages);
   }
 
   /**
    * 记录并处理sql
    */
-  private function _logSql() {
+  protected final function _logSql() {
     $lastQuerySql = $this->getLastQuery();
     $this->_querySqls[] = $lastQuerySql;
-    isDevelop() && debugMessage($lastQuerySql);
+    isEnv() && debugMessage($lastQuerySql);
+    debugMessage('Sql execute result:' . $this->_db->getLastErrno() . ' ErrMessage:' . $this->_db->getLastError());
   }
 
   /**
@@ -169,7 +202,26 @@ class BaseModel extends CoreModel {
    * @param $where
    * @throws InvalideException
    */
-  private function setCond($where) {
+  protected final function setCond($where) {
+
+    if (!$this->realDelete) {
+      $dbwhere = $this->_db->getWhere();
+      $dbwhere = array_column($dbwhere, 1);
+      $flag = FALSE;
+      foreach ($dbwhere as $val) {
+        if (stristr($val, 'status')) {
+          $flag = TRUE;
+          break;
+        }
+      }
+      //如果逻辑删除，需要拼装status
+      if (!$flag) {
+        $this->_db->where('status', -1, '>');
+        debugMessage('系统自动添加了逻辑删除过滤值 status ');
+      }
+    }
+
+    if (!$where) return;
     $map = [];
     if (is_numeric($where))
       $this->_db->where($this->id, $where);
@@ -181,10 +233,7 @@ class BaseModel extends CoreModel {
     //切记，这里只是实现了where 条件 其他的条件，请在业务中 自行实现
     if ($map) {
       foreach ($map as $key => $val) {
-        if (is_array($val))
-          $this->_db->where($key, $val['val'], isset($val['operator']) ? $val['operator'] : '=', isset($val['condition']) ? $val['condition'] : 'AND');
-        else
-          $this->_db->where($key, $val);
+        $this->_db->where($val['field'], $val['val'], isset($val['operator']) ? $val['operator'] : '=', isset($val['condition']) ? $val['condition'] : 'AND');
       }
     }
   }
@@ -208,6 +257,7 @@ class BaseModel extends CoreModel {
    */
   private function autoAddtimeData($data, $fun = NULL) {
     if ($this->autoaddtime) {
+      debugMessage('开启自动添加时间戳 updatetime  createtime');
       if (!is_null($fun) && $fun === 'insert') {
         $data[$this->createtime] = time();
         $data[$this->updatetime] = time();

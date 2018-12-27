@@ -2,12 +2,13 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/5/7
- * Time: 16:35
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
  *
- * 栏目相关操作
  */
+
+defined('APP_PATH') OR exit('No direct script access allowed');
 
 class RoleController extends ApiBaseController {
 
@@ -18,13 +19,9 @@ class RoleController extends ApiBaseController {
    */
   public function getList() {
     //如果传递了page_size 就分页
-    $page_size = $this->_post('page_size');
-    $page_num = $this->_post('page_num');
-    if ($page_size && $page_num) {
-      $result = $this->Role_service->getListPage([], 'id,title,platform_id,createtime', $page_num, $page_size);
-    } else {
-      $result = $this->Role_service->getList([], 'title,id,platform_id,createtime');
-    }
+    $page_size = $this->_post('page_size', PAGESIZE);
+    $page_num = $this->_post('page_num', 1);
+    $result = $this->roleService->getListPage([], 'id,title,createtime', $page_num, $page_size);
     return $result;
   }
 
@@ -35,7 +32,7 @@ class RoleController extends ApiBaseController {
    */
   public function add() {
     $title = $this->_post('title');
-    $result = $this->Role_service->add($title);
+    $result = $this->roleService->add($title);
     return $result;
   }
 
@@ -48,7 +45,7 @@ class RoleController extends ApiBaseController {
   public function update() {
     $title = $this->_post('title');
     $id = $this->_post('id');
-    $result = $this->Role_service->update($id, $title);
+    $result = $this->roleService->update($id, $title);
     return $result;
   }
 
@@ -59,7 +56,7 @@ class RoleController extends ApiBaseController {
    */
   public function getOne() {
     $id = $this->_post('id');
-    $result = $this->Role_service->getOne($id);
+    $result = $this->roleService->getOne($id);
     return $result;
   }
 
@@ -70,7 +67,7 @@ class RoleController extends ApiBaseController {
    */
   public function delete() {
     $id = $this->_post('id');
-    $result = $this->Role_service->delete($id);
+    $result = $this->roleService->delete($id);
     return $result;
   }
 

@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class RoleService extends BaseService {
 
   /**
@@ -16,10 +18,7 @@ class RoleService extends BaseService {
    * @param int $page_size <numeric>
    */
   public function getListPage(array $where, $field = '*', $page_num, $page_size) {
-    $where['platform_id'] = $this->Token->platform_id;
-    //判断是不是管理员 如果不是，则访问其有权限访问的功能：
-    //稍后完成
-    $result = $this->Role_model->getListPage($where, $field, $page_num, $page_size, [], 'createtime desc');
+    $result = $this->roleModel->getListPage($where, $field, $page_num, $page_size, [], 'createtime desc');
     return $this->show($result);
   }
 
@@ -30,10 +29,7 @@ class RoleService extends BaseService {
    * @return mixed
    */
   public function getList(array $where, $field = '*') {
-    $where['platform_id'] = $this->Token->platform_id;
-    //判断是不是管理员 如果不是，则访问其有权限访问的功能：
-    //稍后完成
-    $result = $this->Role_model->getList($where, $field);
+    $result = $this->roleModel->getList($where, $field);
     return $this->show($result);
   }
 
@@ -44,11 +40,9 @@ class RoleService extends BaseService {
    */
   public function add($title) {
     $data = [
-      'title' => $title,
-      'platform_id' => $this->Token->platform_id,
-      'createtime' => time()
+      'title' => $title
     ];
-    $lastInsertId = $this->Role_model->add($data);
+    $lastInsertId = $this->roleModel->insert($data);
     if ($lastInsertId) {
       $data['id'] = $lastInsertId;
       return $this->show($data);
@@ -63,11 +57,11 @@ class RoleService extends BaseService {
    * @param int $id <required> ID
    */
   public function delete($id) {
-    $result = $this->Role_model->delete($id, platform_where());
-    if ($result['type'] == 'search' && $result['row'] > 0) {
+    $result = $this->roleModel->delete($id);
+    if (isset($result['type'])) {
       showApiException('请先删除此分组下的用户，再删除分组', StatusCode::HAS_MANAGE);
     } else {
-      return $result['row'] > 0 ? $this->show(['row' => $result['row'], 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
+      return $result > 0 ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
     }
   }
 
@@ -78,7 +72,7 @@ class RoleService extends BaseService {
    * @return mixed
    */
   public function getOne($id, $fileds = '*') {
-    $result = $this->Role_model->getOne($id, $fileds, platform_where());
+    $result = $this->roleModel->getOne($id, $fileds, platform_where());
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
@@ -91,10 +85,9 @@ class RoleService extends BaseService {
 
   public function update($id, $title) {
     $data = [
-      'title' => $title,
-      'platform_id' => $this->Token->platform_id
+      'title' => $title
     ];
-    $result = $this->Role_model->update($id, $data, platform_where());
+    $result = $this->roleModel->update($id, $data, platform_where());
     if ($result) {
       $data['id'] = $id;
     }

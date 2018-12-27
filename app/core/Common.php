@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 if (!function_exists('P')) {
   function P($arr, $fun = 'print_r', $fontsize = 20, $color = 'blue') {
     echo '<pre style="color:' . $color . ';font-size:' . $fontsize . 'px;">';
@@ -68,7 +70,6 @@ if (!function_exists('logMessage')) {
       throw new Exceptions('No log log class was found. Please check if it is registered.', 500);
     }
 
-
     Yaf_Registry::get('log')->write_log($level, $message);
   }
 }
@@ -84,7 +85,7 @@ if (!function_exists('getInstance')) {
    * 获取当前运行controller 实例
    * @param null $controller
    * @param null $moduleName
-   * @return null
+   * @return BaseController
    * @throws Exceptions
    */
   function getInstance($controller = NULL, $moduleName = NULL) {
@@ -255,9 +256,7 @@ if (!function_exists('_exception_handler')) {
     $_error = $_error = Yaf_Registry::get('exceptions');
     $_error->log_exception('error', 'Exception: ' . $exception->getMessage());
 
-    isCli() OR set_status_header(500);
 
-    //P($exception);
     // Should we display the error?
     if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
 
@@ -280,7 +279,9 @@ if (!function_exists('_error_handler')) {
    * @return  void
    */
   function _error_handler($severity, $message, $filepath, $line) {
+
     $is_error = (((E_ERROR | E_PARSE | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR) & $severity) === $severity);
+
     if ($is_error) {
       set_status_header(500);
     }
@@ -378,7 +379,7 @@ if (!function_exists('set_status_header')) {
       if (isset($stati[$code])) {
         $text = $stati[$code];
       } else {
-        show_error('No status text available. Please check your status code number or supply your own message text.', 500);
+        show_error('Internal Server Error.', 500);
       }
     }
 
@@ -416,7 +417,7 @@ if (!function_exists('show_error')) {
     }
 
     $_error = Yaf_Registry::get('exceptions');
-    echo $_error->show_error($heading, $message, 'error_general', $status_code);
+    echo $_error->show_error($heading, $message, NULL, $status_code);
     exit($exit_status);
   }
 }
@@ -697,8 +698,8 @@ function _getJson($code, $msg, $url) {
   return $result;
 }
 
-if (!function_exists('isDevelop')) {
-  function isDevelop($env = 'develop') { //MSIE 10.0;
+if (!function_exists('isEnv')) {
+  function isEnv($env = 'develop') { //MSIE 10.0;
     return strtolower($env) === strtolower(ENVIRONMENT);
   }
 }
@@ -786,9 +787,27 @@ function array_change_key_case_recursive(array $data, $case = CASE_LOWER) {
 }
 
 
-function password_encrypt($pwd,$salt=PWD_SALT){
-  return sha1(md5($pwd.PWD_SALT));
+function password_encrypt($pwd, $salt = PWD_SALT) {
+  return sha1(md5($pwd . PWD_SALT));
 }
+
+/**
+ * 自动拼装where条件
+ * @param $field
+ * @param $val
+ * @param string $operator
+ * @param string $condition
+ * @return array
+ */
+function getWhereCondition($field, $val, $operator = '=', $condition = 'AND') {
+  return [
+    'field' => trim($field),
+    'val' => $val,
+    'operator' => $operator,
+    'condition' => $condition,
+  ];
+}
+
 
 /**
  * ip转换为数字 解决出现负值
@@ -796,4 +815,16 @@ function password_encrypt($pwd,$salt=PWD_SALT){
  */
 function ip_long($ip) {
   return sprintf('%u', ip2long($ip));
+}
+
+
+/**
+ * 过滤掉空字符串
+ * @param $val
+ * @return bool
+ */
+function filter_empty_callback($val) {
+  if (strlen(trim($val)) > 0) {
+    return TRUE;
+  }
 }

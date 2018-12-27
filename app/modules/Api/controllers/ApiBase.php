@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class ApiBaseController extends BaseController {
 
   /**
@@ -22,6 +24,7 @@ class ApiBaseController extends BaseController {
       $data = call_user_func_array([$controller, $parseUri['action'] . 'Action'], $this->getRequest()->getParams());
       $this->showJson($data['result'], $data['code'], $data['msg']);
     } catch (Exception $e) {
+      //var_dump($e->getMessage());exit;
       //$this->showJson([], API_FAILURE, $e->getMessage());
       show_error($e->getMessage(), $e->getCode());
       //showApiException($e->getMessage(), $e->getCode());
@@ -85,19 +88,25 @@ class ApiBaseController extends BaseController {
             $f_filed = $val['key_field'][$f_key];
             if (!isset($data[$f_filed])) break;
             $key_value = isset($data[$f_filed]) ? $data[$f_filed] : '';
-
             if (isset($val['db_field'][$f_key])) {
               $_db_fields = $val['db_field'][$f_key];
               $condition = $f_key == 0 ? '>=' : '<=';
-              $where[$_db_fields . ' ' . $condition] = trim($key_value);
+              $where[] = [
+                'field' => trim($_db_fields),
+                'val' => trim($key_value),
+                'operator' => $condition
+              ];
             }
           }
           break;
         default :
           foreach ($val['key_field'] as $f_key => $f_filed) {
             if (!isset($data[$f_filed])) continue;
-            $key_value = isset($data[$f_filed]) ? $data[$f_filed] : '';
-            isset($val['db_field'][$f_key]) && $where[trim($val['db_field'][$f_key]) . ' ' . $condition_type] = trim($key_value);
+            $where[] = [
+              'field' => trim($val['db_field'][$f_key]),
+              'val' => isset($data[$f_filed]) ? trim($data[$f_filed]) : '',
+              'operator' => $condition_type
+            ];
           }
           break;
       }
@@ -121,13 +130,29 @@ class ApiBaseController extends BaseController {
         $_db_fields = $val['db_field'][$f_key];
         switch ($condition_type) {
           case 'like':
-            $where[$_db_fields . ' like'] = '%' . trim($key_value) . '%';
+            $where[] = [
+              'field' => $_db_fields,
+              'val' => '%' . trim($key_value) . '%',
+              'operator' => 'like',
+              'condition' => 'AND'
+            ];
             break;
           case 'after like':
-            $where[$_db_fields . ' like'] = trim($key_value) . '%';
+            $where[] = [
+              'field' => $_db_fields,
+              'val' => trim($key_value) . '%',
+              'operator' => 'like',
+              'condition' => 'AND'
+            ];
+
             break;
           case 'before like':
-            $where[$_db_fields . ' like'] = '%' . trim($key_value);
+            $where[] = [
+              'field' => $_db_fields,
+              'val' => '%' . trim($key_value),
+              'operator' => 'like',
+              'condition' => 'AND'
+            ];
             break;
         }
       }
@@ -146,8 +171,19 @@ class ApiBaseController extends BaseController {
     foreach ($val['key_field'] as $f_key => $f_filed) {
       if (isset($val['db_field'][$f_key])) {
         $_db_fields = $val['db_field'][$f_key];
-        if (isset($data[$_db_fields]))
-          $condition_type == 'null' ? $where[$_db_fields . ' is null'] = NULL : $where[$_db_fields . ' is not null'] = NULL;
+        if (isset($data[$_db_fields])) {
+          if ($condition_type == 'null')
+            $operator = 'IS';
+          else $operator = 'IS NOT';
+
+          $where[] = [
+            'field' => $_db_fields,
+            'val' => NULL,
+            'operator' => $operator,
+            'condition' => 'AND'
+          ];
+
+        }
       }
     }
     return $where;
@@ -161,16 +197,23 @@ class ApiBaseController extends BaseController {
    * @return mixed
    */
   private function _in_condition($val, $where, $condition_type, $data) {
+
     isset($val['db_field'][0]) && $_db_fields = $val['db_field'][0];
+
     if (!$_db_fields || !isset($data[$_db_fields])) return $where;
-    if (is_array($data[$_db_fields])) {
-      $where[$_db_fields . ' ' . $condition_type . ' (' . implode(',', $data[$_db_fields]) . ')'] = NULL;
-    } else if (is_string($data[$_db_fields])) {
-      $where[$_db_fields . ' ' . $condition_type . ' (' . $data[$_db_fields] . ')'] = NULL;
-    }
+
+    if (is_string($data[$_db_fields]))
+      $data[$_db_fields] = explode(',', $data[$_db_fields]);
+
+    $where[] = [
+      'field' => $_db_fields,
+      'val' => $data[$_db_fields],
+      'operator' => $condition_type,
+      'condition' => 'AND'
+    ];
+
     return $where;
   }
-
 
   /**
    * 获取当前uri中控制器和方法

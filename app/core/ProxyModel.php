@@ -26,8 +26,8 @@ class ProxyModel {
 
 
   public final function __get($name) {
-    if (!isset($this->_instance->$name))
-      throw new Exceptions('Undefined property:' . $name . ' not found exists.');
+    if (!property_exists($this->_instance, $name))
+      debugMessage(get_class($this->_instance) . ' property [ ' . $name . ' ] is not found.');//throw new Exceptions('Undefined property:' . $name . ' not found exists.');
 
     return $this->_instance->$name;
   }
@@ -58,6 +58,7 @@ class ProxyModel {
       if (isset($rules['rules'][$method]) && ($methodRules = $rules['rules'][$method])) {
 
         $data = $this->_combineParam($rules['params'][$method], $params);
+        debugMessage('自动验证:' . get_class($this->_instance) . '->' . $method . '()');
         if (TRUE !== ($result = validate($methodRules, $data, $rules['msg'][$method]))) {
           showApiException($result['errMsg']);
         }

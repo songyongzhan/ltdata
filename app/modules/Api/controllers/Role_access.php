@@ -2,12 +2,13 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/5/7
- * Time: 16:35
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
  *
- * 栏目相关操作
  */
+
+defined('APP_PATH') OR exit('No direct script access allowed');
 
 class Role_accessController extends ApiBaseController {
 
@@ -17,7 +18,7 @@ class Role_accessController extends ApiBaseController {
    * 无需传递参数，直接调用
    */
   public function getAccessMenu() {
-    $result = $this->Role_access_service->get_access_menu();
+    $result = $this->role_accessService->get_access_menu();
     return $result;
   }
 
@@ -29,7 +30,7 @@ class Role_accessController extends ApiBaseController {
    */
   public function viewRoleAccess() {
     $manage_id = $this->_post('manage_id');
-    $result = $this->Role_access_service->viewRoleAccess($manage_id);
+    $result = $this->role_accessService->viewRoleAccess($manage_id);
     return $result;
   }
 
@@ -40,7 +41,7 @@ class Role_accessController extends ApiBaseController {
    */
   public function getRoleAccess() {
     $type_id = 2; //方法
-    $result = $this->Role_access_service->get_access_menu($type_id);
+    $result = $this->role_accessService->get_access_menu($type_id);
     return $result;
   }
 
@@ -52,7 +53,7 @@ class Role_accessController extends ApiBaseController {
    */
   public function checkUrl() {
     $url = $this->_post('url');
-    $result = $this->Role_access_service->checkUrl($url);
+    $result = $this->role_accessService->checkUrl($url);
     return $result;
   }
 
@@ -66,7 +67,7 @@ class Role_accessController extends ApiBaseController {
   public function update() {
     $menu_ids = $this->_post('menu_ids');
     $role_id = $this->_post('role_id');
-    $result = $this->Role_access_service->update($role_id, $menu_ids);
+    $result = $this->role_accessService->update($role_id, $menu_ids);
     return $result;
   }
 

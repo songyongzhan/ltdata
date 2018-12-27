@@ -118,6 +118,12 @@ class IndexController extends BaseController {
         'operator' => '>=',
         'condition' => 'and'
       ],
+
+
+
+    $db->where ("fullName", 'John%', 'like');
+
+
       'title'=>['val'=>'386']
     ], ['*'], 1, 3, '','bb');
     P($result);*/
@@ -173,7 +179,10 @@ class IndexController extends BaseController {
      *
      *
      *
-     *
+     如果设置字段a=b
+
+     需要这样设置 $db->where('a=b');
+     不能使用 $db->where('a','b');
      *
      *
      *

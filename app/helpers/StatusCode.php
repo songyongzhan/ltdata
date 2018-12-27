@@ -20,6 +20,7 @@ class StatusCode {
   //token相关
   const TOKEN_IS_EMPTY = 42301409; //TOKEN 为空
   const TOKEN_TIMEOUT_EXPIRE = 42302409; //token 过期  登录超时
+  const TOKEN_ERROR = 42303409; //token解析错误
   const REMOTEIP_CHANGED = 42202409; //网络环境发生变化
   const DATA_NOT_EXISTS = API_SUCCESS; //数据不存在
   const NO_DATA_CHANGE = 42402409; //没有数据被改变
@@ -40,7 +41,8 @@ class StatusCode {
   const UNAUTHORIZED_ACCESS = 42803409;//您无权访问此方法
   const INCONSISTENT_PASSWORD = 42019409;//两次输入密码不一致
   const PASSWORD_ERROR = 42020409; //密码输入错误
-  const CANNOT_EDIT_LDAP_PASSWORD = 42021409; //系统不能修改域名密码
+  const CANNOT_EDIT_LDAP_PASSWORD = 42021409;//系统不能修改域名密码
+
 
   /**
    * 如果信息码存在，返回信息，如果不存在返回空
@@ -70,6 +72,7 @@ class StatusCode {
       42202409 => '网络环境发生变化',
       42301409 => 'USERTOKEN 不存在',
       42302409 => '登录超时，请重新登录',
+      42303409 => 'token错误',
       42402409 => '没有数据被改变',
       42803409 => '您无权访问此方法',
       43501409 => '数据添加失败',

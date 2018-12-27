@@ -11,6 +11,9 @@
  * 核心，不要修改这里文件
  * Class BaseBootstrap
  */
+
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class CoreBootstrap extends Yaf_Bootstrap_Abstract {
 
   public function _initConfig() {

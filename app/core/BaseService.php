@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class BaseService extends CoreService {
 
   private static $_object = [];
@@ -27,11 +29,17 @@ class BaseService extends CoreService {
    * @param boolean $isEncrypt 是否加密
    * @return array
    */
-  public function show(array $result, $code = API_SUCCESS, $msg = '', $isEncrypt = FALSE) {
+  public function show($result, $code = API_SUCCESS, $msg = '', $isEncrypt = FALSE) {
     if ($isEncrypt) {
       //进行加密
 
     }
+    if ($result && !is_array($result))
+      $result = [$result];
+
+    if ($code != API_SUCCESS && empty($msg))
+      $msg = StatusCode::get_code_message($code);
+
     return [
       'code' => $code,
       'msg' => $msg,

@@ -2,13 +2,13 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/4/28
- * Time: 11:40
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
  *
  * 后台用户管理 模型
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('APP_PATH') OR exit('No direct script access allowed');
 
 class ManageModel extends BaseModel {
 
@@ -52,7 +52,9 @@ class ManageModel extends BaseModel {
   public function update_token_timeout($manage_id, $timeout) {
     return $this->update($manage_id, ['timeout' => $timeout]);
   }
-  
+
+
+
   /**
    * 返回登录失败信息
    * @param $status

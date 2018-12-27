@@ -7,6 +7,8 @@
  * Email: songyongzhan@qianbao.com
  */
 
+defined('APP_PATH') OR exit('No direct script access allowed');
+
 class ManageService extends BaseService {
 
 
@@ -33,11 +35,14 @@ class ManageService extends BaseService {
    */
   public function add($data) {
     //判断此平台下是否存在这个账号，如果存在直接返回
-    $hasManage = $this->manageModel->getList(['username' => $data['username']], ['id']);
+    $hasManage = $this->manageModel->getList([
+      ['field' => 'username', 'val' => $data['username']]
+    ], ['id']);
+
     if ($hasManage) showApiException('此用户已存在，不能重复添加', StatusCode::SAME_USERNAME_ERROR);
     $data['password'] = password_encrypt($data['password']);
     unset($data['re_password']);
-    $lastInsertId = $this->manageModel->add($data);
+    $lastInsertId = $this->manageModel->insert($data);
     if ($lastInsertId) {
       unset($data['password']);
       $data['id'] = $lastInsertId;
@@ -63,10 +68,10 @@ class ManageService extends BaseService {
       if ($data['password'] !== $data['re_password'])
         showApiException('两次输入密码不一致', StatusCode::INCONSISTENT_PASSWORD);
       $data['password'] = password_encrypt($data['password']);
-    } else
+    } else if (isset($data['password']))
       unset($data['password']);
 
-    if ($data['re_password'])
+    if (isset($data['re_password']))
       unset($data['re_password']);
 
     $result = $this->manageModel->update($id, $data);
@@ -82,24 +87,18 @@ class ManageService extends BaseService {
    * @return array
    */
   public function getList($where = [], $page_num, $page_size) {
-    $like_arr = [];
-    if (isset($where['username'])) {
-      $like_arr['username'] = $where['username'];
-      unset($where['username']);
-    }
-
-    $result = $this->manageModel->getListPage($where, self::FIELD, $page_num, $page_size, [], 'createtime desc');
+    $result = $this->manageModel->getListPage($where, self::FIELD, $page_num, $page_size);
     return $result ? $this->show($result) : $this->show([]);
   }
 
   /**
    * 获取一个用户
-   * @param int $id <required|numeric> 用户ID
+   * @param int $id <require|number> 用户ID
    * @param string $fileds 获取字段名称||array
    * @return array
    */
   public function getOne($id) {
-    $result = $this->manageModel->getOne($id, self::FIELD, platform_where());
+    $result = $this->manageModel->getOne($id, self::FIELD);
     unset($result['password']);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
@@ -113,9 +112,21 @@ class ManageService extends BaseService {
   public function login($username, $password) {
     $password = password_encrypt($password);
     $result = $this->manageModel->login($username, $password, self::FIELD);
-    if ($result['login'])
+    if ($result['login']) {
+      $token = create_token($result['id']);
+      $timeout = time() + TOKEN_EXPIRE_LONG;
+      $this->manageModel->update($result['id'], ['token' => $token, 'timeout' => $timeout]);
+
+      $token_data = [
+        'remote_ip' => getClientIP(),
+        'src_token' => $token,
+        'manage_id' => $result['id'],
+        'isadmin' => $result['isadmin'],
+        'username' => $result['username']
+      ];
+      $result['token'] = AESEncrypt(jsonencode($token_data), COOKIE_KEY);
       return $this->show($result);
-    else if ($result['status'] === -1)
+    } else if ($result['status'] === -1)
       return $this->show([], StatusCode::USER_NOT_EXISTS);
     else if ($result['status'] === 0)
       return $this->show($result, StatusCode::USER_AUTHENTICATION_FAILURE);
@@ -124,7 +135,7 @@ class ManageService extends BaseService {
   /**
    * 验证token是否存在
    * @param array $token_data token数值
-   * @param int $manage_id <required|numeric> 用户ID
+   * @param int $manage_id <require|number> 用户ID
    * @param string $token <require> token验证
    * @return bool
    */
@@ -171,14 +182,14 @@ class ManageService extends BaseService {
    * @return mixed
    */
   public function delete($id) {
-    $result = $this->manageModel->delete($id, platform_where());
+    $result = $this->manageModel->delete($id);
     return $result ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
   /**
    * 更新用户的过期时间
-   * @param int $manage_id <required|numeric> 更新用户的ID
-   * @param int $timeout <required|numeric> 更新过期时间戳
+   * @param int $manage_id <require|number> 更新用户的ID
+   * @param int $timeout <require|number> 更新过期时间戳
    * @return true|false
    */
   private function _updateTokenTimeout($manage_id, $timeout = NULL) {
@@ -198,13 +209,12 @@ class ManageService extends BaseService {
     //return $this->show($data);
   }
 
-
   /**
    * 修改用户密码
-   * @param int $id <required|numeric> 用户id
+   * @param int $id <require|number> 用户id
    * @param string $oldPassword <require> 旧密码
    * @param string $newPassword <require> 新密码
-   * @param string $rePassword <required|matches[newPassword]> 确认密码
+   * @param string $rePassword <require|matches[newPassword]> 确认密码
    */
   public function password($id, $oldPassword, $newPassword, $rePassword) {
 
@@ -214,7 +224,6 @@ class ManageService extends BaseService {
 
     $manage = $this->manageModel->getOne($id, 'id,username,password', $where);
 
-
     if (!$manage)
       showApiException('用户不存在', StatusCode::USER_NOT_EXISTS);
 
@@ -223,6 +232,22 @@ class ManageService extends BaseService {
 
     $result = $this->manageModel->update($id, ['password' => password_encrypt($newPassword), 'last_logintime' => time()], $where);
     $result && $data['id'] = $id;
+    return $result ? $this->show($data) : $this->show([]);
+  }
+
+  /**
+   *  修改用户权限
+   * @param int $id <require|number> 用户id
+   * @param string $role_access <require> 权限id
+   * @return array
+   */
+  public function updateManageAccess($id, $role_access) {
+    if (is_array($role_access))
+      $role_access = implode(',', $role_access);
+
+    $data = ['role_access' => $role_access];
+    $result = $this->manageModel->update($id, $data);
+
     return $result ? $this->show($data) : $this->show([]);
   }
 

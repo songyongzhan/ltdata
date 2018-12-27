@@ -2,10 +2,13 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/10/18
- * Time: 9:44
- * Email: songyongzhan@qianbao.com
+ * Date: 2018/12/28
+ * Time: 11:45
+ * Email: 574482856@qq.com
+ *
  */
+
+defined('APP_PATH') OR exit('No direct script access allowed');
 
 class ManageController extends ApiBaseController {
 
@@ -144,7 +147,7 @@ class ManageController extends ApiBaseController {
    */
   public function getListAction() {
     $pageNo = $this->_post('page_num', 1);
-    $pageSize = $this->_post('page_size', PAGE_SIZE_DEFAULT);
+    $pageSize = $this->_post('page_size', PAGESIZE);
 
     //提供搜索
     $username = $this->_post('username');
@@ -163,22 +166,12 @@ class ManageController extends ApiBaseController {
       'department' => $department,
     ];
 
-    $where = $this->where($rules, array_filter($data));
+    $where = $this->where($rules, array_filter($data,'filter_empty_callback'));
     $result = $this->manageService->getList($where, $pageNo, $pageSize);
     return $result;
   }
 
-  /**
-   * 切换平台
-   * @name 切换平台
-   * @param int $platformId <POST> 平台id
-   * @return mixed
-   */
-  public function changePlatformAction() {
-    $platformId = $this->_post('platform_id');
-    $result = $this->manageService->changePlatform($platformId);
-    return $result;
-  }
+
 
   /**
    * 用户登录
@@ -237,9 +230,6 @@ class ManageController extends ApiBaseController {
 
     exit;
   }
-
-
-
 
 
   /**
