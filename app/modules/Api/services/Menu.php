@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/18
  * Time: 15:17
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 defined('APP_PATH') OR exit('No direct script access allowed');
@@ -57,14 +57,16 @@ class MenuService extends BaseService {
     if ($lastInsertId) {
       $data['id'] = $lastInsertId;
       return $this->show($data);
-    } else {
+    } else
       return $this->show([], StatusCode::INSERT_FAILURE);
-    }
   }
 
   /**
    * 栏目更新
    * @param int $id <require|number> 栏目ID
+   * @param string $title <require> 栏目标题
+   * @param int $pid <require|number> 父级id
+   * @param string $url <require> 栏目url地址
    * @param array $data 需要更新的数据
    * @return mixed
    * @throws Exception
@@ -132,9 +134,9 @@ class MenuService extends BaseService {
    * @return array
    */
   public function batchSort($sortStr) {
-    $sort = explode('|', trim($sortStr, '|'));
+    $sortData = explode('|', trim($sortStr, '|'));
     $data = [];
-    foreach ($sort as $key => $val) {
+    foreach ($sortData as $key => $val) {
       list($id, $sortId) = explode(':', $val);
       $data[] = [
         'id' => $id,

@@ -8,9 +8,7 @@
  */
 class IndexController extends BaseController {
 
-
   public function detailAction() {
-
 
     //url
 
@@ -480,6 +478,9 @@ class IndexController extends BaseController {
     //1. fetch query
     $get = $this->getRequest()->getQuery("get", "default value");
 
+    echo 111;
+    var_dump($get);
+    exit;
     //2. fetch model
     $model = new SampleModel();
 

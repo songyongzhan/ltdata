@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/17
  * Time: 14:11
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 require_once APP_PATH . DIRECTORY_SEPARATOR . 'app/configs/api.php';
 /*foreach (glob(__DIR__ . '/*.php') as $file) {

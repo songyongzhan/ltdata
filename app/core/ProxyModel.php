@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/23
  * Time: 13:41
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 class ProxyModel {
@@ -40,7 +40,9 @@ class ProxyModel {
   public function __call($method, $params) {
 
     if ($method[0] !== '_' && method_exists($this->_instance, $method)) {
-      ENVIRONMENT === 'devlop' && logMessage('debug', '自动验证:' . $this->_classname . '->' . $method . '() 参数:' . jsonencode($params));
+
+      ENVIRONMENT == 'develop' && logMessage('debug', '自动验证:' . $this->_classname . '->' . $method . '() 参数:' . jsonencode($params));
+
       $reflection = new Reflec($this->_instance);
       $validateFile = $this->_cachePath . DS . 'form_' . $this->_classname . '.' . Tools_Config::getConfig('application.ext');
 
@@ -58,7 +60,7 @@ class ProxyModel {
       if (isset($rules['rules'][$method]) && ($methodRules = $rules['rules'][$method])) {
 
         $data = $this->_combineParam($rules['params'][$method], $params);
-        debugMessage('自动验证:' . get_class($this->_instance) . '->' . $method . '()');
+
         if (TRUE !== ($result = validate($methodRules, $data, $rules['msg'][$method]))) {
           showApiException($result['errMsg']);
         }

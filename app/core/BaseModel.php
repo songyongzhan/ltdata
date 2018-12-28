@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/17
  * Time: 14:08
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 defined('APP_PATH') OR exit('No direct script access allowed');
@@ -82,9 +82,10 @@ class BaseModel extends CoreModel {
    * @param null $table
    * @return bool|string
    */
-  public function inserMulti($data, $table = NULL) {
+  public final function inserMulti($data, $table = NULL) {
     is_null($table) || $this->table = $table;
     $ids = $this->_db->insertMulti($this->table, $data);
+    $this->autoaddtime && debugMessage('未自动补充createtime和updatetime');
     $this->_logSql();
     if (!$ids)
       return FALSE;
@@ -93,13 +94,13 @@ class BaseModel extends CoreModel {
   }
 
 
-  public function update($where, $data, $table = NULL) {
+  public final function update($where, $data, $table = NULL) {
     is_null($table) || $this->table = $table;
     $data = $this->autoAddtimeData($data);
     $this->setCond($where);
     $result = $this->_db->update($this->table, $data);
     $this->_logSql();
-    return $result;
+    return $result ? $this->_db->count : 0;
   }
 
 
@@ -107,18 +108,18 @@ class BaseModel extends CoreModel {
    * 删除
    * @param $where
    * @param null $table
-   * @return bool
+   * @return int 返回受影响的行数
    * @throws InvalideException
    */
-  public function delete($where, $table = NULL) {
+  public final function delete($where, $table = NULL) {
     is_null($table) || $this->table = $table;
     $this->setCond($where);
     $result = $this->realDelete ? $this->_db->delete($this->table) : $this->update($where, ['status' => -1]);
     $this->_logSql();
-    return $result;
+    return $result ? $this->_db->count : 0;
   }
 
-  public function getOne($where, $fileds = [], $table = NULL) {
+  public final function getOne($where, $fileds = [], $table = NULL) {
     is_null($table) || $this->table = $table;
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
@@ -136,7 +137,7 @@ class BaseModel extends CoreModel {
    * @return array
    * @throws InvalideException
    */
-  public function getList($where, $fileds = [], $order = '', $table = NULL, $maxSize = 1000) {
+  public final function getList($where, $fileds = [], $order = '', $table = NULL, $maxSize = 1000) {
     is_null($table) || $this->table = $table;
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
@@ -158,7 +159,7 @@ class BaseModel extends CoreModel {
    * @return mixed
    * @throws InvalideException
    */
-  public function getCount($where, $table = NULL) {
+  public final function getCount($where, $table = NULL) {
     is_null($table) || $this->table = $table;
     $this->setCond($where);
     $result = $this->_db->getValue($this->table, "count(id)");
@@ -174,7 +175,7 @@ class BaseModel extends CoreModel {
    * @param int $pageSize
    * @param null $table
    */
-  public function getListPage($where = [], $fileds = [], $pageNum = 1, $pageSize = PAGESIZE, $order = '', $table = NULL) {
+  public final function getListPage($where = [], $fileds = [], $pageNum = 1, $pageSize = PAGESIZE, $order = '', $table = NULL) {
     is_null($table) || $this->table = $table;
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
@@ -194,7 +195,9 @@ class BaseModel extends CoreModel {
     $lastQuerySql = $this->getLastQuery();
     $this->_querySqls[] = $lastQuerySql;
     isEnv() && debugMessage($lastQuerySql);
-    debugMessage('Sql execute result:' . $this->_db->getLastErrno() . ' ErrMessage:' . $this->_db->getLastError());
+
+    if ($this->_db->getLastErrno() > 0)
+      debugMessage('Sql execute result:' . $this->_db->getLastErrno() . ' ErrMessage:' . $this->_db->getLastError());
   }
 
   /**
@@ -333,6 +336,18 @@ class BaseModel extends CoreModel {
   public function commit() {
     return $this->_db->commit();
   }
+
+  /**
+   * 用于检测是否在事务中，如果在，就会自动回滚
+   * @return bool
+   */
+  public function _transaction_status_check() {
+    return $this->_db->_transaction_status_check();
+  }
+
+
+
+
 
   public function chooseConnection($name) {
     return $this->_db->connection($name);

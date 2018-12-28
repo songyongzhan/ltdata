@@ -15,13 +15,11 @@ class RoleModel extends BaseModel {
   /**
    * 重写父类删除方法
    * @param int $id
-   * @param null $table
    * @return bool|void
    */
-  public function delete($id, $table = NULL) {
+  public function roleDelete($id) {
 
     //首先判断此组下是否有用户，如果存在，就不能删除
-
     $count = $this->manage_roleModel->getCount([
       ['field' => 'role_id', 'val' => $id]
     ]);

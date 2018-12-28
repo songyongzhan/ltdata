@@ -30,4 +30,5 @@ switch (ENVIRONMENT) {
 $application = new Yaf_Application(CONFIGPATH);
 
 $application->bootstrap()->run();
+
 ?>

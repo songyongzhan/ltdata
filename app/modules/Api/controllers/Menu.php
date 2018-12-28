@@ -16,7 +16,6 @@ class MenuController extends ApiBaseController {
   /**
    * 获取栏目列表
    * @name 列表
-   * @param int $platform_id 平台id
    * @param int user_type 用途 如果是1 显示栏目列表用于修改 ,不传值 或传0 用于左侧栏目显示
    * @return mixed
    */
@@ -47,8 +46,7 @@ class MenuController extends ApiBaseController {
       'relation_url' => $this->_post('relation_url'),
       'type_id' => $this->_post('type_id', 1),
       'sort_id' => $this->_post('sort_id', 0),
-      'status' => $this->_post('status'),
-      'platform_id' => $this->_post('platform_id', '')
+      'status' => $this->_post('status')
     ];
     $result = $this->menuService->add($data);
     return $result;

@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/18
  * Time: 15:17
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 defined('APP_PATH') OR exit('No direct script access allowed');
@@ -14,11 +14,11 @@ class RoleService extends BaseService {
   /**
    * 获取权限列表 分页
    * @param array $where
-   * @param int $page_num <numeric>
-   * @param int $page_size <numeric>
+   * @param int $page_num <number>
+   * @param int $page_size <number>
    */
   public function getListPage(array $where, $field = '*', $page_num, $page_size) {
-    $result = $this->roleModel->getListPage($where, $field, $page_num, $page_size, [], 'createtime desc');
+    $result = $this->roleModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 
@@ -28,14 +28,14 @@ class RoleService extends BaseService {
    * @param $field
    * @return mixed
    */
-  public function getList(array $where, $field = '*') {
+  public function getList($where, $field = '*') {
     $result = $this->roleModel->getList($where, $field);
     return $this->show($result);
   }
 
   /**
    * 添加权限
-   * @param string $title <required> 分组名称
+   * @param string $title <require> 分组名称
    * @return mixed 返回最后插入的id
    */
   public function add($title) {
@@ -54,10 +54,10 @@ class RoleService extends BaseService {
 
   /**
    * 删除一个角色
-   * @param int $id <required> ID
+   * @param int $id <require|number> id
    */
   public function delete($id) {
-    $result = $this->roleModel->delete($id);
+    $result = $this->roleModel->roleDelete($id);
     if (isset($result['type'])) {
       showApiException('请先删除此分组下的用户，再删除分组', StatusCode::HAS_MANAGE);
     } else {
@@ -67,19 +67,19 @@ class RoleService extends BaseService {
 
   /**
    * 获取单个信息
-   * @param int $id <required> 分组id
+   * @param int $id <require|number> id
    * @param string $fileds
    * @return mixed
    */
   public function getOne($id, $fileds = '*') {
-    $result = $this->roleModel->getOne($id, $fileds, platform_where());
+    $result = $this->roleModel->getOne($id, $fileds);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
   /**
    * 分组更新数据
-   * @param int $id <required|numeric> ID
-   * @param string $title <required> 名称
+   * @param int $id <require|number> id
+   * @param string $title <require> 名称
    * @return array mixed 返回用户数据
    */
 
@@ -87,7 +87,7 @@ class RoleService extends BaseService {
     $data = [
       'title' => $title
     ];
-    $result = $this->roleModel->update($id, $data, platform_where());
+    $result = $this->roleModel->update($id, $data);
     if ($result) {
       $data['id'] = $id;
     }

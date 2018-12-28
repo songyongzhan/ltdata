@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/19
  * Time: 10:45
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 /**
@@ -17,18 +17,18 @@ return [
    * $key 这个值随便起，个人知道怎么回事就行，没有别的什么要求
    */
   'plugins' => [
-    'crosPlugin' => 'Cros',
-    'CommonException' => 'CommonException', //公共exception
-    'CommonLog' => 'CommonLog', //公共Log 日志
-    'InitException' => 'InitException',
-    'ApiDispatch' => 'ApiDispatch',
-
-    //只有是在api模块下才执行 如果像上面单独的写法，则全部注册
-    //这种带数组的写法，系统会检测是否这个模块，验证成功后，注册
-    'Api' => [
-      'LoginCheck' => 'LoginCheck',
-      'MenuCheck' => 'MenuCheck',
-    ],
+    //'crosPlugin' => 'Cros',
+    //'CommonException' => 'CommonException', //公共exception
+    //'CommonLog' => 'CommonLog', //公共Log 日志
+    //'InitException' => 'InitException',
+    //'ApiDispatch' => 'ApiDispatch',
+    //
+    ////只有是在api模块下才执行 如果像上面单独的写法，则全部注册
+    ////这种带数组的写法，系统会检测是否这个模块，验证成功后，注册
+    //'Api' => [
+    //  'LoginCheck' => 'LoginCheck',
+    //  'MenuCheck' => 'MenuCheck',
+    //],
 
 
   ],

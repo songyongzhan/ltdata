@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/17
  * Time: 14:21
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 //项目相关函数
@@ -187,5 +187,23 @@ function page_data($list = [], $total = 0, $pageNum, $pageSize, $total_page) {
     'page_size' => intval($pageSize),
     'total_page' => intval($total_page),
   );
+  return $data;
+}
+
+
+function convert_encodeing($data, $from_encoding = 'UTF-8', $to_encoding = 'GBK') {
+  if (!$data)
+    return $data;
+
+  if (is_array($data)) {
+    foreach ($data as $key => $val) {
+      if (is_array($val))
+        $data[$key] = convert_encodeing($val, $from_encoding, $to_encoding);
+      else
+        $data[$key] = mb_convert_encoding($val, $to_encoding, $from_encoding);
+    }
+  } else {
+    return mb_convert_encoding($data, $to_encoding, $from_encoding);
+  }
   return $data;
 }

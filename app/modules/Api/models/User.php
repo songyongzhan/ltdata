@@ -5,7 +5,7 @@
  * User: songyongzhan
  * Date: 2018/10/18
  * Time: 14:22
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 class UserModel extends BaseModel {
 

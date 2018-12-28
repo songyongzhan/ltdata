@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/19
  * Time: 16:09
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 /**
@@ -29,9 +29,6 @@ class Exceptions extends Yaf_Exception {
 
     if (isAjax())
       showJsonMsg(API_FAILURE, API_FAILURE_MSG);
-
-
-    isEnv('product') && set_status_header($status_code);
 
     is_null($template) || $this->exceptionFileName = $template;
 

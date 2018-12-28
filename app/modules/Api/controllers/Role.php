@@ -12,16 +12,27 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class RoleController extends ApiBaseController {
 
-
   /**
-   * 获取平台分组列表
+   * 获取分组列表
    * @return mixed
    */
   public function getList() {
     //如果传递了page_size 就分页
     $page_size = $this->_post('page_size', PAGESIZE);
     $page_num = $this->_post('page_num', 1);
-    $result = $this->roleService->getListPage([], 'id,title,createtime', $page_num, $page_size);
+    $title = $this->_post('title', '');
+
+    $rules = [
+      ['condition' => 'like',
+        'key_field' => ['title'],
+        'db_field' => ['title']
+      ]
+    ];
+    $data = ['title' => $title];
+
+    $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
+
+    $result = $this->roleService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
     return $result;
   }
 
@@ -50,7 +61,7 @@ class RoleController extends ApiBaseController {
   }
 
   /**
-   * 得到一个用户信息
+   * 得到一个分组信息
    * @param int $id <POST> 用户id
    * @return array|mixed
    */

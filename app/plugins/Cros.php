@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/19
  * Time: 11:26
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 class CrosPlugin extends Yaf_Plugin_Abstract {
@@ -13,6 +13,7 @@ class CrosPlugin extends Yaf_Plugin_Abstract {
 
     if (isAjax()) {
       $header = [
+        'Access-Control-Allow-Origin' => '*',
         'Access-Control-Allow-Methods' => 'GET,POST',
         'Access-Control-Allow-Headers' => ' X-Requested-With, Uni-Source, X-Access-Token',
       ];

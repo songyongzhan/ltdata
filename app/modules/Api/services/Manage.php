@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/18
  * Time: 15:17
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 defined('APP_PATH') OR exit('No direct script access allowed');
@@ -23,7 +23,7 @@ class ManageService extends BaseService {
 
   }
 
-  const FIELD = ['id', 'username', 'fullname', 'timeout', 'status', 'department', 'ext', 'last_logintime', 'remarks', 'createtime'];
+  const FIELD = ['id', 'username', 'fullname', 'timeout', 'status', 'department', 'ext', 'last_logintime', 'remarks', 'updatetime', 'createtime'];
 
   /**
    * 用户添加
@@ -183,7 +183,7 @@ class ManageService extends BaseService {
    */
   public function delete($id) {
     $result = $this->manageModel->delete($id);
-    return $result ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
+    return $result ? $this->show(['row' => $result, 'id' => $id]) : $this->show([]);
   }
 
   /**
@@ -199,14 +199,11 @@ class ManageService extends BaseService {
 
 
   /**
-   * 显示两个ip 一个是getClentIp
-   * 另一个是 https://apis.qianbao.com/origin 的ip
+   * 显示两个ip 一个是getClentIp 另一个是服务器的ip
    */
   public function getClientIp() {
-    //$origin_data = $this->Apisip_model->fetchPost('/origin');
-    //$origin_ip = $origin_data ? $origin_data['result']['origin'] : '';
-    //$data = ['client_ip' => ip_long(getClientIP()), 'origin_ip' => ip_long($origin_ip)];
-    //return $this->show($data);
+    $data = ['client_ip' => ip_long(getClientIP()), 'server_ip' => ip_long($_SERVER['SERVER_ADDR'])];
+    return $this->show($data);
   }
 
   /**
@@ -218,11 +215,7 @@ class ManageService extends BaseService {
    */
   public function password($id, $oldPassword, $newPassword, $rePassword) {
 
-    /*if ($newPassword != $rePassword)
-      showApiException('两次输入密码不正确', StatusCode::INCONSISTENT_PASSWORD);*/
-    $where = [];
-
-    $manage = $this->manageModel->getOne($id, 'id,username,password', $where);
+    $manage = $this->manageModel->getOne($id, 'id,username,password');
 
     if (!$manage)
       showApiException('用户不存在', StatusCode::USER_NOT_EXISTS);
@@ -230,7 +223,7 @@ class ManageService extends BaseService {
     if ($manage['password'] != password_encrypt($oldPassword))
       showApiException('旧密码输入错误', StatusCode::PASSWORD_ERROR);
 
-    $result = $this->manageModel->update($id, ['password' => password_encrypt($newPassword), 'last_logintime' => time()], $where);
+    $result = $this->manageModel->update($id, ['password' => password_encrypt($newPassword), 'last_logintime' => time()]);
     $result && $data['id'] = $id;
     return $result ? $this->show($data) : $this->show([]);
   }

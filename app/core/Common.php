@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/17
  * Time: 14:21
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 defined('APP_PATH') OR exit('No direct script access allowed');
@@ -256,6 +256,7 @@ if (!function_exists('_exception_handler')) {
     $_error = $_error = Yaf_Registry::get('exceptions');
     $_error->log_exception('error', 'Exception: ' . $exception->getMessage());
 
+    isCli() OR set_status_header(500);
 
     // Should we display the error?
     if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
@@ -669,8 +670,10 @@ function getCallerFromTrace() {
 if (!function_exists('_parseCurrentUri')) {
   function _parseCurrentUri() {
     $uri = getRequest()->getRequestUri();
+
     $data = array_slice(explode('/', trim($uri, '/')), 0, 3);
-    if (count($data) !== 3) throw new Exceptions(' Parameter passing error. Please check if there is a module name.', 500);
+
+    if (count($data) !== 3) throw new Exceptions(' Parameter passing error. Please check if there is a module name.', 405);
     return array_combine(['module', 'controller', 'action'], array_map(function ($val) { return ucfirst($val); }, $data));
   }
 }

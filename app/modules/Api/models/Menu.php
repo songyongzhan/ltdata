@@ -17,11 +17,11 @@ class MenuModel extends BaseModel {
    * @param $data
    * @return bool
    */
-  public function batchSort($data){
+  public function batchSort($data) {
     $this->startTransaction();
 
-    foreach($data as $key=>$val){
-      if(!$this->update($val['id'],['sort_id'=>$val['sort_id']]))
+    foreach ($data as $key => $val) {
+      if (!$this->update($val['id'], ['sort_id' => $val['sort_id']]))
         return $this->rollback();
     }
 

@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/10/24
  * Time: 17:59
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 trait TraitCommon {

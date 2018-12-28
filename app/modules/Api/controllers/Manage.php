@@ -109,7 +109,7 @@ class ManageController extends ApiBaseController {
   public function updateManageRoleAction() {
     $id = $this->_post('id');
     $role_ids = $this->_post('role_ids');
-    $result = $this->manageService->updateManageRole($id, $role_ids);
+    $result = $this->role_accessService->updateManageRole($id, $role_ids);
     return $result;
   }
 
@@ -202,19 +202,6 @@ class ManageController extends ApiBaseController {
     return $result;
   }
 
-  /**
-   * 设置用户是否特殊用户
-   * @name 设置用户特殊标识
-   * @param int $id <POST> 用户id
-   * @param int $isspecial <POST> 特殊用户标识
-   * @return mixed
-   */
-  public function setSpecialAction() {
-    $id = $this->_post('id');
-    $isspecial = $this->_post('isspecial');
-    $result = $this->manageService->setSpecial($id, $isspecial);
-    return $result;
-  }
 
   /**
    * 显示ip到客户端 供添加ip 访问私有平台使用

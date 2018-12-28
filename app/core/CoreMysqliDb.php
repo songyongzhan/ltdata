@@ -4,7 +4,7 @@
  * User: songyongzhan
  * Date: 2018/11/23
  * Time: 14:47
- * Email: songyongzhan@qianbao.com
+ * Email: 574482856@qq.com
  */
 
 
@@ -39,6 +39,7 @@ class CoreMysqliDb extends MysqliDb {
     return $res;
   }
 
+
   /**
    * 复写删除，返回受影响的条数
    * @param string $tableName
@@ -63,12 +64,14 @@ class CoreMysqliDb extends MysqliDb {
     $this->_stmtError = $stmt->error;
     $this->_stmtErrno = $stmt->errno;
     $this->reset();
+    
+    $this->count = $stmt->affected_rows;
 
-    return $stmt->affected_rows;  //	affected_rows returns 0 if nothing matched where statement, or required updating, -1 if error
+    return $this->count;  //	affected_rows returns 0 if nothing matched where statement, or required updating, -1 if error
   }
 
 
-  public function getWhere(){
+  public function getWhere() {
     return $this->_where;
   }
 
