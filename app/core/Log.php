@@ -99,13 +99,16 @@ class Log {
 
     if (!is_dir($this->file_path))
       mkdir($this->file_path, 0755, TRUE);
+
+    $this->write_log('debug', '当前环境[' . ENVIRONMENT . ']');
+    $this->write_log('debug', '请求方法['.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').']');
   }
 
   public function __destruct() {
     if (!empty(self::$messages)) {
       $this->write_log('debug',
         __METHOD__ . PHP_EOL . '页面执行 ' . number_format(microtime(TRUE) - $_SERVER['REQUEST_TIME_FLOAT'], 3)
-        . ' sec [' . $_SERVER['REQUEST_URI'] . ']');
+        . (isCli() ? ' [cli run] ' : ' sec [' . $_SERVER['REQUEST_URI'] . ']'));
 
       $this->write_file(PHP_EOL . '<log>' . PHP_EOL . implode('', self::$messages) . '</log>' . PHP_EOL);
     }

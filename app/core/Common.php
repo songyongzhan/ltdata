@@ -28,8 +28,23 @@ if (!function_exists('import')) {
    * 引入类
    * 要求必须是绝对路径
    * @param $file
+   * @param $resourcePath 资源路径 放在那里，方便快速引入
    */
-  function import($file) {
+  function import($file, $resourcePath = '') {
+
+    if ($resourcePath && (substr_count($file, '/') === 0)) {
+      switch ($resourcePath) {
+        case 'library':
+          $file = APP_PATH . '/app/library/' . $file;
+          break;
+        case 'helpers':
+          $file = APP_PATH . '/app/helpers/' . $file;
+          break;
+        case 'plugins':
+          $file = APP_PATH . '/app/plugins/' . $file;
+          break;
+      }
+    }
     return file_exists($file) && Yaf_Loader::import($file);
   }
 }
@@ -104,11 +119,14 @@ if (!function_exists('getInstance')) {
 
       $file = $controllerPath . DS . $controllerName . '.' . Tools_Config::getConfig('application.ext');
 
+      //var_dump($file);exit;
+
       if (file_exists($file))
         import($file);
       else throw new Exceptions($file . ' file not exists', 500);
 
       $className = $controllerName . 'Controller';
+
       $_instance = new $className(getRequest(), isCli() ? new Yaf_Response_Cli() : new Yaf_Response_Http(), Yaf_Registry::has('viewTemplate') ? Yaf_Registry::get('viewTemplate') : new Yaf_View_Simple(TEMPLATE_DIR));
     }
     return $_instance;
@@ -192,11 +210,17 @@ if (!function_exists('isStr')) {
   }
 }
 
-if (!function_exists('isAjax')) {
-  function isAjax() {
-    return getRequest()->isXmlHttpRequest();
-  }
+
+function isAjax($method = NULL) {
+  return ($method ? $_SERVER['REQUEST_METHOD'] === strtoupper($method) : TRUE)
+    && (
+      isset($_SERVER['HTTP_ORIGIN'], $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']) //OPTIONS
+      || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest' //JQuery
+      || isset($_SERVER['HTTP_ACCEPT']) && strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/json') !== FALSE //axios
+      || isset($_GET[PREFIX . 'ajax']) //URL
+    );
 }
+
 if (!function_exists('isUInt')) {
   /**
    * 判断输入的string是否为正整数 (不支持科学计数法)
@@ -228,7 +252,6 @@ if (!function_exists('checkInclude')) {
   function checkInclude($class) {
     $result = FALSE;
 
-
     $moduleName = Tools_Request::getModuleName();
     if (strtolower($moduleName) !== strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule'))) {   //只是加载models 和services
       $loadtype = NULL; //判断加载类型
@@ -236,6 +259,8 @@ if (!function_exists('checkInclude')) {
         $loadtype = 'model';
       elseif (strpos($class, 'Service'))
         $loadtype = 'service';
+      elseif (strpos($class, 'Controller'))
+        $loadtype = 'controller';
       if (!is_null($loadtype)) {
         $file = APP_PATH . DS . 'app/modules/' . ucfirst($moduleName) . '/' . $loadtype . 's/' . str_replace(ucfirst($loadtype), '', $class) . '.' . Tools_Config::getConfig('application.ext');
         file_exists($file) && $result = TRUE && require_once $file;
@@ -669,7 +694,13 @@ function getCallerFromTrace() {
 
 if (!function_exists('_parseCurrentUri')) {
   function _parseCurrentUri() {
+
+    if (isCli()) return [];
+
     $uri = getRequest()->getRequestUri();
+
+    if (empty($uri))
+      return [];
 
     $data = array_slice(explode('/', trim($uri, '/')), 0, 3);
 
@@ -695,7 +726,7 @@ function _getJson($code, $msg, $url) {
     $msg = $code['message'];
     $code = $code['status'];
   }
-  $result['code'] = $code;
+  $result['status'] = $code;
   $result['message'] = $msg;
   isset($url) && $result['url'] = strval($url);
   return $result;
@@ -830,4 +861,52 @@ function filter_empty_callback($val) {
   if (strlen(trim($val)) > 0) {
     return TRUE;
   }
+}
+
+/**
+ * 从get方法中获取参数
+ * @param $name
+ * @param string $filter
+ * @return string
+ */
+function getGet($name, $filter = '') {
+  return getParams($name, $_GET, $filter);
+}
+
+/**
+ * 从server中获取参数
+ * @param $name
+ * @param string $filter
+ * @return string
+ */
+function getServer($name, $filter = '') {
+  return getParams($name, $_SERVER, $filter);
+}
+
+/**
+ * 从post中获取参数
+ * @param $name
+ * @param string $filter
+ * @return string
+ */
+function getPost($name, $filter = '') {
+  return getParams($name, $_POST, $filter);
+}
+
+function getParams($name, $hayStack, $filter) {
+  if (!$name)
+    return '';
+
+  if (isset($hayStack[$name])) {
+
+    //filter 稍后实现
+    return $hayStack[$name];
+  } else
+    return '';
+}
+
+
+function getRandomStr($length = 16, $chars = '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ') { //openssl_random_pseudo_bytes
+  //去除 0 1 i l o I O
+  return substr(str_shuffle(str_repeat($chars, $length)), 0, $length);
 }

@@ -22,6 +22,8 @@ class CiqController extends ApiBaseController {
     $page_num = $this->_post('page_num', 1);
     $title = $this->_post('title', '');
 
+    
+  
     $rules = [
       ['condition' => 'like',
         'key_field' => ['title'],

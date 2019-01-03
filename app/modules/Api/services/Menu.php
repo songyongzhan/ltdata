@@ -38,7 +38,8 @@ class MenuService extends BaseService {
       $Roleresult = $this->manage_roleModel->getRoleGroupAccess($this->tokenService->manage_id, $useType, self::FIELD);
       $result = array_merge_recursive($manageResult, $Roleresult);
     }
-    return menu_group_list($result);
+
+    return $this->show(menu_group_list(sort_by_sort_id($result,'asc')));
   }
 
   /**

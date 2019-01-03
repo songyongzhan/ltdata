@@ -43,6 +43,11 @@ class CoreBootstrap extends Yaf_Bootstrap_Abstract {
     foreach ($plugins as $field => $class) {
       //针对模块进行注册插件
       if (is_array($class)) {
+
+
+        if (!_parseCurrentUri())
+          continue;
+
         //如果不是这个模块下的插件，则不要进行加载
         if (strtolower($field) !== strtolower(_parseCurrentUri()['module']))
           continue;

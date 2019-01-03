@@ -10,17 +10,14 @@
 class CrosPlugin extends Yaf_Plugin_Abstract {
 
   public function routerStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
-
     if (isAjax()) {
-      $header = [
-        'Access-Control-Allow-Origin' => '*',
-        'Access-Control-Allow-Methods' => 'GET,POST',
-        'Access-Control-Allow-Headers' => ' X-Requested-With, Uni-Source, X-Access-Token',
-      ];
-      $response->setAllHeaders($header);
+
+      header('Access-Control-Allow-Origin: *');
+      header('Access-Control-Allow-Methods: GET, POST');
+      header('Access-Control-Allow-Headers: X-Requested-With,Uni-Source, X-Access-Token');
 
       if (isOptions()) {
-        $response->setHeader('Access-Control-Max-Age', 86400);
+        header('Access-Control-Max-Age: 86400');
         die;
       }
 

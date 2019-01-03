@@ -69,6 +69,8 @@ class ManageController extends ApiBaseController {
     $ext = $this->_post('ext', '');
     $remarks = $this->_post('remarks', '');
     $fullname = $this->_post('fullname', '');
+    $email = $this->_post('email', '');
+    $mobile = $this->_post('mobile', '');
     $status = $this->_post('status', '');
     $id = $this->_post('id');
     $data = [
@@ -77,6 +79,8 @@ class ManageController extends ApiBaseController {
       're_password' => $re_password,
       'department' => $department,
       'ext' => $ext,
+      'email' => $email,
+      'mobile' => $mobile,
       'fullname' => $fullname,
       'remarks' => $remarks,
       'status' => $status
@@ -153,52 +157,41 @@ class ManageController extends ApiBaseController {
     $username = $this->_post('username');
     $fullname = $this->_post('fullname');
     $department = $this->_post('department');
+    $mobile = $this->_post('mobile');
+    $email = $this->_post('email');
 
     $rules = [
       ['condition' => 'like',
-        'key_field' => ['username', 'fullname', 'department'],
-        'db_field' => ['username', 'fullname', 'department']
+        'key_field' => ['username', 'fullname', 'department', 'mobile', 'email'],
+        'db_field' => ['username', 'fullname', 'department', 'mobile', 'email']
       ]
     ];
     $data = [
       'username' => $username,
       'fullname' => $fullname,
       'department' => $department,
+      'email' => $email,
+      'mobile' => $mobile,
     ];
 
-    $where = $this->where($rules, array_filter($data,'filter_empty_callback'));
+    $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
     $result = $this->manageService->getList($where, $pageNo, $pageSize);
     return $result;
   }
-
 
 
   /**
    * 用户登录
    * @param string $username <POST> 用户名
    * @param string $password <POST> 密码
-   * @param int $platform_id <POST> 平台id
+   * @param string $code <POST> 验证码
    * @return array
    */
   public function loginAction() {
     $username = $this->_post('username');
     $password = $this->_post('password');
-    $platform_id = $this->_post('platform_id');
-    $platform_id && $platform_id = intval($platform_id);
-    $result = $this->manageService->login($username, $password, $platform_id);
-    return $result;
-  }
-
-  /**
-   * 根据输入账号 域控 获取用户真实姓名
-   * @name 获取域控用户信息
-   * @param string $username <POST>
-   * @return mixed
-   * @throws Exception
-   */
-  public function getLdapUserinfoAction() {
-    $username = $this->_post('username');
-    $result = $this->manageService->getLdapUserinfo($username);
+    $code = $this->_post('code');
+    $result = $this->manageService->login($username, $password, $code);
     return $result;
   }
 
@@ -212,8 +205,103 @@ class ManageController extends ApiBaseController {
     return $result;
   }
 
+
+  /**
+   * 获取客户端ip地址
+   * @return array
+   */
+  public function getCodeAction() {
+    $ip = $this->_post('ip', '');
+    $result = $this->manageService->getCode($ip);
+    return $result;
+  }
+
+  public function checkCodeAction() {
+    $code = $this->_post('code', '');
+    $result = $this->manageService->checkCode(getClientIP(), $code);
+    return $result;
+  }
+
   //test
   public function aaAction() {
+
+    //$v=class_exists('MyRedis',false);
+    //
+    //var_dump($v);
+    //exit;
+    //import('MyRedis.php', 'library');
+
+    $redis = MyRedis::getInstance([
+
+      'ip' => '127.0.0.1',
+      'port' => 6379,
+      'prefix' => PREFIX
+
+    ]);
+
+    var_dump($redis->hGet('pen', 1));
+    var_dump($redis->hGet('pen', 11));
+
+    exit;
+
+    $redis->hSet('pen', 1, '铅笔');
+    $redis->hSet('pen', 2, '圆珠笔');
+    $redis->hSet('pen', 3, '钢笔');
+
+
+    $openData = $redis->hGetAll('pen');
+
+    var_dump($openData);
+
+    exit;
+
+
+    printf("1 是否存在于 pen  %s <br>", $redis->hExists('pen', '1'));
+
+    printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
+
+    $redis->hSet('pen', 5, '毛笔');
+
+    printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
+
+    printf("4 没有在 pen 添加返回 %s <br>", $redis->hSet('pen', 4, '画笔'));
+
+    printf("1 存在于 pen 再次添加会出现 %s <br>", $redis->hSet('pen', 1, '铅笔======'));
+
+
+    $openData = $redis->hGetAll('pen');
+
+    var_dump($openData);
+
+
+    exit;
+    var_dump($this->_post('username'));
+
+    var_dump($_POST);
+
+    $t = Rsa::Encrypt('song', JSPHP_PWD_PUBLIC, TRUE);
+
+    var_dump($t);
+
+    echo Rsa::Decrypt($t, JSPHP_PWD_PRIVKEY, TRUE);
+    exit;
+    // $d=Rsa::Decrypt('CDAlyDR3R/lq35XcfbefSyoOokTSwHFHE1Dx9tWsUMA51BJ003nPWZLfQPq3VbMr7mOMEDbU72OkSo4SfaTA6jEjG+LkpkgzaN5mJbNWGZ+QD1H1hgDIHl93xIbU7VQO9bMUwqN810eagDDOICH124vhtj5k7hlKUx+zXBfEYts=', JSPHP_PWD_PRIVKEY);
+
+    // var_dump($d);
+    exit;
+
+
+    print_r($_GET);
+    print_r($_POST);
+
+    //echo AESEncrypt('song',COOKIE_KEY);
+    //
+    //
+    //echo "\n";
+    //
+    //echo Rsa::Encrypt('song',JSPHP_PWD_PUBLIC);
+    //
+
 
     exit;
   }

@@ -9,27 +9,27 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
-class RoleService extends BaseService {
+class ExportdataService extends BaseService {
 
   /**
-   * 获取权限列表 分页
+   * 获取列表 分页
    * @param array $where
    * @param int $page_num <number>
    * @param int $page_size <number>
    */
   public function getListPage(array $where, $field = '*', $page_num, $page_size) {
-    $result = $this->roleModel->getListPage($where, $field, $page_num, $page_size);
+    $result = $this->exportdataModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 
   /**
-   * 获取栏目列表
+   * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
   public function getList($where, $field = '*') {
-    $result = $this->roleModel->getList($where, $field);
+    $result = $this->exportdataModel->getList($where, $field);
     return $this->show($result);
   }
 
@@ -42,7 +42,7 @@ class RoleService extends BaseService {
     $data = [
       'title' => $title
     ];
-    $lastInsertId = $this->roleModel->insert($data);
+    $lastInsertId = $this->exportdataModel->insert($data);
     if ($lastInsertId) {
       $data['id'] = $lastInsertId;
       return $this->show($data);
@@ -53,16 +53,12 @@ class RoleService extends BaseService {
   }
 
   /**
-   * 删除一个角色
+   * 删除一条数据
    * @param int $id <require|number> id
    */
   public function delete($id) {
-    $result = $this->roleModel->roleDelete($id);
-    if (isset($result['type'])) {
-      showApiException('请先删除此分组下的用户，再删除分组', StatusCode::HAS_MANAGE);
-    } else {
-      return $result > 0 ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
-    }
+    $result = $this->exportdataModel->delete($id);
+    return $result > 0 ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
   /**
@@ -72,26 +68,9 @@ class RoleService extends BaseService {
    * @return mixed
    */
   public function getOne($id, $fileds = '*') {
-    $result = $this->roleModel->getOne($id, $fileds);
+    $result = $this->exportdataModel->getOne($id, $fileds);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
-  /**
-   * 分组更新数据
-   * @param int $id <require|number> id
-   * @param string $title <require> 名称
-   * @return array mixed 返回用户数据
-   */
-
-  public function update($id, $title) {
-    $data = [
-      'title' => $title
-    ];
-    $result = $this->roleModel->update($id, $data);
-    if ($result) {
-      $data['id'] = $id;
-    }
-    return $result ? $this->show($data) : $this->show([]);
-  }
 
 }

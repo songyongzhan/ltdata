@@ -20,7 +20,13 @@ class ManageModel extends BaseModel {
    * @return array|bool code 1 登录成功   0 密码错误  -1 用户不存在
    */
   public function login($username, $password, $field = ['*']) {
-    $login = $this->getOne(['username' => $username, 'password' => $password], $field);
+    $login = $this->getOne(
+      [
+        getWhereCondition('username', $username),
+        getWhereCondition('password', $password)
+      ]
+      , $field);
+
     if ($login) {
       if ($login['password'] == $password) {
         unset($login['password']);
@@ -39,7 +45,7 @@ class ManageModel extends BaseModel {
    * 根据用户ID得到验证token的数据
    */
   public function check_token($manage_id) {
-    $result = $this->getOne(['id' => $manage_id], ['id', 'token', 'timeout']);
+    $result = $this->getOne([getWhereCondition('id', $manage_id)], ['id', 'token', 'timeout']);
     return $result;
   }
 
@@ -52,7 +58,6 @@ class ManageModel extends BaseModel {
   public function update_token_timeout($manage_id, $timeout) {
     return $this->update($manage_id, ['timeout' => $timeout]);
   }
-
 
 
   /**

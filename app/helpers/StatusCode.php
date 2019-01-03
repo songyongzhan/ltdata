@@ -25,7 +25,7 @@ class StatusCode {
   const DATA_NOT_EXISTS = API_SUCCESS; //数据不存在
   const NO_DATA_CHANGE = 42402409; //没有数据被改变
   const PARAMS_ERROR = 42000409; //请求参数异常
-
+  const URL_MENU_DENIED = 42016409; //您没有权限访问此栏目
   const INSERT_FAILURE = 43501409; //数据插入失败
 
   const FILE_NOT_EXISTS = 55801409; //目录或文件不存在
@@ -42,6 +42,8 @@ class StatusCode {
   const INCONSISTENT_PASSWORD = 42019409;//两次输入密码不一致
   const PASSWORD_ERROR = 42020409; //密码输入错误
   const CANNOT_EDIT_LDAP_PASSWORD = 42021409;//系统不能修改域名密码
+  const PLEASE_LOGIN = 42022409;//请登录
+  const CODE_ERROR = 42023409; //验证码输入错误
 
 
   /**
@@ -53,7 +55,7 @@ class StatusCode {
 
     $data = [
       42000409 => '请求参数异常',
-      42001409 => '您没有访问权限',
+      42001409 => '您没有访问权限 用户不存在',
       42002409 => '密码不能为空',
       42003409 => '用户名不能为空',
       42004409 => '注册失败',
@@ -66,10 +68,12 @@ class StatusCode {
       42012409 => '此用户已存在，不能重复添加',
       42014409 => '目录不可写',
       42015409 => '状态码缓存文件生成失败',
+      42016409 => '您没有权限访问此栏目',
       42019409 => '密码与确认密码不一致',
       42020409 => '旧密码不正确',
       42021409 => '系统不能修改域控密码',
       42202409 => '网络环境发生变化',
+      42022409 => '请登录',
       42301409 => 'USERTOKEN 不存在',
       42302409 => '登录超时，请重新登录',
       42303409 => 'token错误',
@@ -78,6 +82,7 @@ class StatusCode {
       43501409 => '数据添加失败',
       55801405 => '目录或文件不存在',
       55802405 => '接口目录异常',
+      42023409 => '验证码输入错误'
     ];
 
     return isset($data[$code]) ? $data[$code] : '';

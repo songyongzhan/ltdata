@@ -10,10 +10,10 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
-class MadeController extends ApiBaseController {
-  
+class ExportdataController extends ApiBaseController {
+
   /**
-   * 获取生产地列表
+   * 获取关区列表
    * @return mixed
    */
   public function getListAction() {
@@ -21,6 +21,7 @@ class MadeController extends ApiBaseController {
     $page_size = $this->_post('page_size', PAGESIZE);
     $page_num = $this->_post('page_num', 1);
     $title = $this->_post('title', '');
+
 
     $rules = [
       ['condition' => 'like',
@@ -32,53 +33,47 @@ class MadeController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->madeService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->exportdataService->getListPage($where, '*', $page_num, $page_size);
     return $result;
   }
 
+
+  public function searchAction() {
+
+
+  }
+
   /**
-   * 添加生产地
+   * 添加出口数据
    * @param string $title <POST> 名称
    * @return array
    */
   public function addAction() {
     $title = $this->_post('title');
-    $result = $this->madeService->add($title);
+    $result = $this->exportdataService->add($title);
     return $result;
   }
 
-  /**
-   * 更新生产地
-   * @param string $title <POST> 名称
-   * @param string $id <POST> id
-   * @return array
-   */
-  public function updateAction() {
-    $title = $this->_post('title');
-    $id = $this->_post('id');
-    $result = $this->madeService->update($id, $title);
-    return $result;
-  }
 
   /**
-   * 得到一个生产地信息
+   * 得到一个出口数据信息
    * @param int $id <POST> 用户id
    * @return array|mixed
    */
   public function getOneAction() {
     $id = $this->_post('id');
-    $result = $this->madeService->getOne($id);
+    $result = $this->exportdataService->getOne($id);
     return $result;
   }
 
   /**
-   * 生产地删除
+   * 出口数据删除
    * @param string $id <POST> 数据id ，如果删除多个，请使用逗号分隔
    * @return 删除数据的id
    */
   public function deleteAction() {
     $id = $this->_post('id');
-    $result = $this->madeService->delete($id);
+    $result = $this->exportdataService->delete($id);
     return $result;
   }
 

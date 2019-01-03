@@ -37,5 +37,35 @@ class Role_accessService extends BaseService {
     return $result ? $this->show($result) : $this->show([]);
   }
 
+  /**
+   * 验证当前用户是否有权限登录
+   * @param $url
+   */
+  public function checkUrl($url) {
+
+    $roleResult = $this->menuService->getList([], 1);
+    $roleResult = $roleResult['result'];
+
+    $checkUrlData = [];
+    foreach ($roleResult as $val) {
+      $checkUrlData[$val['id']] = $val['url'];
+    }
+
+    $checkUrlData = array_change_value_case($checkUrlData);
+
+    $is_have = FALSE;
+
+    if (isUInt($url) && $url > 0) {
+      //如果是扩展权限这里不能验证，需要使用url去判断
+      $is_have = array_key_exists(intval($url), $checkUrlData);
+    } else {
+      $url = strtolower($url);
+      $is_have = in_array($url, $checkUrlData);
+    }
+
+    return $is_have ? $this->show(['success' => 1]) : $this->show(['success' => 0]);
+
+  }
+
 
 }

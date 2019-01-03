@@ -25,7 +25,7 @@ class UserModel extends BaseModel {
   }
 
   protected function _Decrypt($data) {
-    return Rsa::Decrypt($data, RESTHUB_CLIENT_PRIVKEY);
+    return Rsa::Decrypt($data, JSPHP_PWD_PRIVKEY);
   }
 
 

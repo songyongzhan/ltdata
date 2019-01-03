@@ -20,6 +20,7 @@ class MenuController extends ApiBaseController {
    * @return mixed
    */
   public function getListAction() {
+
     $where = [];
     $useType = $this->_post('use_type', 0);
     $result = $this->menuService->getList($where, $useType);
@@ -40,10 +41,10 @@ class MenuController extends ApiBaseController {
   public function addAction() {
     $data = [
       'title' => $this->_post('title'),
-      'pid' => $this->_post('pid'),
+      'pid' => $this->_post('pid', ''),
       'url' => $this->_post('url'),
-      'ext' => $this->_post('ext'),
-      'relation_url' => $this->_post('relation_url'),
+      'ext' => $this->_post('ext', ''),
+      'relation_url' => $this->_post('relation_url', ''),
       'type_id' => $this->_post('type_id', 1),
       'sort_id' => $this->_post('sort_id', 0),
       'status' => $this->_post('status')

@@ -11,8 +11,10 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class ManageService extends BaseService {
 
-
   /**
+   *
+   * 这是另外一种写法
+   *
    * @param string $user <require>
    * @param string $password <require>
    * @param int $type <require|lt:25>
@@ -23,7 +25,7 @@ class ManageService extends BaseService {
 
   }
 
-  const FIELD = ['id', 'username', 'fullname', 'timeout', 'status', 'department', 'ext', 'last_logintime', 'remarks', 'updatetime', 'createtime'];
+  const FIELD = ['id', 'username', 'fullname', 'mobile', 'email', 'timeout', 'status', 'department', 'ext', 'last_logintime', 'remarks', 'updatetime', 'createtime'];
 
   /**
    * 用户添加
@@ -107,16 +109,21 @@ class ManageService extends BaseService {
    * 用户登录
    * @param string $username <require> 用户名
    * @param string $password <require> 密码
+   * @param string $code <require> 验证码
    * @return array mixed 返回用户信息
    */
-  public function login($username, $password) {
+  public function login($username, $password, $code) {
+    $this->checkCode(getClientIP(), $code);
+
     $password = password_encrypt($password);
-    $result = $this->manageModel->login($username, $password, self::FIELD);
+    $loginField = array_merge(['password', 'isadmin'], self::FIELD);
+    unset($loginField['timeout'], $loginField['ext'], $loginField['createtime'], $loginField['updatetime']);
+    $result = $this->manageModel->login($username, $password, $loginField);
     if ($result['login']) {
       $token = create_token($result['id']);
       $timeout = time() + TOKEN_EXPIRE_LONG;
-      $this->manageModel->update($result['id'], ['token' => $token, 'timeout' => $timeout]);
-
+      //更新token
+      $this->manageModel->update($result['id'], ['token' => $token, 'timeout' => $timeout, 'last_logintime' => time()]);
       $token_data = [
         'remote_ip' => getClientIP(),
         'src_token' => $token,
@@ -124,7 +131,8 @@ class ManageService extends BaseService {
         'isadmin' => $result['isadmin'],
         'username' => $result['username']
       ];
-      $result['token'] = AESEncrypt(jsonencode($token_data), COOKIE_KEY);
+      $result['token'] = AESEncrypt(jsonencode($token_data), COOKIE_KEY, TRUE);
+      unset($result['login']);
       return $this->show($result);
     } else if ($result['status'] === -1)
       return $this->show([], StatusCode::USER_NOT_EXISTS);
@@ -133,24 +141,21 @@ class ManageService extends BaseService {
   }
 
   /**
-   * 验证token是否存在
-   * @param array $token_data token数值
-   * @param int $manage_id <require|number> 用户ID
-   * @param string $token <require> token验证
+   * 验证token是否通过
    * @return bool
    */
-  public function check_token($token_data) {
-    $result = $this->manageModel->check_token($token_data['manage_id']);
+  public function check_token($tokenData) {
+    $result = $this->manageModel->check_token($tokenData['manage_id']);
     $flag = FALSE;
     if ($result) {
       //判断token是否过期  token是否一致
-      if ($result['token'] == $token_data['token'] && time() < $result['timeout']) {
+      if ($result['token'] == $tokenData['src_token'] && time() < $result['timeout']) {
         $timeout = time() + TOKEN_EXPIRE_LONG;
         $this->_updateTokenTimeout($result['id'], $timeout);
         $flag = TRUE;
-        $data['token'] = $token_data['src_token'];
+        $data['token'] = $tokenData['src_token'];
         $data['timeout'] = $timeout;
-        $data['manage_id'] = $token_data['manage_id'];
+        $data['manage_id'] = $tokenData['manage_id'];
       }
     }
     $data['success'] = $flag;
@@ -242,6 +247,35 @@ class ManageService extends BaseService {
     $result = $this->manageModel->update($id, $data);
 
     return $result ? $this->show($data) : $this->show([]);
+  }
+
+  /**
+   * 获取验证码
+   * @param string $ip <require> ip
+   * @return array
+   */
+  public function getCode($ip) {
+    $code = getRandomStr(4);
+    $this->redisModel->redis->setStr('code_ip' . ip_long($ip), $code, TRUE);
+    return $this->show(['code' => $code]);
+  }
+
+  /**
+   * 验证输入的验证码是否成功
+   * @param string $ip <require> ip
+   * @param string $code <require> 验证码
+   * @return array
+   * @throws Exception
+   */
+  public function checkCode($ip, $code) {
+
+    $result = $this->redisModel->redis->getStr('code_ip' . ip_long($ip));
+
+
+    if (!$result || (strtolower($result) != strtolower($code)))
+      showApiException('验证码错误请重新输入', StatusCode::CODE_ERROR);
+
+    return $this->show(['success' => 1]);
   }
 
 

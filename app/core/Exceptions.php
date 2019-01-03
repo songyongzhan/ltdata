@@ -30,14 +30,25 @@ class Exceptions extends Yaf_Exception {
     if (isAjax())
       showJsonMsg(API_FAILURE, API_FAILURE_MSG);
 
-    is_null($template) || $this->exceptionFileName = $template;
+
+
 
     $message = $exception->getMessage();
     if (empty($message)) {
       $message = '(null)';
     }
 
+    if (isCli()) {
+      $message = "\t" . (is_array($message) ? implode("\n\t", $message) : $message);
+      $message.="\n\tfile:".$exception->getFile();
+      $message.="\n\tline:".$exception->getLine();
+      $message.="\n\ttrance:".var_export($exception->getTrace(),true);
+      echo $message."\n";
+      echo "\n";
+      exit;
+    }
 
+    is_null($template) || $this->exceptionFileName = $template;
     ob_start();
     $file = $this->errorTemplatePath . DS . trim($this->exceptionFileName, '/');
     file_exists($file) && require_once $file;
@@ -72,6 +83,9 @@ class Exceptions extends Yaf_Exception {
 
     isEnv('product') && set_status_header($status_code);
     //set_status_header($status_code);
+
+    if(isAjax())
+      showJsonMsg(API_FAILURE,$message);
 
     $message = '<p>' . (is_array($message) ? implode('</p><p>', $message) : $message) . '</p>';
     ob_start();

@@ -16,6 +16,7 @@ class ProxyModel {
   private        $_cachePath       = APP_PATH . DS . 'data/cache/validate';
   private static $_validateContent = NULL;
   const IGNORE = ['BaseModel'];
+  const VALIDATE = 'service'; //只是过滤service
 
   public function __construct($obj, $name = NULL) {
     $this->_classname = is_null($name) ? get_class($obj) : $name;
@@ -39,11 +40,12 @@ class ProxyModel {
 
   public function __call($method, $params) {
 
-    if ($method[0] !== '_' && method_exists($this->_instance, $method)) {
+    if ($method[0] !== '_' && method_exists($this->_instance, $method) && strpos(strtolower(get_class($this->_instance)), self::VALIDATE)) {
 
       ENVIRONMENT == 'develop' && logMessage('debug', '自动验证:' . $this->_classname . '->' . $method . '() 参数:' . jsonencode($params));
 
       $reflection = new Reflec($this->_instance);
+
       $validateFile = $this->_cachePath . DS . 'form_' . $this->_classname . '.' . Tools_Config::getConfig('application.ext');
 
       if (file_exists($validateFile) && (filemtime($validateFile) > $reflection->getFileTime())) {
@@ -64,14 +66,7 @@ class ProxyModel {
         if (TRUE !== ($result = validate($methodRules, $data, $rules['msg'][$method]))) {
           showApiException($result['errMsg']);
         }
-        /* P($methodRules);
-        $msg = $rules['msg'][$method];
-        $validate = new Validate($methodRules, $msg);
-        $result = $validate->check($this->_combineParam($rules['params'][$method], $params));
-        P($msg);
-        P($this->_combineParam($rules['params'][$method], $params));
-        P($result, 'var_dump');
-        P($validate->getError());*/
+
 
       }
     }

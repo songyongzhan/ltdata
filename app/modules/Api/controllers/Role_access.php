@@ -17,7 +17,7 @@ class Role_accessController extends ApiBaseController {
    * 获取到对应的栏目列表
    * 无需传递参数，直接调用
    */
-  public function getAccessMenu() {
+  public function getAccessMenuAction() {
     $result = $this->role_accessService->get_access_menu();
     return $result;
   }
@@ -28,7 +28,7 @@ class Role_accessController extends ApiBaseController {
    * (显示页面分配权限使用)
    * @return mixed
    */
-  public function viewRoleAccess() {
+  public function viewRoleAccessAction() {
     $manage_id = $this->_post('manage_id');
     $result = $this->role_accessService->viewRoleAccess($manage_id);
     return $result;
@@ -39,7 +39,7 @@ class Role_accessController extends ApiBaseController {
    * $key=>$menu_id   $val=>url
    * @return mixed
    */
-  public function getRoleAccess() {
+  public function getRoleAccessAction() {
     $type_id = 2; //方法
     $result = $this->role_accessService->get_access_menu($type_id);
     return $result;
@@ -51,7 +51,7 @@ class Role_accessController extends ApiBaseController {
    * @param string $url <POST> 需要验证的url
    * @return mixed
    */
-  public function checkUrl() {
+  public function checkUrlAction() {
     $url = $this->_post('url');
     $result = $this->role_accessService->checkUrl($url);
     return $result;
@@ -64,7 +64,7 @@ class Role_accessController extends ApiBaseController {
    * @param int $role_id <POST> 分组id
    * @return mixed 成功或false
    */
-  public function update() {
+  public function updateAction() {
     $menu_ids = $this->_post('menu_ids');
     $role_id = $this->_post('role_id');
     $result = $this->role_accessService->update($role_id, $menu_ids);

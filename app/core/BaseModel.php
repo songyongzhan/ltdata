@@ -44,7 +44,8 @@ class BaseModel extends CoreModel {
    * 如果设置true 则所有表中必须包含此字段，否则报错
    * @var bool
    */
-  protected $autoaddtime = TRUE;
+  protected $autoaddtime = DB_AUTOADDTIME;
+
 
   /**
    * 是否真实删除，默认为false  逻辑删除
@@ -58,7 +59,7 @@ class BaseModel extends CoreModel {
 
   protected function _init() {
     $this->_db = Yaf_Registry::has('db') ? Yaf_Registry::get('db') : NULL;
-    $this->table = $this->prefix . strtolower(substr(get_class($this), 0, -5));
+    $this->table = is_null($this->table) ? $this->prefix . strtolower(substr(get_class($this), 0, -5)) : $this->table;
     $this->autoaddtime = Tools_Config::getConfig('db.mysql.auto_addtime');
     $this->prefix = Tools_Config::getConfig('db.mysql.prefix');
   }
@@ -344,9 +345,6 @@ class BaseModel extends CoreModel {
   public function _transaction_status_check() {
     return $this->_db->_transaction_status_check();
   }
-
-
-
 
 
   public function chooseConnection($name) {

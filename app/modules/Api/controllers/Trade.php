@@ -16,7 +16,7 @@ class TradeController extends ApiBaseController {
    * 获取贸易方式列表
    * @return mixed
    */
-  public function getList() {
+  public function getListAction() {
     //如果传递了page_size 就分页
     $page_size = $this->_post('page_size', PAGESIZE);
     $page_num = $this->_post('page_num', 1);
@@ -41,7 +41,7 @@ class TradeController extends ApiBaseController {
    * @param string $title <POST> 名称
    * @return array
    */
-  public function add() {
+  public function addAction() {
     $title = $this->_post('title');
     $result = $this->tradeService->add($title);
     return $result;
@@ -53,7 +53,7 @@ class TradeController extends ApiBaseController {
    * @param string $id <POST> id
    * @return array
    */
-  public function update() {
+  public function updateAction() {
     $title = $this->_post('title');
     $id = $this->_post('id');
     $result = $this->tradeService->update($id, $title);
@@ -65,7 +65,7 @@ class TradeController extends ApiBaseController {
    * @param int $id <POST> 用户id
    * @return array|mixed
    */
-  public function getOne() {
+  public function getOneAction() {
     $id = $this->_post('id');
     $result = $this->tradeService->getOne($id);
     return $result;
@@ -76,7 +76,7 @@ class TradeController extends ApiBaseController {
    * @param string $id <POST> 数据id ，如果删除多个，请使用逗号分隔
    * @return 删除数据的id
    */
-  public function delete() {
+  public function deleteAction() {
     $id = $this->_post('id');
     $result = $this->tradeService->delete($id);
     return $result;

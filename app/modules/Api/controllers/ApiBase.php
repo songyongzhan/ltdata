@@ -38,9 +38,10 @@ class ApiBaseController extends BaseController {
       'message' => empty($msg) ? '' : $msg,
       'result' => $result ?: []
     ];
-    //header('Content-Type: application/json; charset=utf-8');
-    header('Content-Type:text/plain; charset=utf-8');
+    header('Content-Type: application/json; charset=utf-8');
+    //header('Content-Type:text/plain; charset=utf-8');
     echo jsonencode($data);
+    exit;
   }
 
   /**

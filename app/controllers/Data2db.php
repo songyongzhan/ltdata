@@ -23,6 +23,9 @@ class Data2dbController extends BaseController {
   ];
 
 
+  const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
+
+
   /**
    * php index.php index/data2db/import
    *
@@ -30,57 +33,36 @@ class Data2dbController extends BaseController {
    */
   public function importAction() {
 
-    var_dump($this->exportdataModel);
-    exit;
 
     Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
 
     foreach (glob(APP_PATH . '/data/uploads/csv/*.csv') as $file) {
 
+      debugMessage(" $file 开始自动导入...");
 
-      //debugMessage("$file 开始自动导入...");
-      $csv = new helperCsv($file, 3, FALSE);
+      $csv = new helperCsv($file, 0, FALSE);
 
-
-
-      var_dump($this->exportdataModel);
-      exit;
-
-      $exportdataModel->startTransaction();
+      $this->cliExportdataModel->startTransaction();
       try {
         foreach ($csv as $row => $data) {
           if (!$data) continue;
 
           $this->format($data);
-          $result = $exportdataModel->import($data);
+
+          $result = $this->cliExportdataModel->import($data);
           if (!$result) {
             debugMessage("$file 第 $row 行，导入出错...");
-
             break;
           }
         }
-        $exportdataModel->commit();
+        $this->cliExportdataModel->commit();
         debugMessage("$file 导入成功...");
         $this->mvFiletoDist($file);
 
       } finally {
-        $exportdataModel->_transaction_status_check();
+        $this->cliExportdataModel->_transaction_status_check();
       }
-
-
-      /*foreach ($csv as $row => $data) {
-        if (!$data) continue;
-
-        $this->format($data);
-        var_dump($data);
-
-      }*/
-
-      //$this->mvFiletoDist($file);
-      //debugMessage("$file 导入成功...");
-
     }
-
 
     die();
   }
@@ -105,17 +87,26 @@ class Data2dbController extends BaseController {
 
     $data = array_combine(self::FIELDS, $data);
 
+
+    //从这里进行一系列替换  文字到数字的转换
+
+    $data['ciq'] = $this->cliExportdataModel->ciq($data['ciq']);
+    $data['country'] = $this->cliExportdataModel->country($data['country']);
+    $data['trade'] = $this->cliExportdataModel->trade($data['trade']);
+    $data['transport'] = $this->cliExportdataModel->transport($data['transport']);
+    $data['madein'] = $this->cliExportdataModel->madein($data['madein']);
+
+
     //$data['export_data'] = strtotime();
     $data['export_date'] = strtotime(str_replace('//', '-', $data['export_date']));
-    $data['specification'] = $data['specification_title'];
+
+    //匹配一个正则表达式规格，存放于数据库 用于模糊搜索
+    if (preg_match_all(self::SEPCIFICATION_PATTERN, $data['specification_title'], $result)) {
+      $data['specification'] = isset($result[0][0]) ? $result[0][0] : '';
+    } else
+      $data['specification'] = '';
+
     $data['status'] = 1;
-
-    //正则处理
-
-    //'specification',
-    //'status'
-
-
   }
 
 

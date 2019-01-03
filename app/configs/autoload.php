@@ -6,6 +6,8 @@
  * Time: 14:11
  * Email: 574482856@qq.com
  */
+
+date_default_timezone_set('PRC');
 require_once APP_PATH . DIRECTORY_SEPARATOR . 'app/configs/api.php';
 /*foreach (glob(__DIR__ . '/*.php') as $file) {
   if ($file != __FILE__)

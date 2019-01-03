@@ -1,0 +1,337 @@
+2018/12/29 09:37:48 [error] 2413#0: *5 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:678
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(47): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2018/12/29 09:37:48 [error] 2413#0: *5 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:678
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(47): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2018/12/29 09:38:14 [error] 2413#0: *5 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:678
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(47): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2018/12/29 09:39:47 [error] 2413#0: *10 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:678
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(47): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 678" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2018/12/29 09:43:53 [error] 2413#0: *32 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/index/index/detail"
+2018/12/29 09:50:14 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:47 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:48 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:48 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:48 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:48 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:49 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:49 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:50:57 [error] 2413#0: *44 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/menu/getlist"
+2018/12/29 09:54:15 [error] 2413#0: *83 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/menu/getlist"
+2018/12/29 09:54:44 [error] 2413#0: *83 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:54:57 [error] 2413#0: *83 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 09:55:06 [error] 2413#0: *83 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:681
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 681" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.162:8060/api/exportdata/getlist"
+2018/12/29 20:11:50 [error] 2424#0: *31 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 70
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:70
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(79): logMessage('debug', 'autoload...Exce...')
+#1 /usr/local/nginx/html/ltdata/app/configs/autoload.php(38): debugMessage('autoload...Exce...')
+#2 [internal function]: {closure}('Exceptions')
+#3 /usr/local/nginx/html/ltdata/app/core/Common.php(70): spl_autoload_call('Exceptions')
+#4 /usr/local/nginx/html/ltdata/app/core/Common.php(79): logMessage('debug', 'autoload...Tool...')
+#5 /usr/local/nginx/html/ltdata/app/configs/autoload.php(38): debugMessage('autoload...Tool...')
+#6 [internal function]: {closure}('Tools_Config')
+#7 /usr/local/nginx/html/ltdata/app/Bootstrap.php(38): spl_autoload_call('Tools_Config')
+#8 [internal function]: Bootstrap->_initDatabase(Object(Yaf_Dispatcher))
+#9 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#10 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/cor" while reading response header from upstream, client: 192.168.199.197, server: localhost, request: "POST /api/manage/getone HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.199.198:8060"
+2018/12/29 21:56:00 [error] 2424#0: *89 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 684
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:684
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(33): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 684" while reading response header from upstream, client: 192.168.199.197, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.199.198:8060", referrer: "http://192.168.199.198:8060/api/menu/getone"
+2019/01/01 07:50:51 [error] 3836#0: *75 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/checkCode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.207:812/index/manage/login"
+2019/01/01 07:55:47 [error] 3836#0: *79 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/checkCode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.207:812/index/manage/login"
+2019/01/01 08:00:57 [error] 3836#0: *81 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/checkCode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.207:812/index/manage/login"
+2019/01/01 08:01:11 [error] 3836#0: *81 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/checkCode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.207:812/index/manage/login"
+2019/01/01 08:03:58 [error] 3836#0: *94 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/checkCode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060", referrer: "http://192.168.2.207:812/index/manage/login"
+2019/01/01 08:07:56 [error] 3836#0: *96 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:08:25 [error] 3836#0: *98 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', '\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(16): debugMessage('\xE6\x89\xA7\xE8\xA1\x8C\xE8\xB7\xA8\xE5\x9F\x9F')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:09:33 [error] 3836#0: *104 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', 'is ajax')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(15): debugMessage('is ajax')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:09:34 [error] 3836#0: *106 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', 'is ajax')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(15): debugMessage('is ajax')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:09:45 [error] 3836#0: *108 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', 'is ajax')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(15): debugMessage('is ajax')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:09:51 [error] 3836#0: *110 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', 'is ajax')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(15): debugMessage('is ajax')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/01 08:09:52 [error] 3836#0: *112 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:85
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/Common.php(94): logMessage('debug', 'is ajax')
+#1 /usr/local/nginx/html/ltdata/app/plugins/Cros.php(15): debugMessage('is ajax')
+#2 [internal function]: CrosPlugin->routerStartup(Object(Yaf_Request_Http), Object(Yaf_Response_Http))
+#3 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->run()
+#4 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 85" while reading response header from upstream, client: 192.168.2.207, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.2.162:8060"
+2019/01/02 06:06:25 [error] 3836#0: *803 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 707
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:707
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 707" while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.2:8060/"
+2019/01/02 07:39:02 [error] 3836#0: *961 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:02 [error] 3836#0: *963 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:06 [error] 3836#0: *971 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:10 [error] 3836#0: *973 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:10 [error] 3836#0: *975 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:12 [error] 3836#0: *977 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:12 [error] 3836#0: *979 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *981 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *983 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *985 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *987 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *989 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:13 [error] 3836#0: *991 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 07:39:24 [error] 3836#0: *993 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:24 [error] 3836#0: *995 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:42 [error] 3836#0: *997 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:42 [error] 3836#0: *999 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:45 [error] 3836#0: *1001 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:45 [error] 3836#0: *1003 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:47 [error] 3836#0: *1005 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 07:39:47 [error] 3836#0: *1007 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "OPTIONS /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060"
+2019/01/02 08:05:47 [error] 3836#0: *1069 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 08:06:31 [error] 3836#0: *1088 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 08:06:39 [error] 3836#0: *1090 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 08:06:39 [error] 3836#0: *1092 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 20:14:43 [error] 3836#0: *1094 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 20:14:43 [error] 3836#0: *1096 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.20.10.10, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "172.20.10.2:8060", referrer: "http://172.20.10.10:812/index/manage/getlist?menuid=3"
+2019/01/02 20:21:14 [error] 3836#0: *1099 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:21:14 [error] 3836#0: *1101 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:23:23 [error] 3836#0: *1103 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:23:23 [error] 3836#0: *1105 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:23:35 [error] 3836#0: *1107 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/menu/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:23:35 [error] 3836#0: *1109 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.104:812/index/manage/getlist?menuid=3"
+2019/01/02 20:24:04 [error] 3836#0: *1111 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /api/manage/getList HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060"
+2019/01/02 20:24:40 [error] 3836#0: *1113 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060"
+2019/01/02 20:25:40 [error] 3836#0: *1113 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.105:8060/"
+2019/01/02 20:26:24 [error] 3836#0: *1116 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.105:8060/"
+2019/01/02 20:33:14 [error] 2370#0: *1 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 707
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:707
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(32): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 707" while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060", referrer: "http://192.168.61.105:8060/index.php"
+2019/01/02 20:41:32 [error] 2370#0: *6 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Call to undefined function difine() in /usr/local/nginx/html/ltdata/app/configs/api.php:104
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/configs/autoload.php(9): require_once()
+#1 /usr/local/nginx/html/ltdata/vendor/composer/autoload_real.php(66): require('/usr/local/ngin...')
+#2 /usr/local/nginx/html/ltdata/vendor/composer/autoload_real.php(56): composerRequire1fac7fb9d4f1e43392d516921f35baa8('a87d1ab742df500...', '/usr/local/ngin...')
+#3 /usr/local/nginx/html/ltdata/vendor/autoload.php(7): ComposerAutoloaderInit1fac7fb9d4f1e43392d516921f35baa8::getLoader()
+#4 /usr/local/nginx/html/ltdata/index.php(7): require_once('/usr/local/ngin...')
+#5 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/configs/api.php on line 104" while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "POST /api/manage/getcode HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.105:8060"

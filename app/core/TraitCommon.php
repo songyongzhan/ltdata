@@ -12,15 +12,15 @@ trait TraitCommon {
   private static $_session = [];
 
   public function _get($name, $default = NULL, $callback = 'isStr') {
-    return $this->_getParam(getRequest()->get($name), $default, $callback);
+    return $this->_getParam(getGet($name), $default, $callback);
   }
 
   public function _post($name, $default = NULL, $callback = 'isStr') {
-    return $this->_getParam(getRequest()->getPost($name), $default, $callback);
+    return $this->_getParam(getPost($name), $default, $callback);
   }
 
   public function _server($name = '', $default = NULL, $callback = 'isStr') {
-    return $this->_getParam(getRequest()->getServer(empty($name) ? '' : strtoupper($name)), $default, $callback);
+    return $this->_getParam(getServer(empty($name) ? '' : 'HTTP_' . str_replace(['HTTP_', '-'], ['', '_'], strtoupper($name))), $default, $callback);
   }
 
   /**
@@ -124,8 +124,8 @@ trait TraitCommon {
   }
 
   private function _getParam($value, $default, $callback) {
-    empty($value) && $value = $default;
-    if ($value === NULL) return $value;
+    $value === '' && $value = $default;
+    if (is_null($value)) return '';
     if (isStr($callback)) {
       return function_exists($callback) && $callback === 'isStr' ? trim($value) : (function_exists($callback) ? $callback($value) : $value);
     } else if (is_callable($callback))

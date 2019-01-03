@@ -8,8 +8,16 @@
  */
 class IndexController extends BaseController {
 
-  public function detailAction() {
+  public function detailAction($age='') {
 
+
+
+
+     var_dump($_SERVER);
+     var_dump($this->getRequest());
+     var_dump($age);
+     echo 'detail';
+     exit;
     //url
 
     //http://k.yt99.com/article/thumb/201809/20/thumb_1015395ba302cb024232ataQm.jpg!94

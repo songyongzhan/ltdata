@@ -9,10 +9,14 @@
 
 //项目相关函数
 
-function getToken() {
+function get_token() {
   $instance = getInstance();
-  $token = $instance->_server('X_Access_Token');
+  $token = $instance->_server('HTTP_X_Access_Token');
 
+  if (!$token && isPost())
+    $token = getInstance()->_post(POST_TRANSTION_ACCESS_TOKEN, '');
+
+  //$token = $instance->_server('X-Access-Token');
   return $token;
 }
 
@@ -27,13 +31,21 @@ function create_token($id = '') {
   return sha1($_token . $id);
 }
 
+function islogin() {
+  try {
+    if (get_client_token_data())
+      return TRUE;
+    else return FALSE;
+  } catch (Exceptions $e) {
+    return FALSE;
+  }
+}
 
-function getTokenData() {
-  $token = getToken();
+function get_client_token_data() {
+  $token = get_token();
   if (!$token)
     showApiException('TOKEN 为空', StatusCode::TOKEN_IS_EMPTY);
-
-  if ($data = AESDecrypt($token))
+  if ($data = AESDecrypt($token, COOKIE_KEY, TRUE))
     return jsondecode($data) ?: [];
   else
     showApiException('token传递错误', StatusCode::TOKEN_ERROR);
@@ -163,10 +175,6 @@ function sort_by_sort_id($arr, $sort_type = 'asc') {
   else
     usort($arr, 'menu_sort_cmp_desc');
   return $arr;
-}
-
-function get_client_token_data() {
-  return FALSE;
 }
 
 

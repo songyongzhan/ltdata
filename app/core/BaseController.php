@@ -35,7 +35,7 @@ class BaseController extends CoreController {
   public function assign($key, $val) {
     $this->getView()->assign($key, $val);
   }
-  
+
   public final function __set($name, $value) {
     (self::$_object)[$name] = $value;
   }
