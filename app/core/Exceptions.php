@@ -31,8 +31,6 @@ class Exceptions extends Yaf_Exception {
       showJsonMsg(API_FAILURE, API_FAILURE_MSG);
 
 
-
-
     $message = $exception->getMessage();
     if (empty($message)) {
       $message = '(null)';
@@ -40,10 +38,10 @@ class Exceptions extends Yaf_Exception {
 
     if (isCli()) {
       $message = "\t" . (is_array($message) ? implode("\n\t", $message) : $message);
-      $message.="\n\tfile:".$exception->getFile();
-      $message.="\n\tline:".$exception->getLine();
-      $message.="\n\ttrance:".var_export($exception->getTrace(),true);
-      echo $message."\n";
+      $message .= "\n\tfile:" . $exception->getFile();
+      $message .= "\n\tline:" . $exception->getLine();
+      $message .= "\n\ttrance:" . var_export($exception->getTrace(), TRUE);
+      echo $message . "\n";
       echo "\n";
       exit;
     }
@@ -63,6 +61,7 @@ class Exceptions extends Yaf_Exception {
     is_null($line) && $line = $this->getLine();
 
     debugMessage(sprintf("异常信息: 文件:%s 行号:%s 信息:%s", $file, $line, $message));
+
   }
 
   public function log_error($severity, $message = NULL, $file = NULL, $line = NULL) {
@@ -84,8 +83,8 @@ class Exceptions extends Yaf_Exception {
     isEnv('product') && set_status_header($status_code);
     //set_status_header($status_code);
 
-    if(isAjax())
-      showJsonMsg(API_FAILURE,$message);
+    if (isAjax())
+      showJsonMsg(API_FAILURE, $message);
 
     $message = '<p>' . (is_array($message) ? implode('</p><p>', $message) : $message) . '</p>';
     ob_start();

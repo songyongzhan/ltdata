@@ -68,7 +68,7 @@ class ExportdataService extends BaseService {
    * @return mixed
    */
   public function getOne($id, $fileds = '*') {
-    $result = $this->exportdataModel->getOne($id, $fileds);
+    $result = $this->exportdataModel->getExportOne($id, $fileds);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 

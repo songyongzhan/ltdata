@@ -119,11 +119,11 @@ if (!function_exists('getInstance')) {
 
       $file = $controllerPath . DS . $controllerName . '.' . Tools_Config::getConfig('application.ext');
 
-      //var_dump($file);exit;
+      //Wvar_dump($file);exit;
 
       if (file_exists($file))
         import($file);
-      else throw new Exceptions($file . ' file not exists', 500);
+      else throw new Exceptions($file . ' file not exists', API_FAILURE);
 
       $className = $controllerName . 'Controller';
 
@@ -280,6 +280,8 @@ if (!function_exists('_exception_handler')) {
   function _exception_handler($exception) {
     $_error = $_error = Yaf_Registry::get('exceptions');
     $_error->log_exception('error', 'Exception: ' . $exception->getMessage());
+
+    debugMessage('Trace:' . jsonencode($exception->getTrace()));
 
     isCli() OR set_status_header(500);
 

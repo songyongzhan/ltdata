@@ -13,6 +13,8 @@ class BaseModel extends CoreModel {
 
   use TraitCommon;
 
+  private static $_object = [];
+
   /**
    * @var MysqliDb
    */
@@ -46,6 +48,9 @@ class BaseModel extends CoreModel {
    */
   protected $autoaddtime = DB_AUTOADDTIME;
 
+  protected $output_time_format = FALSE;
+  //输入格式，默认为false 则时间戳输出，可以定义 Y-m-d H:i:s 格式化输出
+
 
   /**
    * 是否真实删除，默认为false  逻辑删除
@@ -62,6 +67,8 @@ class BaseModel extends CoreModel {
     $this->table = is_null($this->table) ? $this->prefix . strtolower(substr(get_class($this), 0, -5)) : $this->table;
     $this->autoaddtime = Tools_Config::getConfig('db.mysql.auto_addtime');
     $this->prefix = Tools_Config::getConfig('db.mysql.prefix');
+    if (!$this->output_time_format)
+      $this->output_time_format = (defined('DB_AUTOTIME_OUT_FORMAT') && DB_AUTOTIME_OUT_FORMAT) ? DB_AUTOTIME_OUT_FORMAT : FALSE;
   }
 
   /**
@@ -125,6 +132,12 @@ class BaseModel extends CoreModel {
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
     $result = $this->_db->getOne($this->table, $fileds);
+    if (isset($result['updatetime']) && $this->output_time_format)
+      $result['updatetime'] = date($this->output_time_format, $result['updatetime']);
+
+    if (isset($result['createtime']) && $this->output_time_format)
+      $result['createtime'] = date($this->output_time_format, $result['createtime']);
+
     $this->_logSql();
     return $result;
   }
@@ -148,6 +161,14 @@ class BaseModel extends CoreModel {
     $rowNum = [0, abs($maxSize)];
     $maxSize === 0 && $rowNum = NULL;
     $result = $this->_db->get($this->table, $rowNum, $fileds);
+    $result = array_map(function ($value) {
+      if (isset($value['updatetime']) && $this->output_time_format)
+        $value['updatetime'] = date($this->output_time_format, $value['updatetime']);
+
+      if (isset($value['createtime']) && $this->output_time_format)
+        $value['createtime'] = date($this->output_time_format, $value['createtime']);
+      return $value;
+    }, $result);
     $this->_logSql();
     return $result;
   }
@@ -185,6 +206,14 @@ class BaseModel extends CoreModel {
     $this->_db->orderBy($orderField, $orderType);
     $this->_db->pageLimit = $pageSize;
     $result = $this->_db->paginate($this->table, $pageNum, $fileds);
+    $result = array_map(function ($value) {
+      if (isset($value['updatetime']) && $this->output_time_format)
+        $value['updatetime'] = date($this->output_time_format, $value['updatetime']);
+
+      if (isset($value['createtime']) && $this->output_time_format)
+        $value['createtime'] = date($this->output_time_format, $value['createtime']);
+      return $value;
+    }, $result);
     $this->_logSql();
     return page_data($result, $this->_db->totalCount, $pageNum, $pageSize, $this->_db->totalPages);
   }
@@ -281,6 +310,14 @@ class BaseModel extends CoreModel {
   public function query($sql, $params = []) {
     if (empty($sql)) throw new InvalideException('sql param error.', 500);
     $result = $this->_db->rawQuery($sql, $params);
+    $result = array_map(function ($value) {
+      if (isset($value['updatetime']) && $this->output_time_format)
+        $value['updatetime'] = date($this->output_time_format, $value['updatetime']);
+
+      if (isset($value['createtime']) && $this->output_time_format)
+        $value['createtime'] = date($this->output_time_format, $value['createtime']);
+      return $value;
+    }, $result);
     $this->_querySqls[] = $this->getLastQuery();
     return $result;
   }
@@ -373,5 +410,36 @@ class BaseModel extends CoreModel {
     $this->table = $this->prefix . strtolower($table);
     return TRUE;
   }
+
+  /**
+   * 自动声明变量
+   * @param $name
+   * @return mixed|null
+   */
+  public final function __get($name) {
+    $value = NULL;
+    if (in_array($name, self::$_object) && is_callable((self::$_object)[$name]))
+      $value = (self::$_object)[$name]();
+    else if (in_array($name, self::$_object))
+      $value = (self::$_object)[$name];
+    else if (strpos($name, 'Model') || strpos($name, 'Service')) {
+      $nameClass = ucfirst($name);
+
+      if (class_exists($nameClass)) {
+        (strtolower(getRequest()->getModuleName()) != strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule'))) && checkInclude($nameClass);
+        $value = new ProxyModel(new $nameClass());
+        $this->$name = $value;
+      } else if (strpos($name, 'Model')) { //若调用model不存在，就new BaseModel并重新设置table
+        if ((strtolower(getRequest()->getModuleName()) != strtolower(Tools_Config::getConfig('application.dispatcher.defaultModule')))) {
+          $baseModel = new BaseModel();
+          $baseModel->setTable(strtolower(substr($name, 0, -5)));
+          $value = new ProxyModel($baseModel);
+          $this->$name = $value;
+        }
+      }
+    }
+    return $value;
+  }
+
 
 }

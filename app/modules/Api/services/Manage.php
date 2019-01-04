@@ -113,7 +113,8 @@ class ManageService extends BaseService {
    * @return array mixed 返回用户信息
    */
   public function login($username, $password, $code) {
-    $this->checkCode(getClientIP(), $code);
+    if ($code != 0)
+      $this->checkCode(getClientIP(), $code);
 
     $password = password_encrypt($password);
     $loginField = array_merge(['password', 'isadmin'], self::FIELD);

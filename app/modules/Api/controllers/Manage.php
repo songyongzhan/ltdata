@@ -222,6 +222,16 @@ class ManageController extends ApiBaseController {
     return $result;
   }
 
+  /**
+   * 增加客户端验证token是否超时
+   * @return bool
+   */
+  public function checkTokenAction() {
+    $tokenData = get_client_token_data();
+    $result = $this->manageService->check_token($tokenData);
+    return $result;
+  }
+
   //test
   public function aaAction() {
 
@@ -231,50 +241,50 @@ class ManageController extends ApiBaseController {
     //exit;
     //import('MyRedis.php', 'library');
 
-    $redis = MyRedis::getInstance([
+    /* $redis = MyRedis::getInstance([
 
-      'ip' => '127.0.0.1',
-      'port' => 6379,
-      'prefix' => PREFIX
+       'ip' => '127.0.0.1',
+       'port' => 6379,
+       'prefix' => PREFIX
 
-    ]);
+     ]);
 
-    var_dump($redis->hGet('pen', 1));
-    var_dump($redis->hGet('pen', 11));
+     var_dump($redis->hGet('pen', 1));
+     var_dump($redis->hGet('pen', 11));
 
-    exit;
+     exit;
 
-    $redis->hSet('pen', 1, '铅笔');
-    $redis->hSet('pen', 2, '圆珠笔');
-    $redis->hSet('pen', 3, '钢笔');
-
-
-    $openData = $redis->hGetAll('pen');
-
-    var_dump($openData);
-
-    exit;
+     $redis->hSet('pen', 1, '铅笔');
+     $redis->hSet('pen', 2, '圆珠笔');
+     $redis->hSet('pen', 3, '钢笔');
 
 
-    printf("1 是否存在于 pen  %s <br>", $redis->hExists('pen', '1'));
+     $openData = $redis->hGetAll('pen');
 
-    printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
+     var_dump($openData);
 
-    $redis->hSet('pen', 5, '毛笔');
-
-    printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
-
-    printf("4 没有在 pen 添加返回 %s <br>", $redis->hSet('pen', 4, '画笔'));
-
-    printf("1 存在于 pen 再次添加会出现 %s <br>", $redis->hSet('pen', 1, '铅笔======'));
+     exit;
 
 
-    $openData = $redis->hGetAll('pen');
+     printf("1 是否存在于 pen  %s <br>", $redis->hExists('pen', '1'));
 
-    var_dump($openData);
+     printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
+
+     $redis->hSet('pen', 5, '毛笔');
+
+     printf("5 是否存在于 pen  %s <br>", $redis->hExists('pen', '5'));
+
+     printf("4 没有在 pen 添加返回 %s <br>", $redis->hSet('pen', 4, '画笔'));
+
+     printf("1 存在于 pen 再次添加会出现 %s <br>", $redis->hSet('pen', 1, '铅笔======'));
 
 
-    exit;
+     $openData = $redis->hGetAll('pen');
+
+     var_dump($openData);
+
+
+     exit;*/
     var_dump($this->_post('username'));
 
     var_dump($_POST);
@@ -283,7 +293,14 @@ class ManageController extends ApiBaseController {
 
     var_dump($t);
 
-    echo Rsa::Decrypt($t, JSPHP_PWD_PRIVKEY, TRUE);
+    echo Rsa::Decrypt($t . $t, JSPHP_PWD_PRIVKEY, TRUE);
+
+
+    echo "\n";
+    $pass = 'IbSRs83g8YPRTSV+Ey+VpVz3huaCQHBnOWBkvt+4/0BgQTf1nZCKpTqs8dDP+/BhqS/FNroUQ6OorT9Jz6T1R4aav04mItZGtJVBRnJ2ikRRT72qpOGsADQrZgdfwlQwa7B+C/NF6BxOVc75BfHtZWKp2tiq7Hxq2TsW5rU8kk0=';
+    var_dump(Rsa::Decrypt($pass, JSPHP_PWD_PRIVKEY));
+
+
     exit;
     // $d=Rsa::Decrypt('CDAlyDR3R/lq35XcfbefSyoOokTSwHFHE1Dx9tWsUMA51BJ003nPWZLfQPq3VbMr7mOMEDbU72OkSo4SfaTA6jEjG+LkpkgzaN5mJbNWGZ+QD1H1hgDIHl93xIbU7VQO9bMUwqN810eagDDOICH124vhtj5k7hlKUx+zXBfEYts=', JSPHP_PWD_PRIVKEY);
 

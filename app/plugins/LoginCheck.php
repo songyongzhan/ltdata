@@ -31,7 +31,7 @@ class LoginCheckPlugin extends Yaf_Plugin_Abstract {
 
       //不需要验证的接口
       $whiteList = [
-        'Manage' => ['logout', 'getClientIp','getcode','checkcode', 'login', 'aa'],
+        'Manage' => ['logout', 'getClientIp', 'checkToken', 'getcode', 'checkcode', 'login', 'aa'],
         'Dictionaries' => '*'
       ];
 
@@ -45,9 +45,12 @@ class LoginCheckPlugin extends Yaf_Plugin_Abstract {
         return TRUE;
       }
 
-      if ($tokenData = get_client_token_data())
-        getInstance()->manageService->check_token(get_client_token_data());
-      else
+      if ($tokenData = get_client_token_data()) {
+        $result = getInstance()->manageService->check_token(get_client_token_data());
+
+        if (!$result['result']['success'])
+          showApiException('token已超时,请重新登录', StatusCode::TOKEN_TIMEOUT_EXPIRE);
+      } else
         showApiException('请登录', StatusCode::PLEASE_LOGIN);
     }
 

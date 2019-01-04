@@ -87,7 +87,6 @@ class Data2dbController extends BaseController {
 
     $data = array_combine(self::FIELDS, $data);
 
-
     //从这里进行一系列替换  文字到数字的转换
 
     $data['ciq'] = $this->cliExportdataModel->ciq($data['ciq']);

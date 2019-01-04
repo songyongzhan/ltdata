@@ -12,41 +12,51 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class ExportdataModel extends BaseModel {
 
+  //protected $output_time_format = 'Y-m-d';
   public function getExportDataList($where = [], $fileds = [], $pageNum = 1, $pageSize = PAGESIZE, $order = '', $table = NULL) {
 
     $result = $this->getList($where, $fileds, $pageNum, $pageSize, $order, $table);
 
-    foreach ($result as $key => $value) {
-
-
+    foreach ($result as $key => &$value) {
+      $value['export_ciq'] = $this->getCiq($value['export_ciq']);
+      $value['dist_country'] = $this->getCountry($value['dist_country']);
+      $value['trade_mode'] = $this->getTrade($value['trade_mode']);
+      $value['transport_mode'] = $this->getTransport($value['transport_mode']);
+      $value['madein'] = $this->getMade($value['madein']);
+      $value['export_date'] = date($this->output_time_format, $value['export_date']);
     }
+    return $result;
+  }
+
+  public function getExportOne($where, $fileds = []) {
+    $result = $this->getOne($where, $fileds);
+    $result['export_ciq'] = $this->getCiq($result['export_ciq']);
+    $result['dist_country'] = $this->getCountry($result['dist_country']);
+    $result['trade_mode'] = $this->getTrade($result['trade_mode']);
+    $result['transport_mode'] = $this->getTransport($result['transport_mode']);
+    $result['madein'] = $this->getMade($result['madein']);
+    $result['export_date'] = date($this->output_time_format, $result['export_date']);
     return $result;
   }
 
 
   public function getCiq($id) {
-
     $result = $this->redisModel->redis->hGet('ciq', $id);
-
     if (!$result) {
       $data = $this->getOne([
         getWhereCondition('id', $id)
       ], ['id', 'title'], 'ciq');
-
       if ($data) {
         $this->redisModel->redis->hSet('ciq', $id, $data['title']);
         $result = $data['title'];
       }
     }
-
-    return $result ?: '';
+    return $result ?: $id;
   }
 
 
   public function getCountry($id) {
-
     $result = $this->redisModel->redis->hGet('country', $id);
-
     if (!$result) {
       $data = $this->getOne([
         getWhereCondition('id', $id)
@@ -57,8 +67,7 @@ class ExportdataModel extends BaseModel {
         $result = $data['title'];
       }
     }
-
-    return $result ?: '';
+    return $result ?: $id;
   }
 
 
@@ -77,7 +86,7 @@ class ExportdataModel extends BaseModel {
       }
     }
 
-    return $result ?: '';
+    return $result ?: $id;
   }
 
   public function getTransport($id) {
@@ -95,7 +104,7 @@ class ExportdataModel extends BaseModel {
       }
     }
 
-    return $result ?: '';
+    return $result ?: $id;
   }
 
 
@@ -114,7 +123,7 @@ class ExportdataModel extends BaseModel {
       }
     }
 
-    return $result ?: '';
+    return $result ?: $id;
   }
 
 

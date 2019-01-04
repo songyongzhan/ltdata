@@ -9,7 +9,7 @@ if (!defined('CONFIGPATH')) echo 'No configpath defined, please define configpat
 
 switch (ENVIRONMENT) {
   case 'develop':
-    error_reporting(-1);
+    error_reporting(E_ALL);
     ini_set('display_errors', 1);
     ini_set('yaf.environ', 'develop');
     break;
@@ -24,7 +24,6 @@ switch (ENVIRONMENT) {
     echo 'The application environment is not set correctly.';
     exit(1); // EXIT_ERROR
 }
-
 
 //http://php.net/manual/zh/yaf-application.getconfig.php
 $application = new Yaf_Application(CONFIGPATH);
