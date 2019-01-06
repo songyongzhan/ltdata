@@ -328,6 +328,7 @@ if (!function_exists('_error_handler')) {
     if ($is_error) {
       exit(1); // EXIT_ERROR
     }
+
   }
 }
 

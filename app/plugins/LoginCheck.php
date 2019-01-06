@@ -48,6 +48,8 @@ class LoginCheckPlugin extends Yaf_Plugin_Abstract {
       if ($tokenData = get_client_token_data()) {
         $result = getInstance()->manageService->check_token(get_client_token_data());
 
+        //$result['result']['success'] = FALSE;
+
         if (!$result['result']['success'])
           showApiException('token已超时,请重新登录', StatusCode::TOKEN_TIMEOUT_EXPIRE);
       } else

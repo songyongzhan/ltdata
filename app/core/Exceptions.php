@@ -21,7 +21,6 @@ class Exceptions extends Yaf_Exception {
     parent::__construct($message, $code, $previous);
   }
 
-
   public function show_exception($exception, $template = NULL) {
 
     if (isAjax() && isEnv())
@@ -53,6 +52,7 @@ class Exceptions extends Yaf_Exception {
     $buffer = ob_get_contents();
     ob_end_clean();
     echo $buffer;
+
   }
 
   public function log_exception($type, $message = NULL, $file = NULL, $line = NULL) {

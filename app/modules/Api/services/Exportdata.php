@@ -18,7 +18,7 @@ class ExportdataService extends BaseService {
    * @param int $page_size <number>
    */
   public function getListPage(array $where, $field = '*', $page_num, $page_size) {
-    $result = $this->exportdataModel->getListPage($where, $field, $page_num, $page_size);
+    $result = $this->exportdataModel->getExportDataList($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 

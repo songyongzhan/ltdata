@@ -33,6 +33,8 @@ class ManageService extends BaseService {
    * @param string $password <require> 密码
    * @param string $re_password <require|confirm:password> 确认密码|两次密码输入不一致
    * @param string $fullname <require> 姓名
+   * @param string $email <email> 邮箱格式不正确
+   * @param string $mobile <mobile> 手机格式不正确
    * @return true|false 返回添加结果
    */
   public function add($data) {
@@ -40,6 +42,7 @@ class ManageService extends BaseService {
     $hasManage = $this->manageModel->getList([
       ['field' => 'username', 'val' => $data['username']]
     ], ['id']);
+
 
     if ($hasManage) showApiException('此用户已存在，不能重复添加', StatusCode::SAME_USERNAME_ERROR);
     $data['password'] = password_encrypt($data['password']);
@@ -58,6 +61,8 @@ class ManageService extends BaseService {
    * 用户更新数据
    * @param int $id <require|number> 用户ID
    * @param string $fullname <require> 姓名
+   * @param string $email <email> 邮箱
+   * @param string $mobile <mobile> 手机格式不正确
    * @param array $data 更新到数据库的数据
    * @return array mixed 返回用户数据
    * @throws Exception
@@ -269,15 +274,11 @@ class ManageService extends BaseService {
    * @throws Exception
    */
   public function checkCode($ip, $code) {
-
     $result = $this->redisModel->redis->getStr('code_ip' . ip_long($ip));
-
-
     if (!$result || (strtolower($result) != strtolower($code)))
       showApiException('验证码错误请重新输入', StatusCode::CODE_ERROR);
 
     return $this->show(['success' => 1]);
   }
-
 
 }

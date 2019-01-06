@@ -33,7 +33,7 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
       $obj = getInstance();
       // isadmin=1 是超级管理员，无需验证
       if ($obj->tokenService->isadmin != 1) {
-        $checkResult = $obj->role_accessService->checkUrl($controller . '/' . $action);
+        $checkResult = $obj->roleaccessService->checkUrl($controller . '/' . $action);
         if ($checkResult['result']['success'] === 0)
           showApiException('您没有权限访问此栏目', StatusCode::URL_MENU_DENIED);
       }

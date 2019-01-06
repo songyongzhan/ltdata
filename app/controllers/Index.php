@@ -486,6 +486,20 @@ class IndexController extends BaseController {
     //1. fetch query
     $get = $this->getRequest()->getQuery("get", "default value");
 
+
+    $redis=MyRedis::getInstance(
+      [
+        'ip' => REDIS_HOST,
+        'port' => REDIS_PORT,
+        'passwd' => REDIS_PASSWORD,
+        'prefix' => PREFIX,
+        'expire' => REDIS_EXPIRE,
+      ]
+    );
+
+    var_dump($redis);
+
+
     echo 111;
     var_dump($get);
     exit;

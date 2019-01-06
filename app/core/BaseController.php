@@ -28,8 +28,16 @@ class BaseController extends CoreController {
     return $this->getView()->render($templateFile);
   }
 
-  public function _display($templateFile) {
-    $this->getView()->display($templateFile);
+  public function _display($templateFile = '') {
+    if ($templateFile) {
+      if (!strpos($templateFile, '.html'))
+        $templateFile .= '.html';
+      if ($templateFile[0] !== '/')
+        $templateFile = '/' . $templateFile;
+    } else
+      $templateFile = sprintf('/%s/%s.html', getRequest()->getControllerName(), getRequest()->getActionName());
+
+    $this->getView()->display(strtolower($templateFile));
   }
 
   public function assign($key, $val) {

@@ -79,8 +79,10 @@ class BaseModel extends CoreModel {
    */
   public function insert($data, $table = NULL) {
     is_null($table) || $this->table = $table;
+
     $result = $this->_db->insert($this->table, $this->autoAddtimeData($data, 'insert'));
     $this->_querySqls[] = $this->getLastQuery();
+    $this->_logSql();
     return $result ? $this->_db->getInsertId() : 0;
   }
 
@@ -224,10 +226,10 @@ class BaseModel extends CoreModel {
   protected final function _logSql() {
     $lastQuerySql = $this->getLastQuery();
     $this->_querySqls[] = $lastQuerySql;
-    isEnv() && debugMessage($lastQuerySql);
+    isEnv() && debugMessage('MYSQL:' . $lastQuerySql);
 
     if ($this->_db->getLastErrno() > 0)
-      debugMessage('Sql execute result:' . $this->_db->getLastErrno() . ' ErrMessage:' . $this->_db->getLastError());
+      debugMessage('MYSQL:' . $this->_db->getLastErrno() . ', Err:' . $this->_db->getLastError());
   }
 
   /**
@@ -240,18 +242,22 @@ class BaseModel extends CoreModel {
     if (!$this->realDelete) {
       $dbwhere = $this->_db->getWhere();
       $dbwhere = array_column($dbwhere, 1);
-      $flag = FALSE;
-      foreach ($dbwhere as $val) {
-        if (stristr($val, 'status')) {
-          $flag = TRUE;
-          break;
-        }
-      }
+      //$flag = FALSE;
+      //foreach ($dbwhere as $val) {
+      //  if (stristr($val, 'status')) {
+      //    $flag = TRUE;
+      //    break;
+      //  }
+      //}
       //如果逻辑删除，需要拼装status
-      if (!$flag) {
-        $this->_db->where('status', -1, '>');
-        debugMessage('系统自动添加了逻辑删除过滤值 status ');
-      }
+      //if (!$flag) {
+      //  $this->_db->where('status', -1, '>');
+      //  debugMessage('系统自动添加了逻辑删除过滤值 status ');
+      //}
+
+
+      $this->_db->where('status', -1, '>');
+      debugMessage('系统自动添加了逻辑删除过滤值 status ');
     }
 
     if (!$where) return;

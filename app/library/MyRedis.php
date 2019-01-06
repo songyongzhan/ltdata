@@ -36,7 +36,7 @@ class MyRedis {
     if (!empty($config)) {
       $this->ip = $config['ip'];
       $this->port = $config['port'];
-      if (isset($config['passwd'])) {
+      if (isset($config['passwd']) && $config['passwd'] != '') {
         $this->passwd = $config['passwd'];
       }
       if (isset($config['expire'])) {

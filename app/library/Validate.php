@@ -130,6 +130,7 @@ class Validate {
     'fileSize' => 'filesize not match',
     'fileExt' => 'extensions to upload is not allowed',
     'fileMime' => 'mimetype to upload is not allowed',
+    'mobile' => ':attribute not a valid mobile'
   ];
 
   // 当前验证场景
@@ -583,6 +584,24 @@ class Validate {
   protected function lt($value, $rule, $data) {
     $val = $this->getDataValue($data, $rule);
     return !is_null($val) && $value < $val;
+  }
+
+
+  /**
+   * 验证是不是手机手机号
+   * @access protected
+   * @param mixed $value 字段值
+   * @param mixed $rule 验证规则
+   * @param array $data 数据
+   * @return bool
+   */
+  protected function mobile($value, $rule, $data) {
+    if ($value === "")
+      return TRUE;
+
+    $rules = '/^1[0-9]{10}$/';
+
+    return preg_match($rules, $value) ? TRUE : FALSE;
   }
 
   /**

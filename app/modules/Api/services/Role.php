@@ -38,9 +38,10 @@ class RoleService extends BaseService {
    * @param string $title <require> 分组名称
    * @return mixed 返回最后插入的id
    */
-  public function add($title) {
+  public function add($title, $remarks) {
     $data = [
-      'title' => $title
+      'title' => $title,
+      'remarks' => $remarks
     ];
     $lastInsertId = $this->roleModel->insert($data);
     if ($lastInsertId) {
@@ -67,7 +68,7 @@ class RoleService extends BaseService {
 
   /**
    * 获取单个信息
-   * @param int $id <require|number> id
+   * @param int $id <require|number> id不能为空|id不是数字
    * @param string $fileds
    * @return mixed
    */
@@ -78,20 +79,33 @@ class RoleService extends BaseService {
 
   /**
    * 分组更新数据
-   * @param int $id <require|number> id
+   * @param int $id <require|number> id不能为空|id不是数字
    * @param string $title <require> 名称
    * @return array mixed 返回用户数据
    */
 
-  public function update($id, $title) {
+  public function update($id, $title, $remarks) {
     $data = [
-      'title' => $title
+      'title' => $title,
+      'remarks' => $remarks
     ];
     $result = $this->roleModel->update($id, $data);
     if ($result) {
       $data['id'] = $id;
     }
     return $result ? $this->show($data) : $this->show([]);
+  }
+
+  /**
+   * 获取分组的权限
+   * @param int $id <require|number> id不能为空|id不是数字
+   */
+  public function getRoleAccess($id) {
+    $result = $this->role_accessModel->getList([
+      getWhereCondition('role_id', $id)
+    ], 'menu_id');
+    $menuIds = array_column($result, 'menu_id');
+    return $this->show(['menu_ids' => implode(',', $menuIds)]);
   }
 
 }

@@ -19,12 +19,10 @@ class MenuModel extends BaseModel {
    */
   public function batchSort($data) {
     $this->startTransaction();
-
     foreach ($data as $key => $val) {
       if (!$this->update($val['id'], ['sort_id' => $val['sort_id']]))
         return $this->rollback();
     }
-
     return $this->commit();
   }
 

@@ -46,7 +46,7 @@ class MenuController extends ApiBaseController {
       'ext' => $this->_post('ext', ''),
       'relation_url' => $this->_post('relation_url', ''),
       'type_id' => $this->_post('type_id', 1),
-      'sort_id' => $this->_post('sort_id', 0),
+      'sort_id' => $this->_post('sort_id', 999),
       'status' => $this->_post('status')
     ];
     $result = $this->menuService->add($data);

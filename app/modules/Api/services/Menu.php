@@ -13,7 +13,6 @@ class MenuService extends BaseService {
 
   const FIELD = ['id', 'title', 'pid', 'url', 'relation_url', 'ext', 'type_id', 'status', 'sort_id', 'updatetime', 'createtime'];
 
-
   /**
    * 获取栏目列表
    * @param array $where 搜索条件
@@ -23,23 +22,39 @@ class MenuService extends BaseService {
     //当前用户权限及群组用户
     if ($this->tokenService->isadmin) {
       $where = [];
-      $useType == 0 && array_push($where, getWhereCondition('type_id', '1'));
+      if ($useType == 0) {
+        array_push($where, getWhereCondition('type_id', '1'));
+        array_push($where, getWhereCondition('status', '1'));
+      }
       $result = $this->menuModel->getList($where, self::FIELD);
     } else {
-      //不是超级管理员
-      $manageRoleAccess = $this->manageModel->getOne($this->tokenService->manage_id, ['role_access']);
-      if (!$manageRoleAccess['role_access']) {
-        $manageResult = $this->getAppointMenuList($manageRoleAccess['role_access'], $useType);
-        isset($manageResult['result']) && $manageResult = $manageResult['result'];
-      }
-      $where = [];
-      $useType == 0 && array_push($where, getWhereCondition('type_id', '1'));
-      //获取分组是否有权限
-      $Roleresult = $this->manage_roleModel->getRoleGroupAccess($this->tokenService->manage_id, $useType, self::FIELD);
-      $result = array_merge_recursive($manageResult, $Roleresult);
+      //不是超级管理员 获取栏目
+      $result = $this->getManageMenu($this->tokenService->manage_id, $useType);
     }
 
-    return $this->show(menu_group_list(sort_by_sort_id($result,'asc')));
+    return $this->show($useType == 1 ? menu_sort(sort_by_sort_id($result, 'asc')) : menu_group_list(sort_by_sort_id($result, 'asc')));
+  }
+
+
+  /**
+   * 根据manageid 及用途 获取栏目信息
+   */
+  public function getManageRole($manageId, $useType) {
+    $manageRoleAccess = $this->manageModel->getOne($manageId, ['role_access']);
+    if (!$manageRoleAccess['role_access']) {
+      $manageResult = $this->getAppointMenuList($manageRoleAccess['role_access'], $useType);
+      isset($manageResult['result']) && $manageResult = $manageResult['result'];
+    }
+    $where = [];
+    if ($useType == 0) {
+      array_push($where, getWhereCondition('type_id', '1'));
+      array_push($where, getWhereCondition('status', '1'));
+    }
+    //获取分组是否有权限
+    $Roleresult = $this->manage_roleModel->getRoleGroupAccess($manageId, $useType, self::FIELD);
+    $result = array_merge_recursive($manageResult, $Roleresult);
+
+    return $result;
   }
 
   /**
@@ -111,8 +126,10 @@ class MenuService extends BaseService {
       getWhereCondition('id', $menu_ids, 'in')
     ];
 
-    if (!is_null($useType) && $useType == 0)
+    if (!is_null($useType) && $useType == 0) {
       array_push($where, getWhereCondition('type_id', '1'));
+      array_push($where, getWhereCondition('status', '1'));
+    }
 
     $result = $this->menuModel->getList($where, self::FIELD);
     return $this->show($result);

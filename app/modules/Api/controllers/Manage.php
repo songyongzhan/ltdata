@@ -21,6 +21,8 @@ class ManageController extends ApiBaseController {
    * @param string $ext <POST> 扩展信息
    * @param string $remarks <POST> 备注
    * @param string $fullname <POST> 姓名
+   * @param string $email <POST> 邮箱
+   * @param string $mobile <POST> 手机
    * @param string $status <POST> 状态
    * @return array 返回用户注册信息 否则返回空数组
    */
@@ -30,6 +32,8 @@ class ManageController extends ApiBaseController {
     $re_password = $this->_post('re_password', '');
     $department = $this->_post('department', '');
     $fullname = $this->_post('fullname', '');
+    $email = $this->_post('email', '');
+    $mobile = $this->_post('mobile', '');
     $ext = $this->_post('ext', '');
     $remarks = $this->_post('remarks', '');
     $status = $this->_post('status', 0);
@@ -39,9 +43,13 @@ class ManageController extends ApiBaseController {
       're_password' => $re_password,
       'department' => $department,
       'ext' => $ext,
+      'email' => $email,
+      'mobile' => $mobile,
       'fullname' => $fullname,
       'remarks' => $remarks,
-      'status' => $status
+      'status' => $status,
+      'token' => '',
+      'isadmin' => 0
     ];
     $result = $this->manageService->add($data);
     return $result;
@@ -57,6 +65,8 @@ class ManageController extends ApiBaseController {
    * @param string $ext <POST> 扩展信息
    * @param string $remarks <POST> 备注
    * @param string $fullname <POST> 姓名
+   * @param string $email <POST> 邮箱
+   * @param string $mobile <POST> 手机
    * @param string $status <POST> 状态
    * @param string $id <POST> id
    * @return array
@@ -113,20 +123,10 @@ class ManageController extends ApiBaseController {
   public function updateManageRoleAction() {
     $id = $this->_post('id');
     $role_ids = $this->_post('role_ids');
-    $result = $this->role_accessService->updateManageRole($id, $role_ids);
+    $result = $this->roleaccessService->updateManageRole($id, $role_ids);
     return $result;
   }
 
-  /**
-   * 获取当前用户拥有的权限
-   * @name 获取当前用户权限
-   * @param int $id <POST> 用户id
-   */
-  public function getManageRoleAction() {
-    $id = $this->_post('id');
-    $result = $this->manageService->getManageRole($id);
-    return $result;
-  }
 
   /**
    * 得到一个用户信息
@@ -234,6 +234,29 @@ class ManageController extends ApiBaseController {
 
   //test
   public function aaAction() {
+
+
+    $rule = [
+      'mobile' => 'mobile',
+    ];
+
+    $msg = [
+      'mobile' => '手机格式错误',
+    ];
+
+    $data = [
+
+      'mobile' => ''
+    ];
+
+
+    $validate = Validate::make($rule, $msg);
+    $result = $validate->check($data);
+
+    var_dump($validate->check($data));
+    var_dump($validate->getError());
+    exit;
+
 
     //$v=class_exists('MyRedis',false);
     //

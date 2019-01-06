@@ -9,12 +9,12 @@
 
 class ProxyModel {
 
-  public static  $_object          = [];
-  private        $_rule            = [];//验证规则
-  private        $_instance        = NULL;
-  private        $_classname       = NULL;
-  private        $_cachePath       = APP_PATH . DS . 'data/cache/validate';
-  private static $_validateContent = NULL;
+  public static $_object          = [];
+  private       $_rule            = [];//验证规则
+  private       $_instance        = NULL;
+  private       $_classname       = NULL;
+  private       $_cachePath       = APP_PATH . DS . 'data/cache/validate';
+  private       $_validateContent = NULL;
   const IGNORE = ['BaseModel'];
   const VALIDATE = 'service'; //只是过滤service
 
@@ -42,15 +42,18 @@ class ProxyModel {
 
     if ($method[0] !== '_' && method_exists($this->_instance, $method) && strpos(strtolower(get_class($this->_instance)), self::VALIDATE)) {
 
-      ENVIRONMENT == 'develop' && logMessage('debug', '自动验证:' . $this->_classname . '->' . $method . '() 参数:' . jsonencode($params));
+      ENVIRONMENT == 'develop' && debugMessage('自动验证:' . $this->_classname . '->' . $method . '() 参数:' . jsonencode($params));
 
       $reflection = new Reflec($this->_instance);
 
       $validateFile = $this->_cachePath . DS . 'form_' . $this->_classname . '.' . Tools_Config::getConfig('application.ext');
 
       if (file_exists($validateFile) && (filemtime($validateFile) > $reflection->getFileTime())) {
-        is_null(self::$_validateContent) && self::$_validateContent = require_once $validateFile;
-        $this->_rule = self::$_validateContent;
+
+        is_null($this->_validateContent) && $this->_validateContent = require_once $validateFile;
+
+        $this->_rule = $this->_validateContent;
+
       } else {
         $this->_rule = $this->_makeFile($reflection, $validateFile);
       }
@@ -66,7 +69,6 @@ class ProxyModel {
         if (TRUE !== ($result = validate($methodRules, $data, $rules['msg'][$method]))) {
           showApiException($result['errMsg']);
         }
-
 
       }
     }

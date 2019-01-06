@@ -15,16 +15,16 @@ class ExportdataModel extends BaseModel {
   //protected $output_time_format = 'Y-m-d';
   public function getExportDataList($where = [], $fileds = [], $pageNum = 1, $pageSize = PAGESIZE, $order = '', $table = NULL) {
 
-    $result = $this->getList($where, $fileds, $pageNum, $pageSize, $order, $table);
+    $result = $this->getListPage($where, $fileds, $pageNum, $pageSize, $order, $table);
 
-    foreach ($result as $key => &$value) {
+    foreach ($result['list'] as $key => &$value) {
       $value['export_ciq'] = $this->getCiq($value['export_ciq']);
       $value['dist_country'] = $this->getCountry($value['dist_country']);
       $value['trade_mode'] = $this->getTrade($value['trade_mode']);
       $value['transport_mode'] = $this->getTransport($value['transport_mode']);
       $value['madein'] = $this->getMade($value['madein']);
-      $value['export_date'] = date($this->output_time_format, $value['export_date']);
     }
+
     return $result;
   }
 

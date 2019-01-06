@@ -32,7 +32,7 @@ class RoleController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->roleService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->roleService->getListPage($where, 'id,title,remarks,createtime,updatetime', $page_num, $page_size);
     return $result;
   }
 
@@ -43,7 +43,8 @@ class RoleController extends ApiBaseController {
    */
   public function addAction() {
     $title = $this->_post('title');
-    $result = $this->roleService->add($title);
+    $remarks = $this->_post('remarks');
+    $result = $this->roleService->add($title, $remarks);
     return $result;
   }
 
@@ -55,8 +56,9 @@ class RoleController extends ApiBaseController {
    */
   public function updateAction() {
     $title = $this->_post('title');
+    $remarks = $this->_post('remarks');
     $id = $this->_post('id');
-    $result = $this->roleService->update($id, $title);
+    $result = $this->roleService->update($id, $title, $remarks);
     return $result;
   }
 
@@ -80,6 +82,13 @@ class RoleController extends ApiBaseController {
     $id = $this->_post('id');
     $result = $this->roleService->delete($id);
     return $result;
+  }
+
+  public function getRoleAccessAction() {
+    $id = $this->_post('id');
+    $result = $this->roleService->getRoleAccess($id);
+    return $result;
+
   }
 
 
