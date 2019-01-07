@@ -68,11 +68,11 @@ class RoleaccessModel extends BaseModel {
 
     $data = [];
     foreach ($menu_ids as $val) {
-      $data[] = $this->autoaddtime([
+      $data[] = $this->autoAddtimeData([
         'menu_id' => $val,
         'role_id' => $role_id,
         'status' => 1
-      ]);
+      ], 'insert', TRUE);
     }
     $result = $this->inserMulti($data);
     if (!$result)

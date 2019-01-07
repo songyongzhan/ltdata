@@ -50,7 +50,7 @@ class ProxyModel {
 
       if (file_exists($validateFile) && (filemtime($validateFile) > $reflection->getFileTime())) {
 
-        is_null($this->_validateContent) && $this->_validateContent = require_once $validateFile;
+        is_null($this->_validateContent) && $this->_validateContent = require $validateFile;
 
         $this->_rule = $this->_validateContent;
 
@@ -58,8 +58,16 @@ class ProxyModel {
         $this->_rule = $this->_makeFile($reflection, $validateFile);
       }
 
+      //if (!is_array($rules = $this->_rule)) {
+      //  var_dump($validateFile);
+      //  print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+      //  print_r($rules);
+      //  return;
+      //  exit;
+      //}
+
       if (!is_array($rules = $this->_rule))
-        throw new Exceptions('$this->_rule is not Array.', 500);
+        throw new Exceptions('$this->_rule is not Array.', StatusCode::RULE_NOT_ARRAY);
 
       //如果最后一个参数是数组，则和其他参数合并在一起
       if (isset($rules['rules'][$method]) && ($methodRules = $rules['rules'][$method])) {

@@ -19,23 +19,32 @@ class Manage_roleModel extends BaseModel {
   public function getRoleGroupAccess($manage_id, $useType, $field = []) {
     //实现联表查询
 
-    $this->_db->join('role_access ra', 'ra.menu_id=m.id', 'left');
-    $this->_db->join('manage_role mr', 'ra.role_id=mr.role_id AND mr.manage_id=' . $manage_id, 'left');
+    if (!$this->realDelete)
+      $this->_db->join('role_access ra', 'ra.role_id=mr.role_id and ra.status>-1', 'left');
+    else
+      $this->_db->join('role_access ra', 'ra.role_id=mr.role_id', 'left');
 
-    //#可以替换下面那两行
-    #$this->_db->join('manage_role mr', 'ra.role_id=mr.role_id AND mr.manage_id=' . $manage_id, 'left');
-    //$this->_db->join('manage_role mr', 'ra.role_id=mr.role_id', 'left');
-    //$this->_db->joinWhere('mr.manage_id', $manage_id);
+    $this->_db->join('menu m', 'm.id=ra.menu_id', 'left');
 
-    $useType == 0 && $this->_db->where('m.type_id', '1');
-    $this->_db->where('m.status', '-1', '>');
+    if ($useType == 0) {
+      $this->_db->where('m.type_id', '1');
+      $this->_db->where('m.status', '1');
+    } else
+      $this->_db->where('m.status', '-1', '>');
 
+    $this->_db->where('mr.manage_id', $manage_id);
     $field = array_map(function ($val) {
-      return 'm.' . $val;
+
+      if($val==='id')
+        return 'DISTINCT m.id';
+      else
+        return 'm.' . $val;
+
     }, $field);
 
-    $result = $this->_db->get('menu m', NULL, $field);
+    $result = $this->_db->get('manage_role mr', NULL, $field);
     $this->_logSql();
+
     return $result;
   }
 

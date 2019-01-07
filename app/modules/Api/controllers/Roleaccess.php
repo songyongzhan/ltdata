@@ -43,9 +43,9 @@ class RoleaccessController extends ApiBaseController {
    * @return mixed 成功或false
    */
   public function updateAction() {
-    $menu_ids = $this->_post('menu_ids');
     $role_id = $this->_post('role_id');
-    $result = $this->roleaccessService->update($role_id, $menu_ids);
+    $menu_ids = $this->_post('menu_ids');
+    $result = $this->roleaccessService->updateRoleAccess($role_id, $menu_ids);
     return $result;
   }
 

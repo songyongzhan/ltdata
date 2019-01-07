@@ -198,6 +198,33 @@ function page_data($list = [], $total = 0, $pageNum, $pageSize, $total_page) {
   return $data;
 }
 
+/**
+ * 导出csv格式文件
+ * @param $file_content 文件内容
+ * @param $filename 文件名称 不要带扩展名
+ */
+function export_csv($file_content, $filename) {
+  if (!isset($file_content['title']) || !isset($file_content['data']))
+    showApiException('export params error.', API_FAILURE);
+
+  $file_content = convert_encodeing($file_content);
+  header('Content-Description: File Transfer');
+  header('Content-Type: application/x-xls');
+  header('Content-Disposition: attachment; filename=' . $filename . '.csv');
+  header('Content-Transfer-Encoding: binary');
+  header('Expires: 0');
+  header('Cache-Control: must-revalidate');
+  header('Pragma: public');
+
+  if ($out = fopen('php://output', 'w')) {
+    fputcsv($out, $file_content['title']);
+    foreach ($file_content['data'] as $key => $val) {
+      fputcsv($out, $val);
+    }
+    fclose($out);
+  }
+  die();
+}
 
 function convert_encodeing($data, $from_encoding = 'UTF-8', $to_encoding = 'GBK') {
   if (!$data)

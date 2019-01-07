@@ -53,7 +53,7 @@ class BaseModel extends CoreModel {
 
 
   /**
-   * 是否真实删除，默认为false  逻辑删除
+   * 是否真实删除，默认为false  即逻辑删除,不清空数据，status=-1
    * @var bool
    */
   protected $realDelete = FALSE;
@@ -292,10 +292,11 @@ class BaseModel extends CoreModel {
    * 自动处理添加 createtime  updatetime
    * @param array $data
    * @param string $fun
+   * @param boolean $otherCall 如果外部调用，此参数设置为true 可以调用
    * @return array
    */
-  private function autoAddtimeData($data, $fun = NULL) {
-    if ($this->autoaddtime) {
+  protected final function autoAddtimeData($data, $fun = NULL, $otherCall = FALSE) {
+    if (($this->autoaddtime) || $otherCall) {
       debugMessage('开启自动添加时间戳 updatetime  createtime');
       if (!is_null($fun) && $fun === 'insert') {
         $data[$this->createtime] = time();

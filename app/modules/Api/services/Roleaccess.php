@@ -19,7 +19,6 @@ class RoleaccessService extends BaseService {
    * @param string $role_ids <require> 权限信息
    */
   public function updateManageRole($manage_id, $role_ids) {
-
     $role_ids = explode(',', trim($role_ids, ','));
     $result = $this->role_accessModel->updateManageRole($manage_id, $role_ids);
     return $result ? $this->show($result) : $this->show([]);
@@ -28,7 +27,7 @@ class RoleaccessService extends BaseService {
   /**
    * 更新分组权限
    * @param $role_id <require|number> 用户id
-   * @param $menu_ids <require> 栏目ids
+   * @param $menu_ids 栏目权限
    */
   public function updateRoleAccess($role_id, $menu_ids) {
     $menu_ids = explode(',', trim($menu_ids, ','));
@@ -67,11 +66,14 @@ class RoleaccessService extends BaseService {
   }
 
   /**
-   * 根据用户id获取此用户的权限id
-   * @param int $manage_id <require> 用户id不能为空
+   * 获取当前用户可以访问的栏目和方法
+   *
+   * 此方法一般用于权限设置
+   *
+   * @return array|bool
+   * @throws InvalideException
    */
-  public function getManageRole($manage_id) {
-
+  private function getCurrentManageRoleMenu() {
     if ($this->tokenService->isadmin) {
       $where = [];
       $menuList = $this->menuModel->getList($where, ['id', 'title', 'pid', 'sort_id']);
@@ -80,10 +82,35 @@ class RoleaccessService extends BaseService {
       $menuList = $this->menuService->getManageRole($this->tokenService->manage_id, 1);
     }
     $menuList = menu_group_list(sort_by_sort_id($menuList, 'asc'));
+    return $menuList;
+  }
 
+
+  /**
+   * 获取分组的权限
+   * @param int $id <require|number> id不能为空|id不是数字
+   */
+  public function getRoleAccess($id) {
+
+    $menuList = $this->getCurrentManageRoleMenu();
+    $roleMenu = $this->roleaccessModel->getList([
+      getWhereCondition('role_id', $id)
+    ], 'menu_id');
+    $roleMenuIds = $roleMenu ? array_column($roleMenu, 'menu_id') : [];
+
+    return $this->show(['menu_list' => $menuList, 'role_ids' => implode(',', $roleMenuIds), 'id' => $id]);
+  }
+
+  /**
+   * 根据用户id获取此用户的权限id
+   * @param int $manage_id <require> 用户id不能为空
+   */
+  public function getManageRole($manage_id) {
+
+    $menuList = $this->getCurrentManageRoleMenu();
     //得到当前用户的权限
     $manageMenu = $this->menuService->getManageRole($manage_id, 1);
-    $menuIds = array_column($manageMenu, 'id');
+    $menuIds = $manageMenu ? array_column($manageMenu, 'id') : [];
 
     return $this->show(['menu_list' => $menuList, 'role_ids' => implode(',', $menuIds)]);
   }

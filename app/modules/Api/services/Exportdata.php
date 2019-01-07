@@ -61,6 +61,7 @@ class ExportdataService extends BaseService {
     return $result > 0 ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
+
   /**
    * 获取单个信息
    * @param int $id <require|number> id
@@ -70,6 +71,51 @@ class ExportdataService extends BaseService {
   public function getOne($id, $fileds = '*') {
     $result = $this->exportdataModel->getExportOne($id, $fileds);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
+  }
+
+
+  /**
+   * 信息导出
+   * @param $where
+   * @param string $field
+   * @return array
+   */
+  public function exort($where, $field = '*') {
+    $result = [];
+    $chanelArr = $this->Dictionaries_service->getList('recharge_chanel');
+    $chanelArr = array_column($chanelArr['result'], 'title', 'id');
+    $csv = "客户流水号,支付流水号,银行流水号,用户名,充值渠道(0-B2B；1-B2C;2-协议支付;3-微信收单;4-支付宝收单),充值金额,充值手续费,实际支付金额,充值时间,支付公司状态(0-成功;1-失败),银行返回状态(0-成功;1-失败)";
+    $title = explode(',', $csv);
+    $csvDatas = [];
+    foreach ($result as $val) {
+      $csvDatas[] = [
+        $val['customer_flow_num'] . "\t",
+        $val['pay_flow_num'] . "\t",
+        $val['bank_flow_num'] . "\t",
+        $val['username'],
+        array_key_exists($val['channel'], $chanelArr) ? $chanelArr[$val['channel']] : '',
+        $val['recharge_amount'],
+        $val['recharge_charge'],
+        $val['actual_payment_amount'],
+        date('Y-m-d H:i:s', $val['payment_time']),
+        $val['pay_status'],
+        $val['bank_status']
+      ];
+    }
+    return $this->show(['csv' => ['title' => $title, 'data' => $csvDatas]]);
+  }
+
+  /**
+   * 分析相关数据，并返回
+   * @param array $where 条件
+   * @param int $report_type 根据这个可以做报表 汇总、平均值、及求和
+   * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
+   */
+  public function getReportData($where, $report_type, $type) {
+
+
+    $this->exportdataModel->getReportData();
+
   }
 
 

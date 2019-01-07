@@ -96,16 +96,6 @@ class RoleService extends BaseService {
     return $result ? $this->show($data) : $this->show([]);
   }
 
-  /**
-   * 获取分组的权限
-   * @param int $id <require|number> id不能为空|id不是数字
-   */
-  public function getRoleAccess($id) {
-    $result = $this->role_accessModel->getList([
-      getWhereCondition('role_id', $id)
-    ], 'menu_id');
-    $menuIds = array_column($result, 'menu_id');
-    return $this->show(['menu_ids' => implode(',', $menuIds)]);
-  }
+
 
 }

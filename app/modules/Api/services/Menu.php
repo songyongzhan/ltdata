@@ -29,7 +29,7 @@ class MenuService extends BaseService {
       $result = $this->menuModel->getList($where, self::FIELD);
     } else {
       //不是超级管理员 获取栏目
-      $result = $this->getManageMenu($this->tokenService->manage_id, $useType);
+      $result = $this->getManageRole($this->tokenService->manage_id, $useType);
     }
 
     return $this->show($useType == 1 ? menu_sort(sort_by_sort_id($result, 'asc')) : menu_group_list(sort_by_sort_id($result, 'asc')));
@@ -41,18 +41,23 @@ class MenuService extends BaseService {
    */
   public function getManageRole($manageId, $useType) {
     $manageRoleAccess = $this->manageModel->getOne($manageId, ['role_access']);
-    if (!$manageRoleAccess['role_access']) {
+    if (!$manageRoleAccess)
+      showApiException('数据不存在', StatusCode::DATA_NOT_EXISTS);
+
+    if (isset($manageRoleAccess['role_access']) && $manageRoleAccess['role_access'] != '') {
       $manageResult = $this->getAppointMenuList($manageRoleAccess['role_access'], $useType);
       isset($manageResult['result']) && $manageResult = $manageResult['result'];
     }
+
     $where = [];
     if ($useType == 0) {
       array_push($where, getWhereCondition('type_id', '1'));
       array_push($where, getWhereCondition('status', '1'));
     }
+
     //获取分组是否有权限
     $Roleresult = $this->manage_roleModel->getRoleGroupAccess($manageId, $useType, self::FIELD);
-    $result = array_merge_recursive($manageResult, $Roleresult);
+    $result = isset($manageResult) ? array_merge_recursive($manageResult, $Roleresult) : $Roleresult;
 
     return $result;
   }

@@ -225,7 +225,6 @@ class ManageService extends BaseService {
    * @param string $rePassword <require|matches[newPassword]> 确认密码
    */
   public function password($id, $oldPassword, $newPassword, $rePassword) {
-
     $manage = $this->manageModel->getOne($id, 'id,username,password');
 
     if (!$manage)

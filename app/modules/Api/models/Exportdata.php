@@ -127,4 +127,31 @@ class ExportdataModel extends BaseModel {
   }
 
 
+  /**
+   * 根据相关搜索 检索到对应数据
+   * @param $where
+   * @param $field
+   * @param $groupBy
+   * @param $orderBy
+   * @param null $limit
+   */
+  public function getReportData($where, $field, $groupBy, $orderBy, $limit = NULL) {
+
+
+    foreach ($groupBy as $groupByVal) {
+      $this->_db->groupBy($groupByVal);
+    }
+
+
+    foreach ($orderBy as $orderField => $orderSortVal) {
+      $this->_db->orderBy($orderField, $orderSortVal);
+    }
+
+    $result = [];
+
+    return $result;
+
+  }
+
+
 }
