@@ -62,10 +62,6 @@ class ExportdataController extends ApiBaseController {
   }
 
 
-  /**
-   * 充值订单导出
-   *
-   */
   public function exportAction() {
     $where = $this->_search();
     $result = $this->exportdataService->export($where);
@@ -86,9 +82,16 @@ class ExportdataController extends ApiBaseController {
 
     $report_type = ''; //生成数据分析图的类型
 
+
+    //public function getReportData($where, $report_id, $date_type, $type) {
+
+    $report_id = $this->_post('report_id', 1);
+
+    $date_type=$this->_post('date_type', 1);
+
     $type = $this->_post('type', 1);
 
-    $result = $this->exportdataService->getReportData($where, $report_type, $type);
+    $result = $this->exportdataService->getReportData($where, $report_id, $date_type, $type);
     return $result;
   }
 
@@ -107,13 +110,18 @@ class ExportdataController extends ApiBaseController {
     $trade_mode = $this->_post('trade_mode', '');
     $transport_mode = $this->_post('transport_mode', '');
     $madein = $this->_post('madein', '');
+    $start_date = $this->_post('start_date', '');
+    $end_date = $this->_post('end_date', '');
 
     $rules = [
       ['condition' => 'like',
         'key_field' => ['shipper'],
         'db_field' => ['shipper']
       ],
-
+      ['condition' => 'between',
+        'key_field' => ['start_date', 'end_date'],
+        'db_field' => ['export_date', 'export_date']
+      ],
       ['condition' => 'after like',
         'key_field' => ['specification'],
         'db_field' => ['specification']
@@ -133,6 +141,8 @@ class ExportdataController extends ApiBaseController {
       'trade_mode' => $trade_mode,
       'transport_mode' => $transport_mode,
       'madein' => $madein,
+      'start_date' => $start_date,
+      'end_date' => $end_date,
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));

@@ -64,10 +64,33 @@ class CoreMysqliDb extends MysqliDb {
     $this->_stmtError = $stmt->error;
     $this->_stmtErrno = $stmt->errno;
     $this->reset();
-    
+
     $this->count = $stmt->affected_rows;
 
     return $this->count;  //	affected_rows returns 0 if nothing matched where statement, or required updating, -1 if error
+  }
+
+
+  public function getTableScnema($tableName, $field = '*') {
+
+    if (is_array($field))
+      $field = implode(',', $field);
+
+    if (strpos($tableName, '.') === FALSE) {
+      $tableName = self::$prefix . $tableName;
+    }
+
+    $this->_query = 'SELECT ' . implode(' ', $this->_queryOptions) . ' ' .
+      $field . " from information_schema . columns where TABLE_NAME = '".$tableName."' ";
+    $stmt = $this->_buildQuery(NULL);
+
+    $stmt->execute();
+    $this->_stmtError = $stmt->error;
+    $this->_stmtErrno = $stmt->errno;
+    $res = $this->_dynamicBindResults($stmt);
+    $this->reset();
+
+    return $res;
   }
 
 

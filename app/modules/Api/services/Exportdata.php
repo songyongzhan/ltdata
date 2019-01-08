@@ -108,14 +108,173 @@ class ExportdataService extends BaseService {
   /**
    * 分析相关数据，并返回
    * @param array $where 条件
-   * @param int $report_type 根据这个可以做报表 汇总、平均值、及求和
+   * @param int $report_id 根据这个可以做报表 汇总、平均值、及求和
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
    */
-  public function getReportData($where, $report_type, $type) {
+  public function getReportData($where, $report_id, $date_type, $type) {
 
 
-    $this->exportdataModel->getReportData();
+    $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type);
 
+    /* $v=$this->exportdataModel->getTableScnema('exportdata',['COLUMN_NAME','COLUMN_COMMENT']);
+
+     var_dump($v);
+
+     exit;*/
+
+
+    //目的国销售量占比分析
+    //目的国销售额占比分析（排名）	一定时间内出口销售额各目的国占比	 美元总价/时间（年、月两种）
+    /**
+     * 出口企业数量增减趋势  3年度1-12月对比趋势分析  货主单位数量/时间（年、月两种）
+     * count(shipper) as val,export_year,export_month
+     *
+     *出口企业销量占比分析（排名）  一定时间内出口销售量各目的国占比  法定重量/目的国/时间（年、月两种）
+     *
+     * sum(weight) as val,export_year,export_month,dist_country
+     *
+     *
+     *
+     *
+     * 10  出口企业销售额占比分析（排名）  一定时间内出口销售额各目的国占比  美元总价/时间（年、月两种）
+     * sum(price_amount) as val,export_year,export_month,dist_country
+     * 11  出口企业销售单价排名分析（排名）  一定时间内出口销售单价的排名  美元单价/时间（年、月两种）
+     *
+     * avg(price_amount) as val,export_year,export_month
+     * 12  出口关区销量占比分析（排名）  一定时间内出口总量各关区占比  法定重量/出口关区/时间（年、月两种）
+     * sum(weight) as val,export_year,export_month,export_ciq
+     *
+     * 13  贸易方式销量占比分析  一定时间内出口总量各贸易方式占比  法定重量/贸易方式/时间（年、月两种）
+     *
+     * sum(weight) as val,export_year,export_month,trade_mode
+     *
+     * 14  规格销量占比分析（排名）  一定时间内出口总量指定规格占比  法定重量/指定规格/时间（年、月两种）
+     *
+     *
+     * sum(weight) as val,export_year,export_month,specification
+     *
+     * 15  规格销量单价占比分析（排名）  一定时间内出口销售单价的排名  美元单价/时间（年、月两种）
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
+    /*  $field = ['sum(weight) as val', 'export_year', 'export_month', 'dist_country'];
+
+      $orderBy = [
+        'total' => 'val desc'
+      ];
+
+      $groupBy = [
+        'dist_country',
+        'export_year',
+        'export_month'
+      ];
+
+      $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $orderBy, []);
+
+    */
+
+
+    /*
+        //目的国数量增减趋势分析 count(dist_country) as val,export_year,export_month
+
+
+
+        $field = ['count(dist_country) as country', 'export_year', 'export_month'];
+
+        $orderBy = [
+          'total' => 'country asc'
+        ];
+
+        $groupBy = [
+          'dist_country',
+          'export_year',
+          'export_month'
+        ];
+
+        $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $orderBy, []);*/
+
+
+    //销售单价趋势分析 'avg(price_amount) as price,export_year,export_month'
+    /*   $field = ['avg(price_amount) as price', 'export_year', 'export_month'];
+
+       $orderBy = [
+         'total' => 'price asc'
+       ];
+
+       $groupBy = [
+         'export_year',
+         'export_month'
+       ];
+
+       $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $orderBy, []);*/
+
+
+    /*  // 销售金额趋势分析  'sum(price_amount) as val,export_year,export_month'
+      $field = ['sum(price_amount) as val', 'export_year', 'export_month'];
+
+      $orderBy = [
+        'total' => 'val asc'
+      ];
+
+      $groupBy = [
+        'export_year',
+        'export_month'
+      ];
+
+      $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $orderBy, []);*/
+
+
+    /*
+    销售量趋势分析
+    $field = ['sum(weight) as val', 'export_year', 'export_month'];
+
+    $orderBy = [
+      'total' => 'val asc'
+    ];
+
+    $groupBy = [
+      'export_year',
+      //'export_month'
+    ];
+
+    $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $orderBy, []);
+*/
+
+    /*$field = ['count(id) as total', 'GROUP_CONCAT(id)'];
+
+    $orderBy = [
+      'total' => 'desc'
+    ];
+
+    $groupBy = [
+      'export_ciq'
+    ];
+
+
+    $having = [
+
+      ['field' => 'total', 'val' =>'1906','operator' => ' >= ','cond' => ' and ']
+
+    ];
+
+
+    $limit = 10;
+      $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $having, $orderBy, $limit);
+
+    */
+
+    print_r($result);
+    exit;
   }
 
 

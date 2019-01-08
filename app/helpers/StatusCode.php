@@ -44,7 +44,8 @@ class StatusCode {
   const CANNOT_EDIT_LDAP_PASSWORD = 42021409;//系统不能修改域名密码
   const PLEASE_LOGIN = 42022409;//请登录
   const CODE_ERROR = 42023409;//验证码输入错误
-  const RULE_NOT_ARRAY = 42024409; //验证规则不是数组
+  const RULE_NOT_ARRAY = 42024409;//验证规则不是数组
+  const REPORTLIST_NOT_EXISTS = 42025409; //reportlist data 不存在
 
 
   /**
@@ -84,7 +85,8 @@ class StatusCode {
       55801405 => '目录或文件不存在',
       55802405 => '接口目录异常',
       42023409 => '验证码输入错误',
-      42024409 => '验证规则不是数组'
+      42024409 => '验证规则不是数组',
+      42025409 => 'reportlist data 不存在'
     ];
 
     return isset($data[$code]) ? $data[$code] : '';

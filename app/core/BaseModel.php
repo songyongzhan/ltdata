@@ -283,9 +283,15 @@ class BaseModel extends CoreModel {
    * @param bool $autoAddPrefix 是否自动添加表前缀
    * @return bool
    */
-  private function tableExists($table, $autoAddPrefix = TRUE) {
+  public final function tableExists($table, $autoAddPrefix = FALSE) {
     $table = $autoAddPrefix ? $this->prefix . $table : $table;
     return $this->_db->tableExists($table);
+  }
+
+
+  public final function getTableScnema($table, $filed = '*', $autoAddPrefix = FALSE) {
+    $table = $autoAddPrefix ? $this->prefix . $table : $table;
+    return $this->_db->getTableScnema($table, $filed);
   }
 
   /**
