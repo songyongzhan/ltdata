@@ -18,10 +18,10 @@ return [
    */
   'plugins' => [
     //routerStartup
-    'crosPlugin' => 'Cros',
     'CommonLog' => 'CommonLog', //公共Log 日志
     'CommonException' => 'CommonException', //公共exception
     'InitException' => 'InitException',
+    'CrosPlugin' => 'Cros',
     'cli' => 'Cli',
     'decryt' => 'Decryt', //自动解密
     //routerDispatch

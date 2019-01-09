@@ -87,7 +87,7 @@ class ExportdataController extends ApiBaseController {
 
     $report_id = $this->_post('report_id', 1);
 
-    $date_type=$this->_post('date_type', 1);
+    $date_type = $this->_post('date_type', 1);
 
     $type = $this->_post('type', 1);
 
@@ -95,6 +95,32 @@ class ExportdataController extends ApiBaseController {
     return $result;
   }
 
+  /**
+   * 文件上传，需要进行授权才可以上传
+   * @return array
+   */
+  public function uploadAction() {
+
+    //header('Access-Control-Allow-Origin: *');
+    //header('Access-Control-Allow-Methods: GET, POST');
+    //header('Access-Control-Allow-Headers: X-Requested-With,Uni-Source, X-Access-Token');
+    
+    $file = new File($_FILES['uploadFile']['tmp_name']);
+
+    $file->rule('');
+    $result = $file->setUploadInfo($_FILES['uploadFile'])->validate(['size' => 10485760, 'ext' => 'csv'])->move(APP_PATH . DS . 'data/uploads/csv', '');
+
+    if ($result) {
+      $data = [
+        'path' => $result->getSaveName(),
+        'extension' => $result->getExtension(),
+        'filename' => $result->getFilename()
+      ];
+    } else
+      $data = ['errMsg' => $result->getError()];
+
+    return $this->baseService->show($data, $data ? API_SUCCESS : API_FAILURE);
+  }
 
   /**
    * 公共搜索条件

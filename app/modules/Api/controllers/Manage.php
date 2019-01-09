@@ -229,6 +229,48 @@ class ManageController extends ApiBaseController {
   //test
   public function aaAction() {
 
+    //var_dump($this->_post('username'));
+    //
+    //var_dump($_POST);
+
+
+    exit;
+
+    $t = Rsa::Encrypt('song', JSPHP_PWD_PUBLIC, TRUE);
+
+    var_dump($t);
+
+    var_dump(strlen($t));
+
+
+
+    echo "<hr>";
+    echo Rsa::Decrypt($t, JSPHP_PWD_PRIVKEY, TRUE);
+
+
+  /*  echo "\n";
+    $pass = 'IbSRs83g8YPRTSV+Ey+VpVz3huaCQHBnOWBkvt+4/0BgQTf1nZCKpTqs8dDP+/BhqS/FNroUQ6OorT9Jz6T1R4aav04mItZGtJVBRnJ2ikRRT72qpOGsADQrZgdfwlQwa7B+C/NF6BxOVc75BfHtZWKp2tiq7Hxq2TsW5rU8kk0=';
+    var_dump(Rsa::Decrypt($pass, JSPHP_PWD_PRIVKEY));*/
+
+    echo "<hr>";
+
+
+    // $d=Rsa::Decrypt('CDAlyDR3R/lq35XcfbefSyoOokTSwHFHE1Dx9tWsUMA51BJ003nPWZLfQPq3VbMr7mOMEDbU72OkSo4SfaTA6jEjG+LkpkgzaN5mJbNWGZ+QD1H1hgDIHl93xIbU7VQO9bMUwqN810eagDDOICH124vhtj5k7hlKUx+zXBfEYts=', JSPHP_PWD_PRIVKEY);
+
+    // var_dump($d);
+
+
+    print_r($_GET);
+    print_r($_POST);
+
+    //echo AESEncrypt('song',COOKIE_KEY);
+    //
+    //
+    //echo "\n";
+    //
+    //echo Rsa::Encrypt('song',JSPHP_PWD_PUBLIC);
+    //
+
 
 
 
@@ -307,42 +349,7 @@ class ManageController extends ApiBaseController {
 
 
      exit;*/
-    var_dump($this->_post('username'));
 
-    var_dump($_POST);
-
-    $t = Rsa::Encrypt('song', JSPHP_PWD_PUBLIC, TRUE);
-
-    var_dump($t);
-
-    echo Rsa::Decrypt($t . $t, JSPHP_PWD_PRIVKEY, TRUE);
-
-
-    echo "\n";
-    $pass = 'IbSRs83g8YPRTSV+Ey+VpVz3huaCQHBnOWBkvt+4/0BgQTf1nZCKpTqs8dDP+/BhqS/FNroUQ6OorT9Jz6T1R4aav04mItZGtJVBRnJ2ikRRT72qpOGsADQrZgdfwlQwa7B+C/NF6BxOVc75BfHtZWKp2tiq7Hxq2TsW5rU8kk0=';
-    var_dump(Rsa::Decrypt($pass, JSPHP_PWD_PRIVKEY));
-
-
-    exit;
-    // $d=Rsa::Decrypt('CDAlyDR3R/lq35XcfbefSyoOokTSwHFHE1Dx9tWsUMA51BJ003nPWZLfQPq3VbMr7mOMEDbU72OkSo4SfaTA6jEjG+LkpkgzaN5mJbNWGZ+QD1H1hgDIHl93xIbU7VQO9bMUwqN810eagDDOICH124vhtj5k7hlKUx+zXBfEYts=', JSPHP_PWD_PRIVKEY);
-
-    // var_dump($d);
-    exit;
-
-
-    print_r($_GET);
-    print_r($_POST);
-
-    //echo AESEncrypt('song',COOKIE_KEY);
-    //
-    //
-    //echo "\n";
-    //
-    //echo Rsa::Encrypt('song',JSPHP_PWD_PUBLIC);
-    //
-
-
-    exit;
   }
 
 
