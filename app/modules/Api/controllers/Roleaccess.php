@@ -24,6 +24,24 @@ class RoleaccessController extends ApiBaseController {
     return $result;
   }
 
+
+
+
+
+  /**
+   * 更新用户权限所属分组
+   * @name 更新用户属组
+   * @param int $id <POST> 用户id
+   * @param string $role_ids <POST> 管理权限
+   * @return mixed
+   */
+  public function updateManageRoleAction() {
+    $id = $this->_post('manage_id');
+    $role_ids = $this->_post('role_ids');
+    $result = $this->roleaccessService->updateManageRole($id, $role_ids);
+    return $result;
+  }
+
   /**
    * 获取当前用户拥有的权限
    * @name 获取当前用户权限
@@ -35,6 +53,19 @@ class RoleaccessController extends ApiBaseController {
     return $result;
   }
 
+
+  /**
+   * 获取单个组的权限
+   *
+   * @return array
+   */
+  public function getRoleAccessAction() {
+    $id = $this->_post('id');
+    $result = $this->roleaccessService->getRoleAccess($id);
+    return $result;
+
+  }
+
   /**
    * 权限更新
    * @name 更新组权限
@@ -42,7 +73,7 @@ class RoleaccessController extends ApiBaseController {
    * @param int $role_id <POST> 分组id
    * @return mixed 成功或false
    */
-  public function updateAction() {
+  public function updateRoleAccessAction() {
     $role_id = $this->_post('role_id');
     $menu_ids = $this->_post('menu_ids');
     $result = $this->roleaccessService->updateRoleAccess($role_id, $menu_ids);

@@ -280,4 +280,76 @@ class ManageService extends BaseService {
     return $this->show(['success' => 1]);
   }
 
+  /**
+   * 综合返回 搜索需要使用的数据
+   */
+  public function searchData() {
+    $data = [];
+    $ciq = $this->redisModel->redis->hGetAll('ciq');
+    foreach ($ciq as $key => $val) {
+      $data['export_ciq'][] = [
+        'id' => $key,
+        'text' => $val
+      ];
+    }
+
+    $country = $this->redisModel->redis->hGetAll('country');
+
+    foreach ($country as $key => $val) {
+      $data['dist_country'][] = [
+        'id' => $key,
+        'text' => $val
+      ];
+    }
+
+    $trade = $this->redisModel->redis->hGetAll('trade'); //贸易方式
+
+    foreach ($trade as $key => $val) {
+      $data['trade_mode'][] = [
+        'id' => $key,
+        'text' => $val
+      ];
+    }
+    $transport = $this->redisModel->redis->hGetAll('transport'); //运输方式
+
+    foreach ($transport as $key => $val) {
+      $data['transport_mode'][] = [
+        'id' => $key,
+        'text' => $val
+      ];
+    }
+    $made = $this->redisModel->redis->hGetAll('made'); //原产地
+    foreach ($made as $key => $val) {
+      $data['madein'][] = [
+        'id' => $key,
+        'text' => $val
+      ];
+    }
+
+
+    /*$transaction_mode = $this->exportdataModel->getViewData('transaction_mode_view');//交易方式
+    foreach ($transaction_mode as $key => $val) {
+      $data['transaction_mode'][] = [
+        'id' => $val,
+        'text' => $val
+      ];
+    }
+    $shipper = $this->exportdataModel->getViewData('shipper_view'); //货主单位
+    foreach ($shipper as $key => $val) {
+      $data['shipper'][] = [
+        'id' => $val,
+        'text' => $val
+      ];
+    }
+    $specification = $this->exportdataModel->getViewData('specification_view');//规格
+    foreach ($specification as $key => $val) {
+      $data['specification'][] = [
+        'id' => $val,
+        'text' => $val
+      ];
+    }*/
+
+    return $this->show($data);
+  }
+
 }

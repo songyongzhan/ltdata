@@ -29,7 +29,7 @@ class RoleaccessModel extends BaseModel {
   public function updateManageRole($manage_id, $role_ids) {
     $this->startTransaction();
 
-    $delCount = $this->delete([getWhereCondition('manage_id', $manage_id)], Tools_Config::getConfig('db.mysql.prefix') . 'manage_role');
+    $delCount = $this->delete([getWhereCondition('manage_id', $manage_id)], 'manage_role');
 
 
     if (!$delCount)
@@ -43,7 +43,7 @@ class RoleaccessModel extends BaseModel {
         'status' => 1
       ]);
     }
-    $result = $this->inserMulti($data, Tools_Config::getConfig('db.mysql.prefix') . 'manage_role');
+    $result = $this->inserMulti($data, 'manage_role');
     if (!$result)
       return $this->rollback();
 

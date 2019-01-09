@@ -11,7 +11,7 @@
 defined('APP_PATH') OR exit('No direct script access allowed');
 
 class CiqController extends ApiBaseController {
-  
+
   /**
    * 获取关区列表
    * @return mixed
@@ -22,8 +22,6 @@ class CiqController extends ApiBaseController {
     $page_num = $this->_post('page_num', 1);
     $title = $this->_post('title', '');
 
-    
-  
     $rules = [
       ['condition' => 'like',
         'key_field' => ['title'],

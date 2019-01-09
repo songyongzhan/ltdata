@@ -27,45 +27,18 @@ class Data2dbController extends BaseController {
   const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
 
 
-  public function testAction() {
-
-    $data = [
-      'export_date' => 76543,
-      'export_ciq' => 14,
-      'dist_country' => 17,
-      'goods_code' => 40112000,
-      'specification_title' => '车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁车|12.5-18|R-4|人|12.5-18|品牌：华鲁',
-      'transaction_mode' => 'FOB',
-      'total_amount' => 1561,
-      'weight' => 192,
-      'price_amount' => 8.1,
-      'trade_mode' => 60,
-      'transport_mode' => 55,
-      'madein' => 24,
-      'shipper' => '北京城建集团有限责任公司',
-      'specification' => '',
-      'status' => 1,
-      'createtime' => 1546669680,
-      'updatetime' => 1546669680
-    ];
+  public function initRedisData() {
 
 
-    $this->cliExportdataModel->startTransaction();
-    $result = $this->cliExportdataModel->import($data);
-
-    if ($result) {
-
-      var_dump($result);
-
-      $this->cliExportdataModel->commit();
-    } else {
-      var_dump($result);
-      $this->cliExportdataModel->_transaction_status_check();
-    }
-
-
-
-    exit;
+    $this->cliExportdataModel->initRedisData(
+      [
+        'ciq',
+        'country',
+        'mode',
+        'trade',
+        'transport'
+      ]
+    );
 
 
   }

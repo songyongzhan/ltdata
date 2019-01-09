@@ -128,6 +128,18 @@ class ExportdataModel extends BaseModel {
 
 
   /**
+   * 获取view中的数据
+   * @param $viewName
+   * @param bool $prefix
+   */
+  public function getViewData($viewName) {
+    $result = $this->_db->get($viewName, NULL);
+    $this->_logSql();
+    return $result;
+  }
+
+
+  /**
    * 根据相关搜索 检索到对应数据
    * @param $where
    * @param $field

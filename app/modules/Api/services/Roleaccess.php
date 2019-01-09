@@ -14,13 +14,12 @@ class RoleaccessService extends BaseService {
 
   /**
    * 更新用户群组权限
-   *
-   * @param int $id <require|number> 用户id
+   * @param int $manage_id <require|number> 用户id
    * @param string $role_ids <require> 权限信息
    */
   public function updateManageRole($manage_id, $role_ids) {
     $role_ids = explode(',', trim($role_ids, ','));
-    $result = $this->role_accessModel->updateManageRole($manage_id, $role_ids);
+    $result = $this->roleaccessModel->updateManageRole($manage_id, $role_ids);
     return $result ? $this->show($result) : $this->show([]);
   }
 

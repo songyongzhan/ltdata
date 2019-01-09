@@ -84,17 +84,7 @@ class RoleController extends ApiBaseController {
     return $result;
   }
 
-  /**
-   * 获取单个组的权限
-   *
-   * @return array
-   */
-  public function getRoleAccessAction() {
-    $id = $this->_post('id');
-    $result = $this->roleaccessService->getRoleAccess($id);
-    return $result;
 
-  }
 
 
 }

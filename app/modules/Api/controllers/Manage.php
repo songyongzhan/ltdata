@@ -114,21 +114,6 @@ class ManageController extends ApiBaseController {
   }
 
   /**
-   * 更新用户权限所属分组
-   * @name 更新用户属组
-   * @param int $id <POST> 用户id
-   * @param string $role_ids <POST> 管理权限
-   * @return mixed
-   */
-  public function updateManageRoleAction() {
-    $id = $this->_post('id');
-    $role_ids = $this->_post('role_ids');
-    $result = $this->roleaccessService->updateManageRole($id, $role_ids);
-    return $result;
-  }
-
-
-  /**
    * 得到一个用户信息
    * @param int $id <POST> 用户id
    * @return array|mixed
@@ -229,6 +214,15 @@ class ManageController extends ApiBaseController {
   public function checkTokenAction() {
     $tokenData = get_client_token_data();
     $result = $this->manageService->check_token($tokenData);
+    return $result;
+  }
+
+
+  /**
+   * 公开化 用于搜索 填充数据使用
+   */
+  public function searchDataAction() {
+    $result = $this->manageService->searchData();
     return $result;
   }
 
