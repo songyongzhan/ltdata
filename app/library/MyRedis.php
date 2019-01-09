@@ -287,6 +287,15 @@ class MyRedis {
     }
   }
 
+  public function hmSet($key,$_data,$timeout = TRUE){
+
+    $this->redis->hMset($key, $_data);
+    if ($timeout) {
+      $this->setExpire($key);
+    }
+
+  }
+
   //得到一个hash的值
   public function hGet($key, $_index) {
     return $this->redis->hGet($key, $_index);

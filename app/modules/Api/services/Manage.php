@@ -326,28 +326,29 @@ class ManageService extends BaseService {
       ];
     }
 
-
-    /*$transaction_mode = $this->exportdataModel->getViewData('transaction_mode_view');//交易方式
+    $transaction_mode = $this->exportdataModel->getViewData('transaction_mode_view');//交易方式
     foreach ($transaction_mode as $key => $val) {
       $data['transaction_mode'][] = [
-        'id' => $val,
-        'text' => $val
+        'id' => $val['transaction_mode'],
+        'text' => $val['transaction_mode']
       ];
     }
+
     $shipper = $this->exportdataModel->getViewData('shipper_view'); //货主单位
     foreach ($shipper as $key => $val) {
       $data['shipper'][] = [
-        'id' => $val,
-        'text' => $val
+        'id' => $val['shipper'],
+        'text' => $val['shipper']
       ];
     }
+
     $specification = $this->exportdataModel->getViewData('specification_view');//规格
     foreach ($specification as $key => $val) {
       $data['specification'][] = [
-        'id' => $val,
-        'text' => $val
+        'id' => $val['specification'],
+        'text' => $val['specification']
       ];
-    }*/
+    }
 
     return $this->show($data);
   }

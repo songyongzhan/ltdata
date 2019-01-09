@@ -9,18 +9,23 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
+/**
+ * 国家列表 操作服务类
+ * Class TransportService
+ */
 class CountryService extends BaseService {
-  
+
   /**
    * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
-  public function getList($where, $field = '*') {
-    $result = $this->countryModel->getList($where, $field);
+  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
+    $result = $this->countryModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
+
 
   /**
    * 添加

@@ -39,7 +39,7 @@ switch (ENVIRONMENT) {
     define('REDIS_HOST', '127.0.0.1'); //连接redis
     define('REDIS_PORT', 6379); //连接redis
     define('REDIS_PASSWORD', ''); //reids密码
-    define('REDIS_EXPIRE', 300); //reids默认过期时长
+    define('REDIS_EXPIRE', 1800); //reids默认过期时长
 
     break;
   case 'testing': //测试配置文件
@@ -51,7 +51,7 @@ switch (ENVIRONMENT) {
     define('REDIS_HOST', '127.0.0.1'); //连接redis
     define('REDIS_PORT', 6379); //连接redis
     define('REDIS_PASSWORD', ''); //reids密码
-    define('REDIS_EXPIRE', 300); //reids默认过期时长
+    define('REDIS_EXPIRE', 1800); //reids默认过期时长
     break;
   case 'product': //生产配置文件
 
@@ -63,7 +63,7 @@ switch (ENVIRONMENT) {
     define('REDIS_HOST', '127.0.0.1'); //连接redis
     define('REDIS_PORT', ''); //连接redis
     define('REDIS_PASSWORD', ''); //reids密码
-    define('REDIS_EXPIRE', 300); //reids默认过期时长
+    define('REDIS_EXPIRE', 1800); //reids默认过期时长
 
     break;
 }
@@ -93,7 +93,6 @@ define('POST_TRANSTION_ACCESS_TOKEN', 'post_access_token'); //如果特殊情况
 define('IS_CHECK_TOKEN', TRUE);
 
 define('IS_CHECK_MENU', TRUE);
-
 
 /**
  * 数据库其他配置

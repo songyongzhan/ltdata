@@ -14,17 +14,18 @@ defined('APP_PATH') OR exit('No direct script access allowed');
  * Class TransportService
  */
 class MadeService extends BaseService {
-  
+
   /**
    * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
-  public function getList($where, $field = '*') {
-    $result = $this->madeModel->getList($where, $field);
+  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
+    $result = $this->madeModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
+
 
   /**
    * 添加

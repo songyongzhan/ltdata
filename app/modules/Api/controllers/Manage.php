@@ -230,7 +230,12 @@ class ManageController extends ApiBaseController {
   public function aaAction() {
 
 
-    $rule = [
+
+
+
+    exit;
+
+    /*$rule = [
       'mobile' => 'mobile',
     ];
 
@@ -249,7 +254,7 @@ class ManageController extends ApiBaseController {
 
     var_dump($validate->check($data));
     var_dump($validate->getError());
-    exit;
+    exit;*/
 
 
     //$v=class_exists('MyRedis',false);

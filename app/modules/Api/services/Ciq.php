@@ -9,22 +9,27 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
+/**
+ * 出口关区 操作服务类
+ * Class TransportService
+ */
 class CiqService extends BaseService {
 
   /**
-   * 获取出口关区列表
+   * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
-  public function getList($where, $field = '*') {
-    $result = $this->ciqModel->getList($where, $field);
+  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
+    $result = $this->ciqModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 
+
   /**
    * 添加
-   * @param string $title <require> 分组名称
+   * @param string $title <require> 国家名称
    * @return mixed 返回最后插入的id
    */
   public function add($title) {
@@ -42,7 +47,7 @@ class CiqService extends BaseService {
   }
 
   /**
-   * 删除
+   * 删除一个
    * @param int $id <require|number> id
    */
   public function delete($id) {

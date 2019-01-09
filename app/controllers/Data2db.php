@@ -27,14 +27,18 @@ class Data2dbController extends BaseController {
   const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
 
 
-  public function initRedisData() {
+  /**
+   * HTTP_ENV=develop php index.php index/data2db/initRedisData
+   */
 
+  // */30 * * * * php index.php index/data2db/initRedisData
+  public function initRedisDataAction() {
 
     $this->cliExportdataModel->initRedisData(
       [
         'ciq',
         'country',
-        'mode',
+        'made',
         'trade',
         'transport'
       ]
@@ -50,6 +54,8 @@ class Data2dbController extends BaseController {
    *
    * @param string $date
    */
+
+  // */30 * * * * php index.php index/data2db/import
   public function importAction() {
 
 

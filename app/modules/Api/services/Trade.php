@@ -19,8 +19,8 @@ class TradeService extends BaseService {
    * @param $field
    * @return mixed
    */
-  public function getList($where, $field = '*') {
-    $result = $this->tradeModel->getList($where, $field);
+  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
+    $result = $this->tradeModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 

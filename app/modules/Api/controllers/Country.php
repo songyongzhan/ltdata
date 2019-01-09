@@ -10,13 +10,13 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
-class CiqController extends ApiBaseController {
+class CountryController extends ApiBaseController {
   
   /**
-   * 获取国家列表
+   * 获取贸易方式列表
    * @return mixed
    */
-  public function getList() {
+  public function getListAction() {
     //如果传递了page_size 就分页
     $page_size = $this->_post('page_size', PAGESIZE);
     $page_num = $this->_post('page_num', 1);
@@ -37,23 +37,23 @@ class CiqController extends ApiBaseController {
   }
 
   /**
-   * 添加国家
+   * 添加贸易方式
    * @param string $title <POST> 名称
    * @return array
    */
-  public function add() {
+  public function addAction() {
     $title = $this->_post('title');
     $result = $this->countryService->add($title);
     return $result;
   }
 
   /**
-   * 更新国家
+   * 更新贸易方式
    * @param string $title <POST> 名称
    * @param string $id <POST> id
    * @return array
    */
-  public function update() {
+  public function updateAction() {
     $title = $this->_post('title');
     $id = $this->_post('id');
     $result = $this->countryService->update($id, $title);
@@ -61,22 +61,22 @@ class CiqController extends ApiBaseController {
   }
 
   /**
-   * 得到一个国家信息
+   * 得到一个贸易方式信息
    * @param int $id <POST> 用户id
    * @return array|mixed
    */
-  public function getOne() {
+  public function getOneAction() {
     $id = $this->_post('id');
     $result = $this->countryService->getOne($id);
     return $result;
   }
 
   /**
-   * 国家删除
+   * 贸易方式删除
    * @param string $id <POST> 数据id ，如果删除多个，请使用逗号分隔
    * @return 删除数据的id
    */
-  public function delete() {
+  public function deleteAction() {
     $id = $this->_post('id');
     $result = $this->countryService->delete($id);
     return $result;

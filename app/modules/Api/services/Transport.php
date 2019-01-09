@@ -14,15 +14,15 @@ defined('APP_PATH') OR exit('No direct script access allowed');
  * Class TransportService
  */
 class TransportService extends BaseService {
-  
+
   /**
    * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
-  public function getList($where, $field = '*') {
-    $result = $this->transportModel->getList($where, $field);
+  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
+    $result = $this->transportModel->getListPage($where, $field, $page_num, $page_size);
     return $this->show($result);
   }
 
