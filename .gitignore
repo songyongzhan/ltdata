@@ -4,7 +4,10 @@
 .idea
 /data/logs
 /data/cache
+/data/uploads
 vendor
+
+nginxlogs
 
 #忽略日志文件
 /static/logs
