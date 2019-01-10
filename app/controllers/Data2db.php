@@ -130,6 +130,8 @@ class Data2dbController extends BaseController {
 
     //$data['export_data'] = strtotime();
     $data['export_date'] = strtotime(str_replace('//', '-', $data['export_date']));
+    $data['export_year'] = date('Y', $data['export_date']);
+    $data['export_month'] = date('m', $data['export_date']);
 
     //匹配一个正则表达式规格，存放于数据库 用于模糊搜索
     if (preg_match_all(self::SEPCIFICATION_PATTERN, $data['specification_title'], $result)) {

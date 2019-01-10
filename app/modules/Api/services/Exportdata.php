@@ -111,11 +111,22 @@ class ExportdataService extends BaseService {
    * @param int $report_id 根据这个可以做报表 汇总、平均值、及求和
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
    */
-  public function getReportData($where, $report_id, $date_type, $type) {
+  public function getReportData($where, $report_id, $date_type = 1, $type = 1) {
 
 
     $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type);
 
+    switch (strtolower($result['viewtype'])) {
+      case 'pie':
+
+        break;
+      case 'line':
+        $result['option'] = $this->_createLine($result, $date_type);
+        break;
+    }
+
+    print_r($result);
+    exit;
     /* $v=$this->exportdataModel->getTableScnema('exportdata',['COLUMN_NAME','COLUMN_COMMENT']);
 
      var_dump($v);
@@ -154,15 +165,6 @@ class ExportdataService extends BaseService {
      * sum(weight) as val,export_year,export_month,specification
      *
      * 15  规格销量单价占比分析（排名）  一定时间内出口销售单价的排名  美元单价/时间（年、月两种）
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
      *
      *
      */
@@ -272,9 +274,126 @@ class ExportdataService extends BaseService {
       $result = $this->exportdataModel->getReportData($where, $field, $groupBy, $having, $orderBy, $limit);
 
     */
+  }
 
-    print_r($result);
-    exit;
+
+  /**
+   * 生成线形分析图
+   * @param $result
+   * @param $date_type
+   * @return array
+   */
+  private function _createLine($result, $date_type) {
+    $resultData = [];
+    foreach ($result['list'] as $val) {
+      $resultData[$val['export_year']][] = [
+        'title' => $val['export_year'],
+        'numval' => $val['val'],
+        'month' => isset($val['export_month']) ? $val['export_month'] : '',
+        'data' => $val
+      ];
+    }
+
+    $legendData = array_map(function ($val) {
+      return $val . '年';
+    }, array_keys($resultData));
+
+    $seriesData = [];
+    $xAxisMax = 0;
+    foreach (array_keys($resultData) as $yearval) {
+      $temp = $resultData[$yearval];
+      if ($date_type == 1) { //1 年 月   2年  当等于2 的时候不考虑排序
+        usort($temp, function ($a, $b) {
+          if ($a['month'] == $b['month'])
+            return 0;
+
+          return $a['month'] > $b['month'] ? 1 : -1;
+        });
+
+        if (count($temp) > $xAxisMax)
+          $xAxisMax = count($temp);
+
+        $seriesData[] = [
+          'name' => $yearval . '年',
+          'type' => 'line',
+          'data' => array_column($temp, 'numval')
+        ];
+
+      } else if ($date_type == 2) { //年处理逻辑
+
+        if (empty($seriesData)) {
+          $seriesData[] = [
+            'type' => 'line',
+            'data' => array_column($temp, 'numval')
+          ];
+        } else {
+          $seriesData[0]['data'][] = array_column($temp, 'numval')[0];
+        }
+
+      }
+    }
+
+    $xAxisData = [];
+    if ($date_type == 1) {
+      $xAxisDataText = [
+        '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
+      ];
+
+      for ($i = 0; $i < $xAxisMax; $i++) {
+        $xAxisData[] = $xAxisDataText[$i];
+      }
+    } elseif ($date_type == 2) {
+      $xAxisData = $legendData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => '' //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        'data' => $legendData
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '4%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+
+      'xAxis' => [
+        'type' => 'category',
+        'boundaryGap' => FALSE,
+        'data' => $xAxisData
+      ],
+
+      'yAxis' => [
+        'type' => 'value',
+        'axisLabel' => [
+          'formatter' => '{value} kg'
+        ]
+      ],
+
+      'series' => $seriesData
+    ];
+
+    return $option;
   }
 
 

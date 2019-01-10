@@ -210,13 +210,11 @@ class ExportdataModel extends BaseModel {
       $date_type = $reportRules['date_type'];
 
     //按照占比显示
-    $area = [5, 6, 9, 10, 12, 13, 14, 15];
-    if (in_array($report_id, $area)) {
+    if (strtolower($reportRules['viewtype']) === 'pie') {
       //判断是否存在跨年 ，如果是 不管类型选择什么，都是2 按年统计
       $yearData = array_column($where, 'field');
 
       if (in_array('export_date', $yearData)) {
-
         $start_time = 0;
         $end_time = 0;
         foreach ($where as $val) {
@@ -226,7 +224,6 @@ class ExportdataModel extends BaseModel {
           if ($val['field'] == 'export_date' && $val['operator'] == '<=')
             $end_time = $val['val'];
         }
-
         if (date('Y', $start_time) != date('Y', $end_time))
           $date_type = 2;
       }
@@ -272,14 +269,12 @@ class ExportdataModel extends BaseModel {
     $limit = $reportRules['limit_str'];
 
     $reportData = $this->getReportData($where, $field, $groupBy, $having, $orderBy, $limit);
-    $data = [
-      'title' => $reportRules['title'],
-      'field' => $reportRules['field_str'],
-      'list' => $reportData['list'],
-      'sum_val' => $reportData['sum_val'],
-      'limit_dscript' => $limit > 0 ? '返回了部分数据 仅' . $limit . '条' : '返回全部'
-    ];
-    return $data;
+
+    $reportRules['list'] = $reportData['list'];
+    $reportRules['sum_val'] = $reportData['sum_val'];
+    $reportRules['limit_dscript'] = $limit > 0 ? '返回了部分数据 仅' . $limit . '条' : '返回全部';
+
+    return $reportRules;
   }
 
 

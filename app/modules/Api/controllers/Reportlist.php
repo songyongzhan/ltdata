@@ -21,18 +21,28 @@ class ReportListController extends ApiBaseController {
     $page_size = $this->_post('page_size', PAGESIZE);
     $page_num = $this->_post('page_num', 1);
     $title = $this->_post('title', '');
+    $utype = $this->_post('utype', '');
 
     $rules = [
       ['condition' => 'like',
         'key_field' => ['title'],
         'db_field' => ['title']
+      ],
+      [
+        'condition' => '=',
+        'key_field' => ['utype'],
+        'db_field' => ['utype']
       ]
     ];
-    $data = ['title' => $title];
+
+    $data = [
+      'title' => $title,
+      'utype' => $utype,
+    ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->reportListService->getList($where, $page_num, $page_size);
+    $result = $this->reportlistService->getList($where, $page_num, $page_size);
     return $result;
   }
 
@@ -42,11 +52,11 @@ class ReportListController extends ApiBaseController {
    * @return array
    */
   public function addAction() {
-    $title = $this->_post('title');
-    $remarks = $this->_post('remarks');
-    $result = $this->reportListService->add($title, $remarks);
+    $data = $this->_getPostData();
+    $result = $this->reportlistService->add($data);
     return $result;
   }
+
 
   /**
    * 更新分组名称
@@ -55,10 +65,9 @@ class ReportListController extends ApiBaseController {
    * @return array
    */
   public function updateAction() {
-    $title = $this->_post('title');
-    $remarks = $this->_post('remarks');
+    $data = $this->_getPostData();
     $id = $this->_post('id');
-    $result = $this->reportListService->update($id, $title, $remarks);
+    $result = $this->reportlistService->update($id, $data);
     return $result;
   }
 
@@ -69,7 +78,7 @@ class ReportListController extends ApiBaseController {
    */
   public function getOneAction() {
     $id = $this->_post('id');
-    $result = $this->reportListService->getOne($id);
+    $result = $this->reportlistService->getOne($id);
     return $result;
   }
 
@@ -80,9 +89,35 @@ class ReportListController extends ApiBaseController {
    */
   public function deleteAction() {
     $id = $this->_post('id');
-    $result = $this->reportListService->delete($id);
+    $result = $this->reportlistService->delete($id);
     return $result;
   }
 
+  /**
+   * 获取add update 提交的参数
+   * @return array
+   */
+  private function _getPostData() {
+    $title = $this->_post('title');
+    $utype = $this->_post('utype');
+    $field_str = $this->_post('field_str');
+    $group_str = $this->_post('group_str');
+    $order_str = $this->_post('order_str');
+    $limit_str = $this->_post('limit_str');
+    $having_str = $this->_post('having_str');
+    $date_type = $this->_post('date_type');
+    $data = [
+      'title' => $title,
+      'utype' => $utype,
+      'field_str' => $field_str,
+      'group_str' => $group_str,
+      'order_str' => $order_str,
+      'limit_str' => $limit_str,
+      'having_str' => $having_str,
+      'date_type' => $date_type,
+      'status' => 1
+    ];
+    return $data;
+  }
 
 }
