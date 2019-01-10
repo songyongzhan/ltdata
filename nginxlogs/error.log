@@ -721,3 +721,11 @@ Stack trace:
 #3 {main}
   thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 709" while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.107:8060", referrer: "http://192.168.61.107:8060/api/menu/getList?use_type=1"
 2019/01/06 12:42:01 [error] 2422#0: *1464 FastCGI sent in stderr: "PHP message: PHP Warning:  Cannot modify header information - headers already sent by (output started at /usr/local/nginx/html/ltdata/app/core/ProxyModel.php:55) in /usr/local/nginx/html/ltdata/app/core/Common.php on line 722" while reading upstream, client: 192.168.61.104, server: localhost, request: "POST /api/menu/update HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.107:8060", referrer: "http://192.168.61.104:812/index/menu/getOne?id=1&dialog=1"
+2019/01/10 00:34:33 [error] 2416#0: *1563 FastCGI sent in stderr: "PHP message: PHP Warning:  Yaf_Loader::autoload(): Failed opening script /usr/local/nginx/html/ltdata/app/library/Exceptions.php: No such file or directory in /usr/local/nginx/html/ltdata/app/core/Common.php on line 710
+PHP message: PHP Fatal error:  Uncaught Error: Class 'Exceptions' not found in /usr/local/nginx/html/ltdata/app/core/Common.php:710
+Stack trace:
+#0 /usr/local/nginx/html/ltdata/app/core/CoreBootstrap.php(48): _parseCurrentUri()
+#1 [internal function]: CoreBootstrap->_initPlugin(Object(Yaf_Dispatcher))
+#2 /usr/local/nginx/html/ltdata/index.php(31): Yaf_Application->bootstrap()
+#3 {main}
+  thrown in /usr/local/nginx/html/ltdata/app/core/Common.php on line 710" while reading response header from upstream, client: 192.168.61.104, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "fastcgi://127.0.0.1:9007", host: "192.168.61.109:8060", referrer: "http://192.168.61.109:8060/api/manage/aa"

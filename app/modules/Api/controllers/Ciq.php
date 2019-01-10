@@ -32,7 +32,7 @@ class CiqController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->ciqService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->ciqService->getListPage($where, $page_num, $page_size);
     return $result;
   }
 

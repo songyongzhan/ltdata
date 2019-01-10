@@ -82,7 +82,6 @@ class ExportdataController extends ApiBaseController {
 
     $report_type = ''; //生成数据分析图的类型
 
-
     //public function getReportData($where, $report_id, $date_type, $type) {
 
     $report_id = $this->_post('report_id', 1);
@@ -104,7 +103,7 @@ class ExportdataController extends ApiBaseController {
     //header('Access-Control-Allow-Origin: *');
     //header('Access-Control-Allow-Methods: GET, POST');
     //header('Access-Control-Allow-Headers: X-Requested-With,Uni-Source, X-Access-Token');
-    
+
     $file = new File($_FILES['uploadFile']['tmp_name']);
 
     $file->rule('');
@@ -138,6 +137,8 @@ class ExportdataController extends ApiBaseController {
     $madein = $this->_post('madein', '');
     $start_date = $this->_post('start_date', '');
     $end_date = $this->_post('end_date', '');
+    $specification = $this->_post('specification', '');
+
 
     $rules = [
       ['condition' => 'like',
@@ -167,8 +168,9 @@ class ExportdataController extends ApiBaseController {
       'trade_mode' => $trade_mode,
       'transport_mode' => $transport_mode,
       'madein' => $madein,
-      'start_date' => $start_date,
-      'end_date' => $end_date,
+      'start_date' => $start_date ? strtotime($start_date) : '',
+      'end_date' => $end_date ? (strtotime('+1 month', strtotime($end_date)) - 1) : '',
+      'specification' => $specification
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));

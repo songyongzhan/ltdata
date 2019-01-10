@@ -11,7 +11,7 @@
 defined('APP_PATH') OR exit('No direct script access allowed');
 
 class MadeController extends ApiBaseController {
-  
+
   /**
    * 获取生产地列表
    * @return mixed
@@ -32,7 +32,7 @@ class MadeController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->madeService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->madeService->getListPage($where, $page_num, $page_size);
     return $result;
   }
 

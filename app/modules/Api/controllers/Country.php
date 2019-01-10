@@ -11,7 +11,7 @@
 defined('APP_PATH') OR exit('No direct script access allowed');
 
 class CountryController extends ApiBaseController {
-  
+
   /**
    * 获取贸易方式列表
    * @return mixed
@@ -32,7 +32,7 @@ class CountryController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->countryService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->countryService->getListPage($where, $page_num, $page_size);
     return $result;
   }
 

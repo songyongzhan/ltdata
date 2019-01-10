@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2018/12/28
+ * Date: 2019/1/10
  * Time: 11:45
  * Email: 574482856@qq.com
  *
@@ -10,10 +10,10 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
-class TransportController extends ApiBaseController {
-  
+class ReportListController extends ApiBaseController {
+
   /**
-   * 获取运输方式列表
+   * 获取分组列表
    * @return mixed
    */
   public function getListAction() {
@@ -32,53 +32,55 @@ class TransportController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->transportService->getListPage($where, $page_num, $page_size);
+    $result = $this->reportListService->getList($where, $page_num, $page_size);
     return $result;
   }
 
   /**
-   * 添加运输方式
+   * 添加分组
    * @param string $title <POST> 名称
    * @return array
    */
   public function addAction() {
     $title = $this->_post('title');
-    $result = $this->transportService->add($title);
+    $remarks = $this->_post('remarks');
+    $result = $this->reportListService->add($title, $remarks);
     return $result;
   }
 
   /**
-   * 更新运输方式
+   * 更新分组名称
    * @param string $title <POST> 名称
    * @param string $id <POST> id
    * @return array
    */
   public function updateAction() {
     $title = $this->_post('title');
+    $remarks = $this->_post('remarks');
     $id = $this->_post('id');
-    $result = $this->transportService->update($id, $title);
+    $result = $this->reportListService->update($id, $title, $remarks);
     return $result;
   }
 
   /**
-   * 得到一个运输方式信息
+   * 得到一个分组信息
    * @param int $id <POST> 用户id
    * @return array|mixed
    */
   public function getOneAction() {
     $id = $this->_post('id');
-    $result = $this->transportService->getOne($id);
+    $result = $this->reportListService->getOne($id);
     return $result;
   }
 
   /**
-   * 运输方式删除
+   * 分组删除
    * @param string $id <POST> 数据id ，如果删除多个，请使用逗号分隔
    * @return 删除数据的id
    */
   public function deleteAction() {
     $id = $this->_post('id');
-    $result = $this->transportService->delete($id);
+    $result = $this->reportListService->delete($id);
     return $result;
   }
 

@@ -12,15 +12,17 @@
 defined('APP_PATH') OR exit('No direct script access allowed');
 
 class TradeService extends BaseService {
-  
+
+  protected $field = ['id', 'title', 'status', 'updatetime', 'createtime'];
+
   /**
    * 获取列表
    * @param array $where
    * @param $field
    * @return mixed
    */
-  public function getListPage(array $where, $field = '*', $page_num, $page_size) {
-    $result = $this->tradeModel->getListPage($where, $field, $page_num, $page_size);
+  public function getListPage(array $where, $page_num, $page_size) {
+    $result = $this->tradeModel->getListPage($where, $this->field, $page_num, $page_size);
     return $this->show($result);
   }
 

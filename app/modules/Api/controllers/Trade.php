@@ -11,7 +11,7 @@
 defined('APP_PATH') OR exit('No direct script access allowed');
 
 class TradeController extends ApiBaseController {
-  
+
   /**
    * 获取贸易方式列表
    * @return mixed
@@ -32,7 +32,7 @@ class TradeController extends ApiBaseController {
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
 
-    $result = $this->tradeService->getListPage($where, 'id,title,createtime', $page_num, $page_size);
+    $result = $this->tradeService->getListPage($where, $page_num, $page_size);
     return $result;
   }
 

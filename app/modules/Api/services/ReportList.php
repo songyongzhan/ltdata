@@ -9,36 +9,31 @@
 
 defined('APP_PATH') OR exit('No direct script access allowed');
 
-/**
- * 国家列表 操作服务类
- * Class TransportService
- */
-class CountryService extends BaseService {
-
+class ReportListService extends BaseService {
   protected $field = ['id', 'title', 'status', 'updatetime', 'createtime'];
 
   /**
-   * 获取列表
+   * 获取权限列表 分页
    * @param array $where
-   * @param $field
-   * @return mixed
+   * @param int $page_num <number>
+   * @param int $page_size <number>
    */
-  public function getListPage(array $where, $page_num, $page_size) {
-    $result = $this->countryModel->getListPage($where, $this->field, $page_num, $page_size);
+  public function getList(array $where, $page_num, $page_size) {
+    $result = $this->reportListModel->getListPage($where, $this->field, $page_num, $page_size);
     return $this->show($result);
   }
-
-
+  
   /**
-   * 添加
-   * @param string $title <require> 国家名称
+   * 添加权限
+   * @param string $title <require> 分组名称
    * @return mixed 返回最后插入的id
    */
-  public function add($title) {
+  public function add($title, $remarks) {
     $data = [
-      'title' => $title
+      'title' => $title,
+      'remarks' => $remarks
     ];
-    $lastInsertId = $this->countryModel->insert($data);
+    $lastInsertId = $this->reportListModel->insert($data);
     if ($lastInsertId) {
       $data['id'] = $lastInsertId;
       return $this->show($data);
@@ -49,41 +44,43 @@ class CountryService extends BaseService {
   }
 
   /**
-   * 删除一个
+   * 删除一个角色
    * @param int $id <require|number> id
    */
   public function delete($id) {
-    $result = $this->countryModel->delete($id);
+    $result = $this->reportListModel->delete($id);
     return $result > 0 ? $this->show(['row' => $result, 'id' => $id]) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
   /**
    * 获取单个信息
-   * @param int $id <require|number> id
+   * @param int $id <require|number> id不能为空|id不是数字
    * @param string $fileds
    * @return mixed
    */
   public function getOne($id, $fileds = '*') {
-    $result = $this->countryModel->getOne($id, $fileds);
+    $result = $this->reportListModel->getOne($id, $fileds);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
   /**
    * 分组更新数据
-   * @param int $id <require|number> id
+   * @param int $id <require|number> id不能为空|id不是数字
    * @param string $title <require> 名称
    * @return array mixed 返回用户数据
    */
 
-  public function update($id, $title) {
+  public function update($id, $title, $remarks) {
     $data = [
-      'title' => $title
+      'title' => $title,
+      'remarks' => $remarks
     ];
-    $result = $this->countryModel->update($id, $data);
+    $result = $this->reportListModel->update($id, $data);
     if ($result) {
       $data['id'] = $id;
     }
     return $result ? $this->show($data) : $this->show([]);
   }
+
 
 }
