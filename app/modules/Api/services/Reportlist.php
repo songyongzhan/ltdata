@@ -14,7 +14,7 @@ class ReportlistService extends BaseService {
    * 默认取出字段
    * @var array
    */
-  protected $field = ['id', 'title', 'utype', 'field_str', 'group_str', 'order_str', 'limit_str', 'having_str', 'date_type', 'status', 'updatetime', 'createtime'];
+  protected $field = ['id', 'title', 'utype', 'viewtype', 'field_str', 'group_str', 'order_str', 'limit_str', 'having_str', 'date_type', 'remarks', 'updatetime', 'createtime'];
 
   /**
    * 获取权限列表 分页
@@ -82,18 +82,21 @@ class ReportlistService extends BaseService {
     return $result ? $this->show($data) : $this->show([]);
   }
 
+  /**
+   * 获取对应使用类型
+   * @param int $utype <require> 类型不能为空
+   * @return array
+   * @throws InvalideException
+   */
+  public function getListByreport($utype) {
 
+    $result = $this->reportlistModel->getList([
+      getWhereCondition('utype', $utype),
+      getWhereCondition('status', 1)
+    ], ['id', 'title as text']);
 
-
-
-
-
-
-
-
-
-
-
+    return $result ? $this->show(['list' => $result]) : $this->show([]);
+  }
 
 
 }

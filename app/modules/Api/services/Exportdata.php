@@ -111,7 +111,7 @@ class ExportdataService extends BaseService {
    * @param int $report_id 根据这个可以做报表 汇总、平均值、及求和
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
    */
-  public function getReportData($where, $report_id, $date_type = 1, $type = 1) {
+  public function getReportData($where, $report_id, $date_type = '', $type = 1) {
 
 
     $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type);
@@ -125,8 +125,10 @@ class ExportdataService extends BaseService {
         break;
     }
 
-    print_r($result);
-    exit;
+
+    return $this->show($result);
+
+
     /* $v=$this->exportdataModel->getTableScnema('exportdata',['COLUMN_NAME','COLUMN_COMMENT']);
 
      var_dump($v);
@@ -297,6 +299,10 @@ class ExportdataService extends BaseService {
     $legendData = array_map(function ($val) {
       return $val . '年';
     }, array_keys($resultData));
+
+
+    if (is_null($date_type) || $date_type == '')
+      $date_type = $result['date_type'];
 
     $seriesData = [];
     $xAxisMax = 0;

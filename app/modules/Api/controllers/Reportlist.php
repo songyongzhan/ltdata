@@ -41,10 +41,20 @@ class ReportListController extends ApiBaseController {
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
-
     $result = $this->reportlistService->getList($where, $page_num, $page_size);
     return $result;
   }
+
+  /**
+   * 获取可以分析的模型
+   * @return mixed
+   */
+  public function getListByreportAction() {
+    $utype = $this->_post('utype', '');
+    $result = $this->reportlistService->getListByreport($utype);
+    return $result;
+  }
+
 
   /**
    * 添加分组
@@ -100,21 +110,25 @@ class ReportListController extends ApiBaseController {
   private function _getPostData() {
     $title = $this->_post('title');
     $utype = $this->_post('utype');
+    $viewtype = $this->_post('viewtype');
     $field_str = $this->_post('field_str');
     $group_str = $this->_post('group_str');
     $order_str = $this->_post('order_str');
     $limit_str = $this->_post('limit_str');
     $having_str = $this->_post('having_str');
     $date_type = $this->_post('date_type');
+    $remarks = $this->_post('remarks');
     $data = [
       'title' => $title,
       'utype' => $utype,
+      'viewtype' => $viewtype,
       'field_str' => $field_str,
       'group_str' => $group_str,
       'order_str' => $order_str,
       'limit_str' => $limit_str,
       'having_str' => $having_str,
       'date_type' => $date_type,
+      'remarks' => $remarks,
       'status' => 1
     ];
     return $data;

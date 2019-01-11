@@ -86,7 +86,7 @@ class ExportdataController extends ApiBaseController {
 
     $report_id = $this->_post('report_id', 1);
 
-    $date_type = $this->_post('date_type', 1);
+    $date_type = $this->_post('date_type', '');
 
     $type = $this->_post('type', 1); //2 导出csv  1 正常显示图表
 
