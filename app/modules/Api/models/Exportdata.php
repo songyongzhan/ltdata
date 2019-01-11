@@ -213,10 +213,9 @@ class ExportdataModel extends BaseModel {
     if (strtolower($reportRules['viewtype']) === 'pie') {
       //判断是否存在跨年 ，如果是 不管类型选择什么，都是2 按年统计
       $yearData = array_column($where, 'field');
-
+      $start_time = 0;
+      $end_time = 0;
       if (in_array('export_date', $yearData)) {
-        $start_time = 0;
-        $end_time = 0;
         foreach ($where as $val) {
           if ($val['field'] == 'export_date' && $val['operator'] == '>=')
             $start_time = $val['val'];
@@ -226,7 +225,8 @@ class ExportdataModel extends BaseModel {
         }
         if (date('Y', $start_time) != date('Y', $end_time))
           $date_type = 2;
-      }
+      } else
+        $date_type = 2;
     }
 
     $groupBy = [];
