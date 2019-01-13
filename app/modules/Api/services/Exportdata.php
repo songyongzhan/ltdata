@@ -75,34 +75,80 @@ class ExportdataService extends BaseService {
 
 
   /**
-   * 信息导出
-   * @param $where
-   * @param string $field
+   *
+   * @param $result 提取有价值的消息
+   * @param $where 时间区间
    * @return array
    */
-  public function exort($where, $field = '*') {
-    $result = [];
-    $chanelArr = $this->Dictionaries_service->getList('recharge_chanel');
-    $chanelArr = array_column($chanelArr['result'], 'title', 'id');
-    $csv = "客户流水号,支付流水号,银行流水号,用户名,充值渠道(0-B2B；1-B2C;2-协议支付;3-微信收单;4-支付宝收单),充值金额,充值手续费,实际支付金额,充值时间,支付公司状态(0-成功;1-失败),银行返回状态(0-成功;1-失败)";
-    $title = explode(',', $csv);
-    $csvDatas = [];
-    foreach ($result as $val) {
-      $csvDatas[] = [
-        $val['customer_flow_num'] . "\t",
-        $val['pay_flow_num'] . "\t",
-        $val['bank_flow_num'] . "\t",
-        $val['username'],
-        array_key_exists($val['channel'], $chanelArr) ? $chanelArr[$val['channel']] : '',
-        $val['recharge_amount'],
-        $val['recharge_charge'],
-        $val['actual_payment_amount'],
-        date('Y-m-d H:i:s', $val['payment_time']),
-        $val['pay_status'],
-        $val['bank_status']
-      ];
+  private function downloadCsv($result, $where) {
+
+    $table_column = $result['table_column'];
+
+    $csvHeader = [];
+    $csvField = [];
+    foreach (explode('|', $table_column) as $column) {
+      list($csvHeader[], $csvField[]) = explode(',', $column);
     }
-    return $this->show(['csv' => ['title' => $title, 'data' => $csvDatas]]);
+
+
+    $whereData = array_column($where, 'field', 'val');
+
+    if (in_array('export_date', $whereData)) {
+      foreach ($where as $val) {
+        if ($val['field'] == 'export_date' && $val['operator'] == '>=')
+          $whereData[$val['val']] = 'start_date';
+
+        if ($val['field'] == 'export_date' && $val['operator'] == '<=')
+          $whereData[$val['val']] = 'end_date';
+      }
+    }
+
+    $whereData = array_flip($whereData);
+
+    $header = [
+      [
+        $result['title'] . ((isset($whereData['start_date']) && isset($whereData['end_date'])) ? '(' . date('Y/m', $whereData['start_date']) . '-' . date('Y/m', $whereData['end_date']) . ')' : '')
+      ]
+    ];
+
+    /*$footer = [
+      [
+        '时间范围:',
+        isset($whereData['start_date']) ? date('Y-m-d', $whereData['start_date']) : '',
+        isset($whereData['end_date']) ? date('Y-m-d', $whereData['end_date']) : ''
+      ]
+    ];*/
+
+    $footer = [];
+    //$csv = implode(',', $csvHeader);
+
+    $csvDatas = [];
+    foreach ($result['list'] as $val) {
+      $temp = [];
+      foreach ($csvField as $field) {
+
+        if (isset($val['dist_country'])) { //国家处理
+          $country_name = $this->exportdataModel->getCountry($val['dist_country']);
+          $val['dist_country'] = $country_name;
+        } elseif (isset($val['export_ciq'])) { //关区处理
+          $export_ciq = $this->exportdataModel->getCiq($val['export_ciq']);
+          $val['export_ciq'] = $export_ciq;
+        } elseif (isset($val['trade_mode'])) { //贸易方式处理
+          $trade_mode = $this->exportdataModel->getTrade($val['trade_mode']);
+          $val['trade_mode'] = $trade_mode;
+        } elseif (isset($value['specification'])) { //规格处理 不需要做处理
+        }
+
+        if ($field != 'val')
+          $temp[] = $val[$field] . "\t";
+        else
+          $temp[] = $val[$field];
+
+      }
+      $csvDatas[] = $temp;
+    }
+
+    return ['csv' => ['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer]];
   }
 
   /**
@@ -111,34 +157,103 @@ class ExportdataService extends BaseService {
    * @param int $report_id 根据这个可以做报表 汇总、平均值、及求和
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
    */
-  public function getReportData($where, $report_id, $date_type = '', $type = 1) {
+  public function getReportData($where, $report_id, $date_type = '', $type) {
 
-    $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type);
+    $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
 
-    switch (strtolower($result['viewtype'])) {
-      case 'pie':
-        $result['option'] = $this->_createPie($result, $date_type);;
-        break;
-      case 'line':
-        $result['option'] = $this->_createLine($result, $date_type);
-        break;
+    if ($type == 1) {
+      switch (strtolower($result['viewtype'])) {
+        case 'pie':
+          $result['option'] = $this->_createPie($result, $date_type);;
+          break;
+        case 'line':
+          $result['option'] = $this->_createLine($result, $date_type);
+          break;
+      }
+      $result['list'] = array_slice($result['list'], 0, 12);
+    } else {
+
+
+      //下载csv文件
+      $result = $this->downloadCsv($result, $where);
     }
     return $this->show($result);
   }
 
-  private function _createPie($result, $date_type) {
+  private function _createPie(&$result, $date_type) {
     $series_data = [];
     $legend_data = [];
     $series_data_selected = [];
-    foreach ($result['list'] as $key => $value) {
-      $country_name = $this->exportdataModel->getCountry($value['dist_country']);
-      $series_data[] = [
-        'value' => number_format($value['val'] / $result['sum_val'], 2),
-        'name' => $country_name,
-        'selected' => $key == 0 ? TRUE : FALSE
-      ];
-      $series_data_selected[$country_name] = $key < 15 ? TRUE : FALSE;
-      $legend_data[] = $country_name;
+    $defaultSelected = 10;
+    foreach ($result['list'] as $key => &$value) {
+
+      if (isset($value['dist_country'])) { //国家处理
+
+        $country_name = $this->exportdataModel->getCountry($value['dist_country']);
+        $series_data[] = [
+          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
+            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+          'name' => $country_name,
+          'selected' => $key == 0 ? TRUE : FALSE
+        ];
+        $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
+        $legend_data[] = $country_name;
+        $value['dist_country'] = $country_name;
+
+      } elseif (isset($value['export_ciq'])) { //关区处理
+
+        $export_ciq = $this->exportdataModel->getCiq($value['export_ciq']);
+        $series_data[] = [
+          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
+            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+          'name' => $export_ciq,
+          'selected' => $key == 0 ? TRUE : FALSE
+        ];
+        $series_data_selected[$export_ciq] = $key < $defaultSelected ? TRUE : FALSE;
+        $legend_data[] = $export_ciq;
+        $value['export_ciq'] = $export_ciq;
+
+      } elseif (isset($value['trade_mode'])) { //贸易方式处理
+
+        $trade_mode = $this->exportdataModel->getTrade($value['trade_mode']);
+
+        $series_data[] = [
+          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
+            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+          'name' => $trade_mode,
+          'selected' => $key == 0 ? TRUE : FALSE
+        ];
+        $series_data_selected[$trade_mode] = $key < $defaultSelected ? TRUE : FALSE;
+        $legend_data[] = $trade_mode;
+        $value['trade_mode'] = $trade_mode;
+
+      } elseif (isset($value['specification'])) { //规格处理
+
+        //$num = number_format($value['val'] / $result['sum_val'], 2);
+        $series_data[] = [
+          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
+            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+          'name' => $value['specification'],
+          'selected' => $key == 0 ? TRUE : FALSE
+        ];
+        $series_data_selected[$value['specification']] = $key < $defaultSelected ? TRUE : FALSE;
+        $legend_data[] = $value['specification'];
+
+      } elseif (isset($value['shipper'])) { //出口企业
+        $series_data[] = [
+          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
+            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+          'name' => $value['shipper'],
+          'selected' => $key == 0 ? TRUE : FALSE
+        ];
+        $series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
+        $legend_data[] = $value['shipper'];
+
+      } else {
+        echo '根据规则在写';
+        exit;
+      }
+
     }
 
     $seriesData = [
@@ -167,7 +282,7 @@ class ExportdataService extends BaseService {
       ],
       'tooltip' => [ //鼠标放上去是否信息显示
         'trigger' => 'item',
-        'formatter' => "{a} <br/>{b} : {c}%"
+        'formatter' => "{a} <br/>{b} : {c} " . $result['prompt_sign']
       ],
 
       'legend' => [ //栏目显示
@@ -197,8 +312,11 @@ class ExportdataService extends BaseService {
    * @param $date_type
    * @return array
    */
-  private function _createLine($result, $date_type) {
+  private function _createLine(&$result, $date_type) {
+
+
     $resultData = [];
+
     foreach ($result['list'] as $val) {
       $resultData[$val['export_year']][] = [
         'title' => $val['export_year'],
@@ -217,7 +335,7 @@ class ExportdataService extends BaseService {
       $date_type = $result['date_type'];
 
     $seriesData = [];
-    $xAxisMax = 0;
+    $xAxisMax = [];
     foreach (array_keys($resultData) as $yearval) {
       $temp = $resultData[$yearval];
       if ($date_type == 1) { //1 年 月   2年  当等于2 的时候不考虑排序
@@ -228,8 +346,12 @@ class ExportdataService extends BaseService {
           return $a['month'] > $b['month'] ? 1 : -1;
         });
 
-        if (count($temp) > $xAxisMax)
-          $xAxisMax = count($temp);
+
+        foreach ($temp as $k => $val) {
+          if (isset($val['month']))
+            $xAxisMax[] = $val['month'] - 1;
+        }
+
 
         $seriesData[] = [
           'name' => $yearval . '年',
@@ -247,7 +369,6 @@ class ExportdataService extends BaseService {
         } else {
           $seriesData[0]['data'][] = array_column($temp, 'numval')[0];
         }
-
       }
     }
 
@@ -256,9 +377,11 @@ class ExportdataService extends BaseService {
       $xAxisDataText = [
         '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
       ];
-      for ($i = 0; $i < $xAxisMax; $i++) {
-        $xAxisData[] = $xAxisDataText[$i];
+
+      foreach ($xAxisMax as $val) {
+        $xAxisData[] = $xAxisDataText[$val];
       }
+
     } elseif ($date_type == 2) {
       $xAxisData = $legendData;
     }

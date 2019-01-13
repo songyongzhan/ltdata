@@ -74,7 +74,9 @@ class RoleaccessService extends BaseService {
    */
   private function getCurrentManageRoleMenu() {
     if ($this->tokenService->isadmin) {
-      $where = [];
+      $where = [
+        getWhereCondition('status', 1)
+      ];
       $menuList = $this->menuModel->getList($where, ['id', 'title', 'pid', 'sort_id']);
     } else {
       //不是超级管理员 获取栏目
@@ -90,7 +92,6 @@ class RoleaccessService extends BaseService {
    * @param int $id <require|number> id不能为空|id不是数字
    */
   public function getRoleAccess($id) {
-
     $menuList = $this->getCurrentManageRoleMenu();
     $roleMenu = $this->roleaccessModel->getList([
       getWhereCondition('role_id', $id)

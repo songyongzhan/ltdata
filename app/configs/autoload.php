@@ -47,13 +47,15 @@ spl_autoload_register(function ($class) use ($autoload) {
 
 }, TRUE, FALSE);
 
-$pattern = '/.*\.(ico|jpg|png|gif|css|js)/i';
-if (preg_match($pattern, $_SERVER['REQUEST_URI'])) {
-  $server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
-  header('status:404');
-  header($server_protocol . " 404 No Found.");
+if (isset($_SERVER['REQUEST_URI'])) {
+  $pattern = '/.*\.(ico|jpg|png|gif|css|js)/i';
+  if (preg_match($pattern, $_SERVER['REQUEST_URI'])) {
+    $server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+    header('status:404');
+    header($server_protocol . " 404 No Found.");
 
-  exit;
+    exit;
+  }
 }
 
 //自动加载helpers 文件中指定文件

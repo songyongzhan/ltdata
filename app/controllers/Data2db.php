@@ -56,8 +56,8 @@ class Data2dbController extends BaseController {
    */
 
   // */30 * * * * php index.php index/data2db/import
+  // */30 * * * * php index.php index/data2db/importUnTransaction
   public function importAction() {
-
 
     Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
 
@@ -101,8 +101,89 @@ class Data2dbController extends BaseController {
   }
 
 
+  /**
+   * 没有事务的情况下执行操作
+   * @throws Exception
+
+   **
+   * php index.php index/data2db/import
+   * HTTP_ENV=develop php index.php index/data2db/importUnTransaction
+   *
+
+   */
+  public function importUnTransactionAction() {
+
+
+    Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
+
+    foreach (glob(APP_PATH . '/data/uploads/csv/*.csv') as $file) {
+
+      debugMessage(" $file 开始自动导入...");
+
+      $csv = new helperCsv($file, 0, FALSE);
+      $multi_time = time();
+      try {
+        $importFlag = TRUE;
+        $multiData = [];
+        foreach ($csv as $row => $data) {
+          if (!$data) continue;
+          $this->format($data);
+
+          if (count($multiData) < 1000) {
+
+            $data['updatetime'] = time();
+            $data['createtime'] = time();
+            $data['multidata'] = $multi_time;
+
+            $multiData[] = $data;
+
+          } else {
+            $result = $this->cliExportdataModel->importMulti($multiData);
+            if (!$result) {
+              debugMessage("$file 导入出错...");
+              $this->cliExportdataModel->delMulti($multi_time);
+              break;
+            }
+            $multiData = [];
+          }
+        }
+        //执行退出后，如果multiData 还有数据，则再次添加
+        if (count($multiData)) {
+          $result = $this->cliExportdataModel->importMulti($multiData);
+          if (!$result) {
+            debugMessage("$file 导入出错...");
+            $this->cliExportdataModel->delMulti($multi_time);
+            break;
+          }
+        }
+
+
+        /*if ($importFlag) {
+          debugMessage("$file 导入成功...");
+
+        } else {
+
+          debugMessage("$file 导入失败...");
+        }*/
+
+        $this->mvFiletoDist($file);
+
+      } catch (Exception $e) {
+
+        debugMessage('Cli import error' . $e->getMessage() . ' code ' . $e->getCode() . var_export($e->getTrace(), TRUE));
+        $this->cliExportdataModel->delMulti($multi_time);
+      }
+    }
+
+    die();
+  }
+
   private function mvFiletoDist($file) {
     $distPath = APP_PATH . '/data/uploads/csv/dist/';
+
+    if (!is_dir($distPath))
+      mkdir($distPath, 0755, TRUE);
+
     if (!is_writeable($distPath))
       debugMessage(sprintf('移动文件失败  ===目录 %s 不可写', $distPath));
     else {

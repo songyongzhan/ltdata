@@ -36,6 +36,19 @@ class CliExportdataModel extends BaseModel {
     return $this->insert($data, 'exportdata');
   }
 
+  public function importMulti($multiData) {
+    return $this->inserMulti($multiData, 'exportdata');
+  }
+
+  public function delMulti($multi_time) {
+    $this->setCond(
+      [getWhereCondition('multidata', $multi_time)]
+    );
+
+    $this->_db->delete('exportdata');
+  }
+
+
   public function ciq($ciq) {
     if (!$ciq) return '';
     static $ciqDatas;
@@ -48,13 +61,20 @@ class CliExportdataModel extends BaseModel {
       return $ciqDatas[$ciq];
     } else {
       //插入数据库，并在ciq中添加
-      $insertId = $this->insert(['title' => $ciq, 'status' => 1], 'ciq');
-      if ($insertId) {
-        //如果插入成功，并写入redis
-        $this->redis->hSet('ciq', $insertId, $ciq);
+      $one = $this->getOne([getWhereCondition('title', $ciq)], ['id', 'title'], 'ciq');
+      if (!$one) {
+        //插入数据库，并在ciq中添加
+        $insertId = $this->insert(['title' => $ciq, 'status' => 1], 'ciq');
+        if ($insertId) {
+          //如果插入成功，并写入redis
+          $this->redis->hSet('ciq', $insertId, $ciq);
+        }
+        $ciqDatas[$ciq] = $insertId;
+        $id = $insertId;
+      } else {
+        $id = $one['id'];
       }
-      $ciqDatas[$ciq] = $insertId;
-      return $insertId;
+      return $id;
     }
   }
 
@@ -69,14 +89,25 @@ class CliExportdataModel extends BaseModel {
     if (isset($countryDatas[$country])) {
       return $countryDatas[$country];
     } else {
-      //插入数据库，并在ciq中添加
-      $insertId = $this->insert(['title' => $country, 'status' => 1], 'country');
-      if ($insertId) {
-        //如果插入成功，并写入redis
-        $this->redis->hSet('country', $insertId, $country);
+
+
+      $one = $this->getOne([getWhereCondition('title', $country)], ['id', 'title'], 'country');
+      if (!$one) {
+        //插入数据库，并在ciq中添加
+        $insertId = $this->insert(['title' => $country, 'status' => 1], 'country');
+        if ($insertId) {
+          //如果插入成功，并写入redis
+          $this->redis->hSet('country', $insertId, $country);
+        }
+        $countryDatas[$country] = $insertId;
+        $countryId = $insertId;
+      } else {
+        $countryId = $one['id'];
       }
-      $countryDatas[$country] = $insertId;
-      return $insertId;
+
+      return $countryId;
+
+
     }
   }
 
@@ -92,13 +123,20 @@ class CliExportdataModel extends BaseModel {
       return $tradeDatas[$trade];
     } else {
       //插入数据库，并在ciq中添加
-      $insertId = $this->insert(['title' => $trade, 'status' => 1], 'trade');
-      if ($insertId) {
-        //如果插入成功，并写入redis
-        $this->redis->hSet('trade', $insertId, $trade);
+      $one = $this->getOne([getWhereCondition('title', $trade)], ['id', 'title'], 'trade');
+      if (!$one) {
+        //插入数据库，并在ciq中添加
+        $insertId = $this->insert(['title' => $trade, 'status' => 1], 'trade');
+        if ($insertId) {
+          //如果插入成功，并写入redis
+          $this->redis->hSet('trade', $insertId, $trade);
+        }
+        $tradeDatas[$trade] = $insertId;
+        $id = $insertId;
+      } else {
+        $id = $one['id'];
       }
-      $tradeDatas[$trade] = $insertId;
-      return $insertId;
+      return $id;
     }
   }
 
@@ -114,13 +152,22 @@ class CliExportdataModel extends BaseModel {
       return $transportDatas[$transport];
     } else {
       //插入数据库，并在ciq中添加
-      $insertId = $this->insert(['title' => $transport, 'status' => 1], 'transport');
-      if ($insertId) {
-        //如果插入成功，并写入redis
-        $this->redis->hSet('transport', $insertId, $transport);
+
+
+      $one = $this->getOne([getWhereCondition('title', $transport)], ['id', 'title'], 'transport');
+      if (!$one) {
+        //插入数据库，并在ciq中添加
+        $insertId = $this->insert(['title' => $transport, 'status' => 1], 'transport');
+        if ($insertId) {
+          //如果插入成功，并写入redis
+          $this->redis->hSet('transport', $insertId, $transport);
+        }
+        $transportDatas[$transport] = $insertId;
+        $id = $insertId;
+      } else {
+        $id = $one['id'];
       }
-      $transportDatas[$transport] = $insertId;
-      return $insertId;
+      return $id;
     }
   }
 
@@ -135,14 +182,23 @@ class CliExportdataModel extends BaseModel {
     if (isset($madeDatas[$madein])) {
       return $madeDatas[$madein];
     } else {
-      //插入数据库，并在ciq中添加
-      $insertId = $this->insert(['title' => $madein, 'status' => 1], 'made');
-      if ($insertId) {
-        //如果插入成功，并写入redis
-        $this->redis->hSet('made', $insertId, $madein);
+
+      $one = $this->getOne([getWhereCondition('title', $madein)], ['id', 'title'], 'made');
+      if (!$one) {
+        //插入数据库，并在ciq中添加
+        $insertId = $this->insert(['title' => $madein, 'status' => 1], 'made');
+        if ($insertId) {
+          //如果插入成功，并写入redis
+          $this->redis->hSet('made', $insertId, $madein);
+        }
+        $madeDatas[$madein] = $insertId;
+        $madeId = $insertId;
+      } else {
+        $madeId = $one['id'];
       }
-      $madeDatas[$madein] = $insertId;
-      return $insertId;
+
+      return $madeId;
+
     }
 
   }
@@ -158,6 +214,10 @@ class CliExportdataModel extends BaseModel {
         $tableCount = $this->getCount([], $val);
         if ($redisCount != $tableCount)
           $isInit = TRUE;
+        else
+          $this->redis->expire($val, REDIS_EXPIRE);
+
+
       } else
         $isInit = TRUE;
 

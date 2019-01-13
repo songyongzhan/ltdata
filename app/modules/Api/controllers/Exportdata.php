@@ -63,11 +63,11 @@ class ExportdataController extends ApiBaseController {
 
 
   public function exportAction() {
-    $where = $this->_search();
-    $result = $this->exportdataService->export($where);
+    $result = $this->reportAction();
     if ($result['result']) {
       $file_content = $result['result']['csv'];
-      export_csv($file_content, 'recharge_' . date('Y-m-d'));
+      $filename = isset($file_content['header'][0][0]) ? $file_content['header'][0][0] : date('Y-m-d');
+      export_csv($file_content, $filename);
     }
     return $result;
   }
@@ -79,10 +79,6 @@ class ExportdataController extends ApiBaseController {
   public function reportAction() {
 
     $where = $this->_search();
-
-    $report_type = ''; //生成数据分析图的类型
-
-    //public function getReportData($where, $report_id, $date_type, $type) {
 
     $report_id = $this->_post('report_id', 1);
 
@@ -159,6 +155,7 @@ class ExportdataController extends ApiBaseController {
         'db_field' => ['export_ciq', 'dist_country', 'goods_code', 'transaction_mode', 'trade_mode', 'transport_mode', 'madein']
       ]
     ];
+
     $data = [
       'shipper' => $shipper,
       'export_ciq' => $export_ciq,

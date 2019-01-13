@@ -283,73 +283,98 @@ class ManageService extends BaseService {
   /**
    * 综合返回 搜索需要使用的数据
    */
-  public function searchData() {
+  public function searchData($type = '') {
     $data = [];
-    $ciq = $this->redisModel->redis->hGetAll('ciq');
-    foreach ($ciq as $key => $val) {
-      $data['export_ciq'][] = [
-        'id' => $key,
-        'text' => $val
-      ];
+    $default = $data_type = ['ciq', 'country', 'trade', 'transport', 'made', 'transport_mode', 'transaction_mode', 'shipper', 'specification'];
+
+    if ($type !== "" && in_array($type, $default))
+      $data_type = [$type];
+
+    foreach ($data_type as $val) {
+      switch ($val) {
+        case 'ciq':
+          $ciq = $this->redisModel->redis->hGetAll('ciq');
+          foreach ($ciq as $key => $val) {
+            $data['export_ciq'][] = [
+              'id' => $key,
+              'text' => $val
+            ];
+          }
+          break;
+        case 'country':
+          $country = $this->redisModel->redis->hGetAll('country');
+
+          foreach ($country as $key => $val) {
+            $data['dist_country'][] = [
+              'id' => $key,
+              'text' => $val
+            ];
+          }
+          break;
+
+        case 'trade':
+          $trade = $this->redisModel->redis->hGetAll('trade'); //贸易方式
+
+          foreach ($trade as $key => $val) {
+            $data['trade_mode'][] = [
+              'id' => $key,
+              'text' => $val
+            ];
+          }
+          break;
+
+        case 'made':
+          $made = $this->redisModel->redis->hGetAll('made'); //原产地
+          foreach ($made as $key => $val) {
+            $data['madein'][] = [
+              'id' => $key,
+              'text' => $val
+            ];
+          }
+          break;
+
+        case 'transport_mode':
+          $transport = $this->redisModel->redis->hGetAll('transport'); //运输方式
+
+          foreach ($transport as $key => $val) {
+            $data['transport_mode'][] = [
+              'id' => $key,
+              'text' => $val
+            ];
+          }
+          break;
+
+        case 'transaction_mode':
+          $transaction_mode = $this->exportdataModel->getViewData('transaction_mode_view');//交易方式
+          foreach ($transaction_mode as $key => $val) {
+            $data['transaction_mode'][] = [
+              'id' => $val['transaction_mode'],
+              'text' => $val['transaction_mode']
+            ];
+          }
+          break;
+
+        case 'shipper':
+          $shipper = $this->exportdataModel->getViewData('shipper_view'); //货主单位
+          foreach ($shipper as $key => $val) {
+            $data['shipper'][] = [
+              'id' => $val['shipper'],
+              'text' => $val['shipper']
+            ];
+          }
+          break;
+
+        case 'specification':
+          $specification = $this->exportdataModel->getViewData('specification_view');//规格
+          foreach ($specification as $key => $val) {
+            $data['specification'][] = [
+              'id' => $val['specification'],
+              'text' => $val['specification']
+            ];
+          }
+          break;
+      }
     }
-
-    $country = $this->redisModel->redis->hGetAll('country');
-
-    foreach ($country as $key => $val) {
-      $data['dist_country'][] = [
-        'id' => $key,
-        'text' => $val
-      ];
-    }
-
-    $trade = $this->redisModel->redis->hGetAll('trade'); //贸易方式
-
-    foreach ($trade as $key => $val) {
-      $data['trade_mode'][] = [
-        'id' => $key,
-        'text' => $val
-      ];
-    }
-    $transport = $this->redisModel->redis->hGetAll('transport'); //运输方式
-
-    foreach ($transport as $key => $val) {
-      $data['transport_mode'][] = [
-        'id' => $key,
-        'text' => $val
-      ];
-    }
-    $made = $this->redisModel->redis->hGetAll('made'); //原产地
-    foreach ($made as $key => $val) {
-      $data['madein'][] = [
-        'id' => $key,
-        'text' => $val
-      ];
-    }
-
-    $transaction_mode = $this->exportdataModel->getViewData('transaction_mode_view');//交易方式
-    foreach ($transaction_mode as $key => $val) {
-      $data['transaction_mode'][] = [
-        'id' => $val['transaction_mode'],
-        'text' => $val['transaction_mode']
-      ];
-    }
-
-    $shipper = $this->exportdataModel->getViewData('shipper_view'); //货主单位
-    foreach ($shipper as $key => $val) {
-      $data['shipper'][] = [
-        'id' => $val['shipper'],
-        'text' => $val['shipper']
-      ];
-    }
-
-    $specification = $this->exportdataModel->getViewData('specification_view');//规格
-    foreach ($specification as $key => $val) {
-      $data['specification'][] = [
-        'id' => $val['specification'],
-        'text' => $val['specification']
-      ];
-    }
-
     return $this->show($data);
   }
 

@@ -109,6 +109,7 @@ class ReportListController extends ApiBaseController {
    */
   private function _getPostData() {
     $title = $this->_post('title');
+    $title2 = $this->_post('title2');
     $utype = $this->_post('utype');
     $viewtype = $this->_post('viewtype');
     $field_str = $this->_post('field_str');
@@ -118,8 +119,10 @@ class ReportListController extends ApiBaseController {
     $having_str = $this->_post('having_str');
     $date_type = $this->_post('date_type');
     $remarks = $this->_post('remarks');
+    $table_column = $this->_post('table_column');
     $data = [
       'title' => $title,
+      'title2' => $title2,
       'utype' => $utype,
       'viewtype' => $viewtype,
       'field_str' => $field_str,
@@ -129,6 +132,7 @@ class ReportListController extends ApiBaseController {
       'having_str' => $having_str,
       'date_type' => $date_type,
       'remarks' => $remarks,
+      'table_column' => $table_column,
       'status' => 1
     ];
     return $data;

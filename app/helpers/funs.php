@@ -217,10 +217,24 @@ function export_csv($file_content, $filename) {
   header('Pragma: public');
 
   if ($out = fopen('php://output', 'w')) {
+
+    if(isset($file_content['header'])){
+      foreach ($file_content['header'] as $key => $val) {
+        fputcsv($out, $val);
+      }
+    }
+
     fputcsv($out, $file_content['title']);
     foreach ($file_content['data'] as $key => $val) {
       fputcsv($out, $val);
     }
+
+    if(isset($file_content['footer'])){
+      foreach ($file_content['footer'] as $key => $val) {
+        fputcsv($out, $val);
+      }
+    }
+
     fclose($out);
   }
   die();

@@ -147,7 +147,7 @@ class ExportdataModel extends BaseModel {
    * @param $orderBy
    * @param null $limit
    */
-  public function getReportData($where, $field, $groupBy = [], $having = [], $orderBy = [], $limit = NULL) {
+  public function getReportData($where, $field, $groupBy = [], $having = [], $orderBy = [], $limit = NULL, $type = 1) {
 
     $this->setCond($where);
 
@@ -171,13 +171,13 @@ class ExportdataModel extends BaseModel {
     $this->_logSql();
 
 
-    if (is_numeric($limit) && $limit > 0)
+    if ($type == 1 && is_numeric($limit) && $limit > 0)
       $rowNum = $limit;
     else
       $rowNum = count($result);
 
     $data = [
-      'sum_val' => array_sum(array_column($result, 'val')),
+      'sum_val' => sprintf('%.2f', array_sum(array_column($result, 'val'))),
       'list' => array_slice($result, 0, $rowNum)
     ];
 
@@ -191,7 +191,7 @@ class ExportdataModel extends BaseModel {
    * @return array
    * @throws Exception
    */
-  public function getReportDataByReportlist($where, $report_id, $date_type = NULL) {
+  public function getReportDataByReportlist($where, $report_id, $date_type = NULL, $type = 1) {
 
     $reportRules = $this->reportlistModel->getOne($report_id);
 
@@ -268,11 +268,13 @@ class ExportdataModel extends BaseModel {
 
     $limit = $reportRules['limit_str'];
 
-    $reportData = $this->getReportData($where, $field, $groupBy, $having, $orderBy, $limit);
+    $reportData = $this->getReportData($where, $field, $groupBy, $having, $orderBy, $limit, $type);
 
     $reportRules['list'] = $reportData['list'];
     $reportRules['sum_val'] = $reportData['sum_val'];
-    $reportRules['limit_dscript'] = $limit > 0 ? '返回了部分数据 仅' . $limit . '条' : '返回全部';
+
+    if ($type == 1)
+      $reportRules['limit_dscript'] = $limit > 0 ? '返回了部分数据 仅' . $limit . '条' : '返回全部';
 
     return $reportRules;
   }

@@ -222,7 +222,8 @@ class ManageController extends ApiBaseController {
    * 公开化 用于搜索 填充数据使用
    */
   public function searchDataAction() {
-    $result = $this->manageService->searchData();
+    $type = $this->_post('type','');
+    $result = $this->manageService->searchData($type);
     return $result;
   }
 
@@ -244,15 +245,15 @@ class ManageController extends ApiBaseController {
 */
 
 
-    $t='1KodJfx-6406zBzbLama1xNOGDkkaj2NdSoZxMN2_DCTHdrXzr367CFL_FYjHlchXmrL5z5Yzu-CPX9-KFZvlPtNMjQJlEa6zD-vDvDIzTCpcBjMaOmQdZ47TuDmhu4pl2b4A5ETdydRgdkee48AUtuoM6XBaeyZ1vE-xqcCFyE=';
+    $t = '1KodJfx-6406zBzbLama1xNOGDkkaj2NdSoZxMN2_DCTHdrXzr367CFL_FYjHlchXmrL5z5Yzu-CPX9-KFZvlPtNMjQJlEa6zD-vDvDIzTCpcBjMaOmQdZ47TuDmhu4pl2b4A5ETdydRgdkee48AUtuoM6XBaeyZ1vE-xqcCFyE=';
 
     echo "<hr>";
     echo Rsa::Decrypt($t, JSPHP_PWD_PRIVKEY, TRUE);
 
     exit;
-  /*  echo "\n";
-    $pass = 'IbSRs83g8YPRTSV+Ey+VpVz3huaCQHBnOWBkvt+4/0BgQTf1nZCKpTqs8dDP+/BhqS/FNroUQ6OorT9Jz6T1R4aav04mItZGtJVBRnJ2ikRRT72qpOGsADQrZgdfwlQwa7B+C/NF6BxOVc75BfHtZWKp2tiq7Hxq2TsW5rU8kk0=';
-    var_dump(Rsa::Decrypt($pass, JSPHP_PWD_PRIVKEY));*/
+    /*  echo "\n";
+      $pass = 'IbSRs83g8YPRTSV+Ey+VpVz3huaCQHBnOWBkvt+4/0BgQTf1nZCKpTqs8dDP+/BhqS/FNroUQ6OorT9Jz6T1R4aav04mItZGtJVBRnJ2ikRRT72qpOGsADQrZgdfwlQwa7B+C/NF6BxOVc75BfHtZWKp2tiq7Hxq2TsW5rU8kk0=';
+      var_dump(Rsa::Decrypt($pass, JSPHP_PWD_PRIVKEY));*/
 
     echo "<hr>";
 
@@ -272,9 +273,6 @@ class ManageController extends ApiBaseController {
     //
     //echo Rsa::Encrypt('song',JSPHP_PWD_PUBLIC);
     //
-
-
-
 
 
     exit;
