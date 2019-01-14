@@ -199,26 +199,78 @@ function page_data($list = [], $total = 0, $pageNum, $pageSize, $total_page) {
 }
 
 /**
- * 导出csv格式文件
- * @param $file_content 文件内容
- * @param $filename 文件名称 不要带扩展名
+ * 下载文件
+ * @param $file
+ * @param bool $isSpeed 默认限速 2M
  */
-function export_csv($file_content, $filename) {
-  if (!isset($file_content['title']) || !isset($file_content['data']))
-    showApiException('export params error.', API_FAILURE);
+function downloadfile($file, $isSpeed = TRUE) {
 
-  $file_content = convert_encodeing($file_content);
+  if (!is_file($file)) {
+    debugMessage($file . ' not found.');
+    die();
+  }
+
+  $filename = basename($file);
   header('Content-Description: File Transfer');
-  header('Content-Type: application/x-xls');
-  header('Content-Disposition: attachment; filename=' . $filename . '.csv');
+  header('Content-Type: application/octet-stream');
+  header('Content-Disposition: attachment; filename=' . $filename);
   header('Content-Transfer-Encoding: binary');
   header('Expires: 0');
   header('Cache-Control: must-revalidate');
   header('Pragma: public');
 
-  if ($out = fopen('php://output', 'w')) {
+  $out = fopen($file, 'rb');
 
-    if(isset($file_content['header'])){
+  //读取文件内容并直接输出到浏览器
+  if ($isSpeed) {
+
+    while (!feof($out)) {
+      echo fread($out, mt_rand(1, 2048));
+    }
+
+  } else
+    echo fread($out, filesize($filename));
+
+  fclose($out);
+
+  die ();
+
+}
+
+/**
+ * 导出csv格式文件
+ * @param $file_content 文件内容
+ * @param $filename 文件名称 不要带扩展名
+ * @param $isSaveFile 是否保存文件
+ */
+function export_csv($file_content, $filename, $isSaveFile = FALSE) {
+  if (!isset($file_content['title']) || !isset($file_content['data']))
+    showApiException('export params error.', API_FAILURE);
+
+  $file_content = convert_encodeing($file_content);
+
+  if (!$isSaveFile) {
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/x-xls');
+    header('Content-Disposition: attachment; filename=' . $filename . '.csv');
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+
+    $out = fopen('php://output', 'w');
+  } else {
+    //保存文件
+    $download = APP_PATH . DS . 'data/download';
+    if (!is_dir($download))
+      mkdir($download, 0755, TRUE);
+    $filepath = str_replace(APP_PATH, '', $download . DS . $filename);
+    $out = fopen($download . DS . $filename, 'w');
+  }
+
+  if ($out) {
+
+    if (isset($file_content['header'])) {
       foreach ($file_content['header'] as $key => $val) {
         fputcsv($out, $val);
       }
@@ -229,7 +281,7 @@ function export_csv($file_content, $filename) {
       fputcsv($out, $val);
     }
 
-    if(isset($file_content['footer'])){
+    if (isset($file_content['footer'])) {
       foreach ($file_content['footer'] as $key => $val) {
         fputcsv($out, $val);
       }
@@ -237,6 +289,11 @@ function export_csv($file_content, $filename) {
 
     fclose($out);
   }
+
+  //如果是保存文件，则返回保存后的文件路径
+  if ($isSaveFile)
+    return $filepath;
+
   die();
 }
 

@@ -75,80 +75,20 @@ class ExportdataService extends BaseService {
 
 
   /**
-   *
-   * @param $result 提取有价值的消息
-   * @param $where 时间区间
+   * @param $id
    * @return array
    */
-  private function downloadCsv($result, $where) {
+  public function downloadCsv($id) {
+    //$result, $where
+    $downloadInfo = $this->csvlistModel->getOne($id, ['id', 'manage_id', 'download_file', 'where_condition', 'date_type', 'report_id']);
 
-    $table_column = $result['table_column'];
+    if (!$downloadInfo)
+      showApiException('此信息不存在', StatusCode::DATA_NOT_EXISTS);
 
-    $csvHeader = [];
-    $csvField = [];
-    foreach (explode('|', $table_column) as $column) {
-      list($csvHeader[], $csvField[]) = explode(',', $column);
-    }
+    if ($downloadInfo['download_file'] == '')
+      showApiException('下载文件不存在', StatusCode::DATA_NOT_EXISTS);
 
-
-    $whereData = array_column($where, 'field', 'val');
-
-    if (in_array('export_date', $whereData)) {
-      foreach ($where as $val) {
-        if ($val['field'] == 'export_date' && $val['operator'] == '>=')
-          $whereData[$val['val']] = 'start_date';
-
-        if ($val['field'] == 'export_date' && $val['operator'] == '<=')
-          $whereData[$val['val']] = 'end_date';
-      }
-    }
-
-    $whereData = array_flip($whereData);
-
-    $header = [
-      [
-        $result['title'] . ((isset($whereData['start_date']) && isset($whereData['end_date'])) ? '(' . date('Y/m', $whereData['start_date']) . '-' . date('Y/m', $whereData['end_date']) . ')' : '')
-      ]
-    ];
-
-    /*$footer = [
-      [
-        '时间范围:',
-        isset($whereData['start_date']) ? date('Y-m-d', $whereData['start_date']) : '',
-        isset($whereData['end_date']) ? date('Y-m-d', $whereData['end_date']) : ''
-      ]
-    ];*/
-
-    $footer = [];
-    //$csv = implode(',', $csvHeader);
-
-    $csvDatas = [];
-    foreach ($result['list'] as $val) {
-      $temp = [];
-      foreach ($csvField as $field) {
-
-        if (isset($val['dist_country'])) { //国家处理
-          $country_name = $this->exportdataModel->getCountry($val['dist_country']);
-          $val['dist_country'] = $country_name;
-        } elseif (isset($val['export_ciq'])) { //关区处理
-          $export_ciq = $this->exportdataModel->getCiq($val['export_ciq']);
-          $val['export_ciq'] = $export_ciq;
-        } elseif (isset($val['trade_mode'])) { //贸易方式处理
-          $trade_mode = $this->exportdataModel->getTrade($val['trade_mode']);
-          $val['trade_mode'] = $trade_mode;
-        } elseif (isset($value['specification'])) { //规格处理 不需要做处理
-        }
-
-        if ($field != 'val')
-          $temp[] = $val[$field] . "\t";
-        else
-          $temp[] = $val[$field];
-
-      }
-      $csvDatas[] = $temp;
-    }
-
-    return ['csv' => ['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer]];
+    return $this->show(['filepath' => $downloadInfo['download_file']]);
   }
 
   /**
@@ -158,10 +98,8 @@ class ExportdataService extends BaseService {
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
    */
   public function getReportData($where, $report_id, $date_type = '', $type) {
-
-    $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
-
     if ($type == 1) {
+      $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
       switch (strtolower($result['viewtype'])) {
         case 'pie':
           $result['option'] = $this->_createPie($result, $date_type);;
@@ -171,12 +109,29 @@ class ExportdataService extends BaseService {
           break;
       }
       $result['list'] = array_slice($result['list'], 0, 12);
-    } else {
-
-
+    } else if ($type == 2) {
       //下载csv文件
-      $result = $this->downloadCsv($result, $where);
+      $csvData = [
+        'manage_id' => $this->tokenService->manage_id,
+        'where_condition' => serialize($where),
+        'download_num' => 0,
+        'download_file' => '',
+        'date_type' => $date_type,
+        'report_id' => $report_id
+      ];
+
+      $lastInsertId = $this->csvlistModel->insert($csvData);
+
+      if ($lastInsertId) {
+        $result['id'] = $lastInsertId;
+        $csvData['id'] = $lastInsertId;
+        //写入到redis
+        $this->redisModel->redis->lpush('csvlist', serialize($csvData), FALSE);
+      } else {
+        return $this->show([], StatusCode::INSERT_FAILURE);
+      }
     }
+
     return $this->show($result);
   }
 
@@ -313,8 +268,6 @@ class ExportdataService extends BaseService {
    * @return array
    */
   private function _createLine(&$result, $date_type) {
-
-
     $resultData = [];
 
     foreach ($result['list'] as $val) {
@@ -434,6 +387,104 @@ class ExportdataService extends BaseService {
     ];
 
     return $option;
+  }
+
+  /**
+   * 从redis队列中读取数据，生成csv 并把文件路径保存到数据库
+   */
+  public function createCsv() {
+
+    $createCsvJob = $this->csvlistModel->readCsvListFromRedis();
+
+    if ($createCsvJob) {
+      $where = unserialize($createCsvJob['where_condition']);
+
+      $result = $this->exportdataModel->getReportDataByReportlist($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2);
+
+      $table_column = $result['table_column'];
+
+      $csvHeader = [];
+      $csvField = [];
+      foreach (explode('|', $table_column) as $column) {
+        list($csvHeader[], $csvField[]) = explode(',', $column);
+      }
+
+      $whereData = array_column($where, 'field', 'val');
+
+      if (in_array('export_date', $whereData)) {
+        foreach ($where as $val) {
+          if ($val['field'] == 'export_date' && $val['operator'] == '>=')
+            $whereData[$val['val']] = 'start_date';
+
+          if ($val['field'] == 'export_date' && $val['operator'] == '<=')
+            $whereData[$val['val']] = 'end_date';
+        }
+      }
+
+      $whereData = array_flip($whereData);
+
+      $header = [
+        [
+          $result['title'] . ((isset($whereData['start_date']) && isset($whereData['end_date'])) ? '(' . date('Y/m', $whereData['start_date']) . '-' . date('Y/m', $whereData['end_date']) . ')' : '')
+        ]
+      ];
+
+      /*$footer = [
+        [
+          '时间范围:',
+          isset($whereData['start_date']) ? date('Y-m-d', $whereData['start_date']) : '',
+          isset($whereData['end_date']) ? date('Y-m-d', $whereData['end_date']) : ''
+        ]
+      ];*/
+
+      $footer = [];
+      //$csv = implode(',', $csvHeader);
+
+      $csvDatas = [];
+      foreach ($result['list'] as $val) {
+        $temp = [];
+        foreach ($csvField as $field) {
+
+          if (isset($val['dist_country'])) { //国家处理
+            $country_name = $this->exportdataModel->getCountry($val['dist_country']);
+            $val['dist_country'] = $country_name;
+          } elseif (isset($val['export_ciq'])) { //关区处理
+            $export_ciq = $this->exportdataModel->getCiq($val['export_ciq']);
+            $val['export_ciq'] = $export_ciq;
+          } elseif (isset($val['trade_mode'])) { //贸易方式处理
+            $trade_mode = $this->exportdataModel->getTrade($val['trade_mode']);
+            $val['trade_mode'] = $trade_mode;
+          } elseif (isset($value['specification'])) { //规格处理 不需要做处理
+          }
+
+          if ($field != 'val')
+            $temp[] = $val[$field] . "\t";
+          else
+            $temp[] = $val[$field];
+
+        }
+        $csvDatas[] = $temp;
+      }
+
+
+      $filename = isset($header[0][0]) ? $header[0][0] : date('Y-m-d');
+      $filePath = export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], $filename, TRUE);
+
+      if ($filePath) {
+
+        //保存到数据库
+        $isUpdate = $this->csvlistModel->update($createCsvJob['id'], ['status' => 1, 'download_file' => $filePath]);
+
+        if ($isUpdate)
+          return $this->show(['file_path' => $filePath], API_SUCCESS);
+
+      }
+
+      //如果上边的任意一个操作没有成功，则反向插入到队列中
+      $this->redisModel->redis->lpush('csvlist', serialize($createCsvJob), FALSE);
+    }
+
+    return $this->show([], API_FAILURE);
   }
 
 

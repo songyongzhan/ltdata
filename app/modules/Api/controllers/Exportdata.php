@@ -62,13 +62,30 @@ class ExportdataController extends ApiBaseController {
   }
 
 
+  /**
+   * 下载csv文件
+   */
+  public function downloadCsvAction() {
+    $id = $this->_post('id');
+    $result = $this->exportdataService->downloadCsv($id);
+    if (isset($result['result']['filepath']) && $result['result']['filepath'] != '') {
+      $file = $result['result']['filepath'];
+      downloadfile(APP_PATH . $file);
+    } else
+      return $result;
+  }
+
+  public function createCsvAction() {
+    $this->exportdataService->createCsv();
+  }
+
   public function exportAction() {
     $result = $this->reportAction();
-    if ($result['result']) {
+    /*if ($result['result']) {
       $file_content = $result['result']['csv'];
       $filename = isset($file_content['header'][0][0]) ? $file_content['header'][0][0] : date('Y-m-d');
       export_csv($file_content, $filename);
-    }
+    }*/
     return $result;
   }
 
@@ -95,11 +112,6 @@ class ExportdataController extends ApiBaseController {
    * @return array
    */
   public function uploadAction() {
-
-    //header('Access-Control-Allow-Origin: *');
-    //header('Access-Control-Allow-Methods: GET, POST');
-    //header('Access-Control-Allow-Headers: X-Requested-With,Uni-Source, X-Access-Token');
-
     $file = new File($_FILES['uploadFile']['tmp_name']);
 
     $file->rule('');
