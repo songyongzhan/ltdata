@@ -220,7 +220,7 @@ class MyRedis {
    * @param $key
    */
   public function rpop($key) {
-    $this->redis->rPop($key);
+    return $this->redis->rPop($key);
   }
 
 

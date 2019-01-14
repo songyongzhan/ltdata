@@ -61,7 +61,6 @@ class ExportdataController extends ApiBaseController {
     return $result;
   }
 
-
   /**
    * 下载csv文件
    */
@@ -75,8 +74,15 @@ class ExportdataController extends ApiBaseController {
       return $result;
   }
 
+  /*
+   * 根据redis队列创建csv文件
+   *
+   * 每5分钟生成一次
+   * HTTP_ENV=develop php /usr/local/nginx/html/ltdata/index.php api/exportdata/createCsv
+   */
+
   public function createCsvAction() {
-    $this->exportdataService->createCsv();
+    return $this->exportdataService->createCsv();
   }
 
   public function exportAction() {

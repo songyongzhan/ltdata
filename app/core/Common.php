@@ -698,9 +698,10 @@ function getCallerFromTrace() {
 if (!function_exists('_parseCurrentUri')) {
   function _parseCurrentUri() {
 
-    if (isCli()) return [];
-
     $uri = getRequest()->getRequestUri();
+
+    if (isCli() && isset($_SERVER['m_requesturi']))
+      $uri = $_SERVER['m_requesturi'];
 
     if (empty($uri))
       return [];

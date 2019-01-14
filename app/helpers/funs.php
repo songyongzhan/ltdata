@@ -206,7 +206,7 @@ function page_data($list = [], $total = 0, $pageNum, $pageSize, $total_page) {
 function downloadfile($file, $isSpeed = TRUE) {
 
   if (!is_file($file)) {
-    debugMessage($file . ' not found.');
+    debugMessage('下载文件:' . $file . ' not found.');
     die();
   }
 

@@ -18,8 +18,9 @@ class CliPlugin extends Yaf_Plugin_Abstract {
 
       if ($argc > 1) {
 
-
         $requstUri = $argv [1];
+
+        $_SERVER['m_requesturi']=$requstUri;
 
         $request->setRequestUri($requstUri);
 

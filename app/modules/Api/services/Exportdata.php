@@ -395,6 +395,7 @@ class ExportdataService extends BaseService {
   public function createCsv() {
 
     $createCsvJob = $this->csvlistModel->readCsvListFromRedis();
+    //$createCsvJob = unserialize("a:7:{s:9:\"manage_id\";i:15;s:15:\"where_condition\";s:87:\"a:1:{i:0;a:3:{s:5:\"field\";s:10:\"export_ciq\";s:3:\"val\";s:1:\"3\";s:8:\"operator\";s:1:\"=\";}}\";s:12:\"download_num\";i:0;s:13:\"download_file\";s:0:\"\";s:9:\"date_type\";s:1:\"1\";s:9:\"report_id\";s:1:\"2\";s:2:\"id\";i:2;}");
 
     if ($createCsvJob) {
       $where = unserialize($createCsvJob['where_condition']);
@@ -455,10 +456,11 @@ class ExportdataService extends BaseService {
             $trade_mode = $this->exportdataModel->getTrade($val['trade_mode']);
             $val['trade_mode'] = $trade_mode;
           } elseif (isset($value['specification'])) { //规格处理 不需要做处理
+
           }
 
           if ($field != 'val')
-            $temp[] = $val[$field] . "\t";
+            $temp[] = (isset($val[$field]) ? $val[$field] : '') . "\t";
           else
             $temp[] = $val[$field];
 
@@ -467,7 +469,7 @@ class ExportdataService extends BaseService {
       }
 
 
-      $filename = isset($header[0][0]) ? $header[0][0] : date('Y-m-d');
+      $filename = (isset($header[0][0]) ? $header[0][0] : date('Y-m-d')) . '_' . time() . '.csv';
       $filePath = export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], $filename, TRUE);
 
       if ($filePath) {
@@ -475,8 +477,7 @@ class ExportdataService extends BaseService {
         //保存到数据库
         $isUpdate = $this->csvlistModel->update($createCsvJob['id'], ['status' => 1, 'download_file' => $filePath]);
 
-        if ($isUpdate)
-          return $this->show(['file_path' => $filePath], API_SUCCESS);
+        if ($isUpdate) return $this->show(['file_path' => $filePath], API_SUCCESS);
 
       }
 

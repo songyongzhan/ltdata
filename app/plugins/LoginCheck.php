@@ -32,7 +32,8 @@ class LoginCheckPlugin extends Yaf_Plugin_Abstract {
       //不需要验证的接口
       $whiteList = [
         'Manage' => ['logout', 'getClientIp', 'checkToken', 'getcode', 'checkcode', 'login', 'searchData', 'aa'],
-        'Dictionaries' => '*'
+        'Dictionaries' => '*',
+        'Exportdata'=>['createCsv']
       ];
 
       $whiteList = array_change_value_case_recursive($whiteList);

@@ -17,6 +17,7 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
       $whiteList = [
         'Manage' => ['logout', 'checkToken', 'login', 'password', 'getClientIp', 'searchData', 'aa'],
         'Dictionaries' => '*',
+        'Exportdata'=>['createCsv']
         //'Menu' => ['getOne']
       ];
 
