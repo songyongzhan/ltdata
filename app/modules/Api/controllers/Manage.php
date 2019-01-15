@@ -190,7 +190,6 @@ class ManageController extends ApiBaseController {
     return $result;
   }
 
-
   /**
    * 获取客户端ip地址
    * @return array

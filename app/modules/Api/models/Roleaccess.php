@@ -29,15 +29,19 @@ class RoleaccessModel extends BaseModel {
   public function updateManageRole($manage_id, $role_ids) {
     $this->startTransaction();
 
-    $delCount = $this->delete([getWhereCondition('manage_id', $manage_id)], 'manage_role');
 
+    $hasCount = $this->getCount([getWhereCondition('manage_id', $manage_id)], 'manage_role');
+    $delCount = 0;
+    if ($hasCount) {
+      $delCount = $this->delete([getWhereCondition('manage_id', $manage_id)], 'manage_role');
 
-    if (!$delCount)
-      return $this->rollback();
+      if (!$delCount)
+        return $this->rollback();
+    }
 
     $data = [];
     foreach ($role_ids as $val) {
-      $data[] = $this->autoaddtime([
+      $data[] = $this->autoAddtimeData([
         'manage_id' => $manage_id,
         'role_id' => $val,
         'status' => 1
@@ -61,10 +65,16 @@ class RoleaccessModel extends BaseModel {
 
     $this->startTransaction();
 
-    $delCount = $this->delete([getWhereCondition('role_id', $role_id)]);
+    $hasCount = $this->getCount([getWhereCondition('role_id', $role_id)]);
+    $delCount = 0;
+    if ($hasCount) {
 
-    if (!$delCount)
-      return $this->rollback();
+      $delCount = $this->delete([getWhereCondition('role_id', $role_id)]);
+
+      if (!$delCount)
+        return $this->rollback();
+    }
+
 
     $data = [];
     foreach ($menu_ids as $val) {

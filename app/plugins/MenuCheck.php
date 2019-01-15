@@ -15,9 +15,12 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
 
       //不需要验证的接口
       $whiteList = [
-        'Manage' => ['logout', 'checkToken', 'login', 'password', 'getClientIp', 'searchData', 'aa'],
+        'Manage' => ['logout', 'checkToken', 'login', 'password', 'getClientIp', 'searchData', 'getUserInfo', 'password', 'checkCode', 'getCode', 'aa'],
         'Dictionaries' => '*',
-        'Exportdata'=>['createCsv']
+        'Exportdata' => ['createCsv'],
+        'Menu' => ['getAppointMenuList'],
+        'Reportlist' => ['getListByreport'],
+        'Roleaccess' => ['checkUrl'],
         //'Menu' => ['getOne']
       ];
 

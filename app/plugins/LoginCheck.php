@@ -33,7 +33,9 @@ class LoginCheckPlugin extends Yaf_Plugin_Abstract {
       $whiteList = [
         'Manage' => ['logout', 'getClientIp', 'checkToken', 'getcode', 'checkcode', 'login', 'searchData', 'aa'],
         'Dictionaries' => '*',
-        'Exportdata'=>['createCsv']
+        'Exportdata' => ['createCsv'],
+        'Menu' => ['getAppointMenuList'],
+        'Roleaccess' => ['checkUrl'],
       ];
 
       $whiteList = array_change_value_case_recursive($whiteList);

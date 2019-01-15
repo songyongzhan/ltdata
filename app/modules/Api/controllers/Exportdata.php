@@ -77,7 +77,7 @@ class ExportdataController extends ApiBaseController {
   /*
    * 根据redis队列创建csv文件
    *
-   * 每5分钟生成一次
+   * 每10分钟生成一次
    * HTTP_ENV=develop php /usr/local/nginx/html/ltdata/index.php api/exportdata/createCsv
    */
 

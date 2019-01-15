@@ -125,7 +125,7 @@ class BaseModel extends CoreModel {
     is_null($table) || $this->table = $table;
     $this->setCond($where);
     $result = $this->realDelete ? $this->_db->delete($this->table) : $this->update($where, ['status' => -1]);
-    $this->_logSql();
+    $this->realDelete || $this->_logSql();
     return $result ? $this->_db->count : 0;
   }
 

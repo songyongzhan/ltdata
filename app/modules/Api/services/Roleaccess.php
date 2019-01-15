@@ -36,7 +36,7 @@ class RoleaccessService extends BaseService {
 
   /**
    * 验证当前用户是否有权限登录
-   * @param $url
+   * @param string $url <require> 验证地址传递为空
    */
   public function checkUrl($url) {
 
@@ -45,21 +45,20 @@ class RoleaccessService extends BaseService {
 
     $checkUrlData = [];
     foreach ($roleResult as $val) {
-      $checkUrlData[$val['id']] = $val['url'];
+
+      if($val['relation_url']!='')
+        $checkUrlData[]=$val['relation_url'];
+
+      if($val['type_id']==2){
+        if($val['url']!='')
+          $checkUrlData[]=$val['url'];
+      }
     }
 
     $checkUrlData = array_change_value_case($checkUrlData);
 
-    $is_have = FALSE;
-
-    if (isUInt($url) && $url > 0) {
-      //如果是扩展权限这里不能验证，需要使用url去判断
-      $is_have = array_key_exists(intval($url), $checkUrlData);
-    } else {
-      $url = strtolower($url);
-      $is_have = in_array($url, $checkUrlData);
-    }
-
+    $url = strtolower($url);
+    $is_have = in_array($url, $checkUrlData);
     return $is_have ? $this->show(['success' => 1]) : $this->show(['success' => 0]);
 
   }

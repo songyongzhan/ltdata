@@ -24,10 +24,6 @@ class RoleaccessController extends ApiBaseController {
     return $result;
   }
 
-
-
-
-
   /**
    * 更新用户权限所属分组
    * @name 更新用户属组
@@ -49,10 +45,9 @@ class RoleaccessController extends ApiBaseController {
    */
   public function getManageRoleAction() {
     $manage_id = $this->_post('manage_id');
-    $result = $this->roleaccessService->getManageRole($manage_id);
+    $result = $this->manage_roleService->getList($manage_id);
     return $result;
   }
-
 
   /**
    * 获取单个组的权限
@@ -63,7 +58,6 @@ class RoleaccessController extends ApiBaseController {
     $id = $this->_post('id');
     $result = $this->roleaccessService->getRoleAccess($id);
     return $result;
-
   }
 
   /**

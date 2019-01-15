@@ -207,6 +207,7 @@ function downloadfile($file, $isSpeed = TRUE) {
 
   if (!is_file($file)) {
     debugMessage('下载文件:' . $file . ' not found.');
+    alertClose('文件不存在或已被删除!');
     die();
   }
 
@@ -312,4 +313,11 @@ function convert_encodeing($data, $from_encoding = 'UTF-8', $to_encoding = 'GBK'
     return mb_convert_encoding($data, $to_encoding, $from_encoding);
   }
   return $data;
+}
+
+
+function alertClose($message) {
+
+  echo '<script>alert("' . $message . '");window.close();</script>';
+
 }
