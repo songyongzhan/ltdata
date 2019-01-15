@@ -107,6 +107,10 @@ class ExportdataService extends BaseService {
         case 'line':
           $result['option'] = $this->_createLine($result, $date_type);
           break;
+        case 'bubble':
+          $result['option'] = $this->_createBubble($result, $date_type);
+          break;
+
       }
       $result['list'] = array_slice($result['list'], 0, 12);
     } else if ($type == 2) {
@@ -205,7 +209,7 @@ class ExportdataService extends BaseService {
         $legend_data[] = $value['shipper'];
 
       } else {
-        echo '根据规则在写';
+        echo '不支持此规则';
         exit;
       }
 
@@ -387,6 +391,43 @@ class ExportdataService extends BaseService {
     ];
 
     return $option;
+  }
+
+
+  private function _createBubble($result, $date_type) {
+
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => $result['title2'], //副标题,
+        'x' => 'center'
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'item',
+        'formatter' => "{a} <br/>{b} : {c} " . $result['prompt_sign']
+      ],
+
+      'legend' => [ //栏目显示
+        'orient' => 'vertical',
+        'left' => 'left',
+        'top' => '10%',
+        'type' => 'scroll',
+        'data' => $legend_data,
+        'selected' => $series_data_selected
+        //'data' => ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+      ],
+      'toolbox' => [
+        'feature' => [
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'series' => $seriesData
+    ];
+
+    return $option;
+
   }
 
   /**

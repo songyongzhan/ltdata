@@ -119,6 +119,9 @@ class ReportListController extends ApiBaseController {
     $having_str = $this->_post('having_str');
     $date_type = $this->_post('date_type');
     $remarks = $this->_post('remarks');
+    $unit = $this->_post('unit');
+    $prompt_sign = $this->_post('prompt_sign');
+    $is_siglepricle = $this->_post('is_siglepricle');
     $table_column = $this->_post('table_column');
     $data = [
       'title' => $title,
@@ -132,6 +135,9 @@ class ReportListController extends ApiBaseController {
       'having_str' => $having_str,
       'date_type' => $date_type,
       'remarks' => $remarks,
+      'unit' => $unit,
+      'prompt_sign' => $prompt_sign,
+      'is_siglepricle' => $is_siglepricle,
       'table_column' => $table_column,
       'status' => 1
     ];

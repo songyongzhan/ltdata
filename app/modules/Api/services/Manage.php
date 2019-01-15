@@ -285,10 +285,19 @@ class ManageService extends BaseService {
    */
   public function searchData($type = '') {
     $data = [];
-    $default = $data_type = ['ciq', 'country', 'trade', 'transport', 'made', 'transport_mode', 'transaction_mode', 'shipper', 'specification'];
+    $default = $data_type = ['ciq', 'country', 'trade', 'transport', 'made', 'transport_mode', 'transaction_mode', 'goods_code', 'shipper', 'specification'];
 
     if ($type !== "" && in_array($type, $default))
       $data_type = [$type];
+    else if (strpos(',', $type)) {
+      $temp = explode(',');
+      $data_type = [];
+      foreach ($temp as $val) {
+        if (in_array($val, $default))
+          $data_type[] = $val;
+      }
+    }
+
 
     foreach ($data_type as $val) {
       switch ($val) {
@@ -370,6 +379,15 @@ class ManageService extends BaseService {
             $data['specification'][] = [
               'id' => $val['specification'],
               'text' => $val['specification']
+            ];
+          }
+          break;
+        case 'goods_code':
+          $specification = $this->exportdataModel->getViewData('goods_code_view');//规格
+          foreach ($specification as $key => $val) {
+            $data['goods_code'][] = [
+              'id' => $val['goods_code'],
+              'text' => $val['goods_code']
             ];
           }
           break;

@@ -50,6 +50,16 @@ class RoleaccessController extends ApiBaseController {
   }
 
   /**
+   * 获取当前用户所有的权限
+   * @return array
+   */
+  public function getManageAccessAction() {
+    $manage_id = $this->_post('manage_id');
+    $result = $this->roleaccessService->getManageRole($manage_id);
+    return $result;
+  }
+
+  /**
    * 获取单个组的权限
    *
    * @return array

@@ -14,7 +14,7 @@ class ReportlistService extends BaseService {
    * 默认取出字段
    * @var array
    */
-  protected $field = ['id', 'title', 'utype', 'viewtype', 'field_str', 'group_str', 'order_str', 'limit_str', 'having_str', 'date_type', 'remarks', 'updatetime', 'createtime'];
+  protected $field = ['id', 'title', 'title2', 'utype', 'viewtype', 'field_str', 'group_str', 'order_str', 'is_siglepricle', 'prompt_sign', 'unit', 'limit_str', 'having_str', 'date_type', 'remarks', 'table_column', 'updatetime', 'createtime'];
 
   /**
    * 获取权限列表 分页
@@ -59,8 +59,8 @@ class ReportlistService extends BaseService {
    * @param int $id <require|number> id不能为空|id不是数字
    * @return mixed
    */
-  public function getOne($id, $fileds = '*') {
-    $result = $this->reportlistModel->getOne($id, $fileds);
+  public function getOne($id) {
+    $result = $this->reportlistModel->getOne($id, $this->field);
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
