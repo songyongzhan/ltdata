@@ -5,6 +5,7 @@
 /data/logs
 /data/cache
 /data/uploads
+/data/download
 vendor
 
 nginxlogs
