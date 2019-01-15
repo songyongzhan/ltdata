@@ -24,6 +24,7 @@ class ApiBaseController extends BaseController {
       $data = call_user_func_array([$controller, $parseUri['action'] . 'Action'], $this->getRequest()->getParams());
       $this->showJson($data['result'], $data['code'], $data['msg']);
     } catch (Exception $e) {
+
       //var_dump($e->getMessage());exit;
       //$this->showJson([], API_FAILURE, $e->getMessage());
       show_error($e->getMessage(), $e->getCode());

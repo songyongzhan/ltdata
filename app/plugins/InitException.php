@@ -27,7 +27,6 @@ class InitExceptionPlugin extends Yaf_Plugin_Abstract {
 
 
 
-
       $old_exception && $old_exception($exception);
 
     });

@@ -23,7 +23,7 @@ class Exceptions extends Yaf_Exception {
 
   public function show_exception($exception, $template = NULL) {
 
-    if (isAjax() && isEnv())
+    if (isAjax() && $exception instanceof Exceptions)
       showJsonMsg($exception->getCode(), $exception->getMessage());
 
     if (isAjax())
@@ -80,7 +80,7 @@ class Exceptions extends Yaf_Exception {
       exit;
     }
 
-    isEnv('product') && set_status_header($status_code);
+    //isEnv('product') && set_status_header($status_code);
     //set_status_header($status_code);
 
     if (isAjax())

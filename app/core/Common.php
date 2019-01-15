@@ -283,13 +283,13 @@ if (!function_exists('_exception_handler')) {
 
     debugMessage('Trace:' . jsonencode($exception->getTrace()));
 
-    isCli() OR set_status_header(500);
 
     // Should we display the error?
-    if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
+    if (($exception instanceof Exceptions) || str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors'))) {
 
       $_error->show_exception($exception);
     }
+    isCli() OR set_status_header(500);
 
     exit(1); // EXIT_ERROR
   }
