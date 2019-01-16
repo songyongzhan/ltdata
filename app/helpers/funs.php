@@ -321,3 +321,11 @@ function alertClose($message) {
   echo '<script>alert("' . $message . '");window.close();</script>';
 
 }
+
+
+function randColor(){
+
+
+
+
+}

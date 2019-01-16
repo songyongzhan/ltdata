@@ -406,10 +406,8 @@ class ExportdataService extends BaseService {
    * @param $result
    * @param $date_type
    */
-  private function _createBubble($result, $date_type) {
+  private function _createBubble(&$result, $date_type) {
 
-
-    print_r($result);exit;
     $series_data = [];
     $legend_data = [];
     $series_data_selected = [];
@@ -418,58 +416,77 @@ class ExportdataService extends BaseService {
     foreach ($result['list'] as $key => &$value) {
 
       if (isset($value['dist_country'])) { //国家处理
-
         $country_name = $this->exportdataModel->getCountry($value['dist_country']);
+
+        $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
         $series_data[] = [
-          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
-          'name' => $country_name,
-          'selected' => $key == 0 ? TRUE : FALSE
+          'name' => $country_name, //国家
+          'type' => 'scatter',
+          'data' => [
+            [$value['val'], $total_weight, $total_weight, $country_name]
+          ],//$_data
+          'symbolSize' => 'symbolSizefun',
+          'label' => [
+            'normal' => [ //normal | emphasis
+              'show' => TRUE,
+              'formatter' => 'labelFormatterfun',
+              'position' => 'top'
+            ]
+          ],
+          'itemStyle' => [
+            'normal' => [
+              'shadowBlur' => 10,
+              'shadowColor' => 'rgba(120, 36, 50, 0.5)',
+              'shadowOffsetY' => 5,
+              //'opacity' => 0.6,
+              'color' => "itemStyleColorfun"
+            ]
+          ]
         ];
+
         $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
+
         $legend_data[] = $country_name;
         $value['dist_country'] = $country_name;
 
-      } elseif (isset($value['export_ciq'])) { //关区处理
-
-        $export_ciq = $this->exportdataModel->getCiq($value['export_ciq']);
-        $series_data[] = [
-          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
-          'name' => $export_ciq,
-          'selected' => $key == 0 ? TRUE : FALSE
-        ];
-        $series_data_selected[$export_ciq] = $key < $defaultSelected ? TRUE : FALSE;
-        $legend_data[] = $export_ciq;
-        $value['export_ciq'] = $export_ciq;
-
-      } elseif (isset($value['trade_mode'])) { //贸易方式处理
-
-        $trade_mode = $this->exportdataModel->getTrade($value['trade_mode']);
-
-        $series_data[] = [
-          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
-          'name' => $trade_mode,
-          'selected' => $key == 0 ? TRUE : FALSE
-        ];
-        $series_data_selected[$trade_mode] = $key < $defaultSelected ? TRUE : FALSE;
-        $legend_data[] = $trade_mode;
-        $value['trade_mode'] = $trade_mode;
-
-      } elseif (isset($value['specification'])) { //规格处理
-
-        //$num = number_format($value['val'] / $result['sum_val'], 2);
-        $series_data[] = [
-          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
-          'name' => $value['specification'],
-          'selected' => $key == 0 ? TRUE : FALSE
-        ];
-        $series_data_selected[$value['specification']] = $key < $defaultSelected ? TRUE : FALSE;
-        $legend_data[] = $value['specification'];
+        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
 
       } elseif (isset($value['shipper'])) { //出口企业
+
+
+        /*$total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
+        $series_data[] = [
+          'name' => $country_name, //国家
+          'type' => 'scatter',
+          'data' => [
+            [$value['val'], $total_weight, $total_weight, $country_name]
+          ],//$_data
+          'symbolSize' => 'symbolSizefun',
+          'label' => [
+            'emphasis' => [
+              'show' => TRUE,
+              'formatter' => 'labelFormatterfun',
+              'position' => 'top'
+            ]
+          ],
+          'itemStyle' => [
+            'normal' => [
+              'shadowBlur' => 10,
+              'shadowColor' => 'rgba(120, 36, 50, 0.5)',
+              'shadowOffsetY' => 5,
+              //'opacity' => 0.6,
+              'color' => "itemStyleColorfun"
+            ]
+          ]
+        ];
+
+        $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
+
+        $legend_data[] = $country_name;
+        $value['dist_country'] = $country_name;*/
+
+
+
         $series_data[] = [
           'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
             (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
@@ -485,50 +502,6 @@ class ExportdataService extends BaseService {
       }
     }
 
-
-    $eval = 'function symbolSize(data){return Math . sqrt(data[2]) / 5;}; function labelFormatter(param) {return param . data[3];}; ';
-
-
-    //function itemStyleColor(){return new echarts . graphic . RadialGradient(0.4, 0.3, 1, [{offset: 0,color: 'rgb(251, 118, 123)'}, {offset:1,color: 'rgb(204, 46, 72)'}]);}
-
-
-    /*[
-      'name' => '', //规格
-      'type' => 'scatter',
-      'data' => '',//$_data
-      'symbolSize' => 'symbolSize(data)',
-      'label'=>[
-        'emphasis'=>[
-          'show'=>true,
-          'formatter'=>'labelFormatter(param)',
-          'position'=>'top'
-        ]
-      ],
-      'itemStyle'=>[
-        'normal'=>[
-          'shadowBlur'=>10,
-          'shadowColor'=>'rgba(120, 36, 50, 0.5)',
-          'shadowOffsetY'=>5,
-          'color'=> 'itemStyleColor()'
-        ]
-      ]
-    ]*/
-
-    $data = [
-      [
-        [150, 280, 8888, 'Australia', 1990],
-        [31, 77.4, 4444, 'Canada', 1990]
-      ],
-      [
-        [66, 81.8, 4211, 'Australia', 2015],
-        [111, 81.7, 5432, 'Canada', 2015]
-      ],
-      [
-        [64, 91.8, 4211, 'Australia', 2016],
-        [101, 107, 5432, 'Canada', 2016]
-      ]
-    ];
-
     $option = [
       'title' => [
         'text' => $result['title'],
@@ -537,20 +510,20 @@ class ExportdataService extends BaseService {
       ],
       'tooltip' => [ //鼠标放上去是否信息显示
         'trigger' => 'item',
-        'padding' => '10',
+        'padding' => [10, 15],
         'backgroundColor' => '#222',
         'borderColor' => '#777',
-        '777' => '1',
-        //'formatter' =>'function (obj) {var value = obj . value; return value}'
+        'formatter' => 'tooltipFormatfun'
       ],
 
       'legend' => [ //栏目显示
-
         'bottom' => 0,
         'type' => 'scroll',
+        //'left' => 'center',
+        'left' => '10',
+        //'width' => '600',
         'data' => $legend_data,
         'selected' => $series_data_selected
-        //'data' => ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
       ],
       'toolbox' => [
         'feature' => [
@@ -572,43 +545,39 @@ class ExportdataService extends BaseService {
             'type' => 'dashed'
           ]
         ],
+        'max' => 'yAxisMaxfun',
         'scale' => TRUE
-      ],
-
-
+      ]
     ];
 
-    /*$option = [
-      'title' => [
-        'text' => $result['title'],
-        'subtext' => $result['title2'], //副标题,
-        'x' => 'center'
-      ],
-      'tooltip' => [ //鼠标放上去是否信息显示
-        'trigger' => 'item',
-        'formatter' => "{a} <br/>{b} : {c} " . $result['prompt_sign']
-      ],
+    $str = jsonencode($option);
+    $symbolSizePattern = '/"symbolSizefun"/im';
+    $labelFormatterPattern = '/"labelFormatterfun"/im';
+    $itemStyleColorPattern = '/"itemStyleColorfun"/im';
+    $yAxisMaxfunPattern = '/"yAxisMaxfun"/im';
+    $tooltipFormatfunPattern = '/"tooltipFormatfun"/im';
+    if (preg_match($symbolSizePattern, $str)) {
+      $str = preg_replace($symbolSizePattern, 'function (data){return Math.sqrt(data[2])/100;}', $str);
+    }
+    if (preg_match($labelFormatterPattern, $str)) {
+      $str = preg_replace($labelFormatterPattern, 'function (param) {return param.data[3];}', $str);
+    }
+    if (preg_match($itemStyleColorPattern, $str)) {
+      /*$str=preg_replace($itemStyleColorPattern,"function (){return new echarts . graphic . RadialGradient(0.4, 0.3, 1, [{offset: 0,color: 'rgb(".rand(0,130).", ".rand(0,130).", ".rand(0,130).")'}, {offset:1,color: 'rgb(".rand(0,130).", ".rand(0,130).", ".rand(0,130).")'}]);}", $str);*/
+      $str = preg_replace_callback($itemStyleColorPattern, function ($datas) { //可以定义颜色 http://www.bootcss.com/p/websafecolors/
+        return "function (){return new echarts . graphic . RadialGradient(0.4, 0.3, 1, [{offset: 0,color: 'rgb(" . rand(0, 230) . ", " . rand(0, 230) . ", " . rand(0, 230) . ")'}, {offset:1,color: 'rgb(" . rand(0, 230) . ", " . rand(0, 230) . ", " . rand(0, 230) . ")'}]);}";
+      }, $str);
+    }
+    if (preg_match($yAxisMaxfunPattern, $str)) {
+      $str = preg_replace($yAxisMaxfunPattern, 'function(value) {return value.max*0.2 + value.max;}', $str);
+    }
 
-      'legend' => [ //栏目显示
-        'orient' => 'vertical',
-        'left' => 'left',
-        'top' => '10%',
-        'type' => 'scroll',
-        'data' => $legend_data,
-        'selected' => $series_data_selected
-        //'data' => ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-      ],
-      'toolbox' => [
-        'feature' => [
-          'restore' => [],
-          'saveAsImage' => []
-        ]
-      ],
-      'series' => $seriesData
-    ];
+    if (preg_match($tooltipFormatfunPattern, $str) && isset($tooltipFormatterFunStr)) {
+      $str = preg_replace($tooltipFormatfunPattern, $tooltipFormatterFunStr, $str);
+    }
 
-    return $option;*/
 
+    return $str;
   }
 
   /**

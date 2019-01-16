@@ -289,7 +289,7 @@ class ManageService extends BaseService {
 
     if ($type !== "" && in_array($type, $default))
       $data_type = [$type];
-    else if (strpos(',', $type)) {
+    else if ($type !== "" && strpos(',', $type)) {
       $temp = explode(',');
       $data_type = [];
       foreach ($temp as $val) {
