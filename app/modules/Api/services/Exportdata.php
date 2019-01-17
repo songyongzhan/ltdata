@@ -454,12 +454,12 @@ class ExportdataService extends BaseService {
       } elseif (isset($value['shipper'])) { //出口企业
 
 
-        /*$total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
+        $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
         $series_data[] = [
-          'name' => $country_name, //国家
+          'name' => $value['shipper'], //国家
           'type' => 'scatter',
           'data' => [
-            [$value['val'], $total_weight, $total_weight, $country_name]
+            [$value['val'], $total_weight, $total_weight, $value['shipper']]
           ],//$_data
           'symbolSize' => 'symbolSizefun',
           'label' => [
@@ -480,21 +480,20 @@ class ExportdataService extends BaseService {
           ]
         ];
 
-        $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
+        //$series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
+        $series_data_selected[$value['shipper']] =  TRUE;
+        $legend_data[] = $value['shipper'];
 
-        $legend_data[] = $country_name;
-        $value['dist_country'] = $country_name;*/
+        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
 
-
-
-        $series_data[] = [
+        /*   $series_data[] = [
           'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
             (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
           'name' => $value['shipper'],
           'selected' => $key == 0 ? TRUE : FALSE
         ];
         $series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
-        $legend_data[] = $value['shipper'];
+        $legend_data[] = $value['shipper'];*/
 
       } else {
         echo '不支持此规则';
@@ -576,6 +575,9 @@ class ExportdataService extends BaseService {
       $str = preg_replace($tooltipFormatfunPattern, $tooltipFormatterFunStr, $str);
     }
 
+
+    echo $str;
+    exit;
 
     return $str;
   }
