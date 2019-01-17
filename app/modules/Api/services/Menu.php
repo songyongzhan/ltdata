@@ -54,10 +54,9 @@ class MenuService extends BaseService {
       array_push($where, getWhereCondition('type_id', '1'));
       array_push($where, getWhereCondition('status', '1'));
     }
-
     //获取分组是否有权限
     $Roleresult = $this->manage_roleModel->getRoleGroupAccess($manageId, $useType, self::FIELD);
-    $result = isset($manageResult) ? array_merge_recursive($manageResult, $Roleresult) : $Roleresult;
+    $result = isset($manageResult) ? arrayMerge($manageResult, $Roleresult, 'id') : $Roleresult;
 
     return $result;
   }

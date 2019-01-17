@@ -31,7 +31,7 @@ return [
     //这种带数组的写法，系统会检测是否这个模块，验证成功后，注册
     'Api' => [
       'LoginCheck' => 'LoginCheck',
-      //'MenuCheck' => 'MenuCheck', //暂时关闭
+      'MenuCheck' => 'MenuCheck', //暂时关闭
     ],
   ],
 

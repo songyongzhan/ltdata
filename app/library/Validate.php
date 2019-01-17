@@ -176,6 +176,12 @@ class Validate {
     return self::$instance;
   }
 
+  public function reset() {
+    $this->rule = [];
+    $this->message = [];
+    return $this;
+  }
+
   /**
    * 添加字段验证规则
    * @access protected
@@ -1376,7 +1382,7 @@ class Validate {
     if (method_exists($class, $method)) {
       return call_user_func_array([$class, $method], $params);
     } else {
-      throw new \BadMethodCallException('method not exists:' . __CLASS__ . '->' . $method);
+      throw new BadMethodCallException('method not exists:' . __CLASS__ . '->' . $method);
     }
   }
 }

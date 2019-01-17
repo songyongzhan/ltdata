@@ -622,7 +622,9 @@ if (!function_exists('validate')) {
     empty($rules) && show_error('Validation rule array cannot be empty.');
     empty($data) && show_error('Validation data can not be empty.');
     strlen(implode('', array_values($msg))) === 0 && $msg = [];
-    $validate = Validate::make($rules, $msg);
+
+    $validate=Validate::make()->reset()->rule($rules)->message($msg);
+    //$validate = new Validate($rules,$msg);
     if ($validate->check($data)) {
       return TRUE;
     } else

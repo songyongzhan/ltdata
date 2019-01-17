@@ -322,10 +322,28 @@ function alertClose($message) {
 
 }
 
+/**
+ * 针对二维数 某一个key 合并并去重
+ * @param $arr1
+ * @param $arr2
+ * @param $keyName
+ * @return array
+ */
+function arrayMerge($arr1, $arr2, $keyName) {
 
-function randColor(){
+  if (!is_array($arr1) && is_array($arr2))
+    return [];
 
+  $temp1 = [];
 
+  foreach ($arr1 as $key => $val) {
+    $temp1[$val[$keyName]] = $val;
+  }
 
+  foreach ($arr2 as $key => $val) {
+    if (!array_key_exists($val[$keyName], $temp1))
+      $temp1[$val[$keyName]] = $val;
+  }
 
+  return array_values($temp1);
 }

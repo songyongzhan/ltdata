@@ -58,14 +58,6 @@ class ProxyModel {
         $this->_rule = $this->_makeFile($reflection, $validateFile);
       }
 
-      //if (!is_array($rules = $this->_rule)) {
-      //  var_dump($validateFile);
-      //  print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-      //  print_r($rules);
-      //  return;
-      //  exit;
-      //}
-
       if (!is_array($rules = $this->_rule))
         throw new Exceptions('$this->_rule is not Array.', StatusCode::RULE_NOT_ARRAY);
 
@@ -74,7 +66,7 @@ class ProxyModel {
 
         $data = $this->_combineParam($rules['params'][$method], $params);
 
-        if (TRUE !== ($result = validate($methodRules, $data, $rules['msg'][$method]))) {
+        if (($result = validate($methodRules, $data, $rules['msg'][$method])) && is_array($result)) {
           showApiException($result['errMsg']);
         }
 

@@ -407,23 +407,23 @@ class ExportdataService extends BaseService {
    * @param $date_type
    */
   private function _createBubble(&$result, $date_type) {
-
     $series_data = [];
     $legend_data = [];
     $series_data_selected = [];
-    $defaultSelected = 10;
-
+    $defaultSelected = 60;
+    $maxValue = 0;
     foreach ($result['list'] as $key => &$value) {
 
       if (isset($value['dist_country'])) { //国家处理
         $country_name = $this->exportdataModel->getCountry($value['dist_country']);
 
         $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
+        $total_weight > $maxValue && $maxValue = $total_weight;
         $series_data[] = [
           'name' => $country_name, //国家
           'type' => 'scatter',
           'data' => [
-            [$value['val'], $total_weight, $total_weight, $country_name]
+            [$total_weight, $value['val'], $total_weight, $country_name]
           ],//$_data
           'symbolSize' => 'symbolSizefun',
           'label' => [
@@ -449,12 +449,11 @@ class ExportdataService extends BaseService {
         $legend_data[] = $country_name;
         $value['dist_country'] = $country_name;
 
-        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
+        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[1]+\'<br>销售量(千克)：\'+value[0];}';
 
       } elseif (isset($value['shipper'])) { //出口企业
-
-
         $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
+        $total_weight > $maxValue && $maxValue = $total_weight;
         $series_data[] = [
           'name' => $value['shipper'], //国家
           'type' => 'scatter',
@@ -484,16 +483,7 @@ class ExportdataService extends BaseService {
         $series_data_selected[$value['shipper']] = TRUE;
         $legend_data[] = $value['shipper'];
 
-        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
-
-        /*   $series_data[] = [
-          'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
-          'name' => $value['shipper'],
-          'selected' => $key == 0 ? TRUE : FALSE
-        ];
-        $series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
-        $legend_data[] = $value['shipper'];*/
+        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[1]+\'<br>销售量(千克)：\'+value[0];}';
 
       } else {
         echo '不支持此规则';
@@ -556,7 +546,17 @@ class ExportdataService extends BaseService {
     $yAxisMaxfunPattern = '/"yAxisMaxfun"/im';
     $tooltipFormatfunPattern = '/"tooltipFormatfun"/im';
     if (preg_match($symbolSizePattern, $str)) {
-      $str = preg_replace($symbolSizePattern, 'function (data){return Math.sqrt(data[2])/100;}', $str);
+
+      //为了让最大的这个数值的大小不超过100 则 计算一个被除数
+      $divNum = 50;
+      while (TRUE) {
+        if (sqrt($maxValue) / $divNum > 120) {
+          $divNum += 10;
+        } else
+          break;
+      }
+
+      $str = preg_replace($symbolSizePattern, 'function (data){return Math.sqrt(data[2])/' . $divNum . ';}', $str);
     }
     if (preg_match($labelFormatterPattern, $str)) {
       $str = preg_replace($labelFormatterPattern, 'function (param) {return param.data[3];}', $str);
@@ -574,10 +574,6 @@ class ExportdataService extends BaseService {
     if (preg_match($tooltipFormatfunPattern, $str) && isset($tooltipFormatterFunStr)) {
       $str = preg_replace($tooltipFormatfunPattern, $tooltipFormatterFunStr, $str);
     }
-
-
-    echo $str;
-    exit;
 
     return $str;
   }

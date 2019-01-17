@@ -35,8 +35,9 @@ class RoleaccessService extends BaseService {
   }
 
   /**
-   * 验证当前用户是否有权限登录
+   *  验证当前用户是否有权限登录
    * @param string $url <require> 验证地址传递为空
+   * @return array
    */
   public function checkUrl($url) {
 
