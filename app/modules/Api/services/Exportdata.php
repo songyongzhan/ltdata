@@ -427,7 +427,7 @@ class ExportdataService extends BaseService {
           ],//$_data
           'symbolSize' => 'symbolSizefun',
           'label' => [
-            'normal' => [ //normal | emphasis
+            'emphasis' => [ //normal | emphasis
               'show' => TRUE,
               'formatter' => 'labelFormatterfun',
               'position' => 'top'
@@ -459,7 +459,7 @@ class ExportdataService extends BaseService {
           'name' => $value['shipper'], //国家
           'type' => 'scatter',
           'data' => [
-            [$value['val'], $total_weight, $total_weight, $value['shipper']]
+            [$total_weight, $value['val'], $total_weight, $value['shipper']]
           ],//$_data
           'symbolSize' => 'symbolSizefun',
           'label' => [
@@ -481,7 +481,7 @@ class ExportdataService extends BaseService {
         ];
 
         //$series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
-        $series_data_selected[$value['shipper']] =  TRUE;
+        $series_data_selected[$value['shipper']] = TRUE;
         $legend_data[] = $value['shipper'];
 
         $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
