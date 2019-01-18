@@ -25,6 +25,15 @@ class RoleaccessController extends ApiBaseController {
   }
 
   /**
+   * 获取当前用户可以访问的url
+   * @return mixed
+   */
+  public function getRoleMenuUrlsAction(){
+    $result=$this->roleaccessService->getRoleMenuUrls();
+    return $result;
+  }
+
+  /**
    * 更新用户权限所属分组
    * @name 更新用户属组
    * @param int $id <POST> 用户id

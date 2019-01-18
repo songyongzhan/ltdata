@@ -35,6 +35,31 @@ class RoleaccessService extends BaseService {
   }
 
   /**
+   *
+   * 返回当前用户可以访问的url
+   * @return array
+   */
+  public function getRoleMenuApi() {
+    $roleResult = $this->menuService->getList([], 1);
+    $roleResult = $roleResult['result'];
+
+    $checkUrlData = [];
+    foreach ($roleResult as $val) {
+
+      if ($val['relation_url'] != '')
+        $checkUrlData[] = $val['relation_url'];
+
+      if ($val['type_id'] == 2) {
+        if ($val['url'] != '')
+          $checkUrlData[] = $val['url'];
+      }
+    }
+    $checkUrlData = array_change_value_case($checkUrlData);
+
+    return $this->show(['menu_urls' => $checkUrlData]);
+  }
+
+  /**
    *  验证当前用户是否有权限登录
    * @param string $url <require> 验证地址传递为空
    * @return array
@@ -47,12 +72,12 @@ class RoleaccessService extends BaseService {
     $checkUrlData = [];
     foreach ($roleResult as $val) {
 
-      if($val['relation_url']!='')
-        $checkUrlData[]=$val['relation_url'];
+      if ($val['relation_url'] != '')
+        $checkUrlData[] = $val['relation_url'];
 
-      if($val['type_id']==2){
-        if($val['url']!='')
-          $checkUrlData[]=$val['url'];
+      if ($val['type_id'] == 2) {
+        if ($val['url'] != '')
+          $checkUrlData[] = $val['url'];
       }
     }
 
@@ -60,8 +85,8 @@ class RoleaccessService extends BaseService {
 
     $url = strtolower($url);
     $is_have = in_array($url, $checkUrlData);
-    return $is_have ? $this->show(['success' => 1]) : $this->show(['success' => 0]);
 
+    return $is_have ? $this->show(['success' => 1]) : $this->show(['success' => 0]);
   }
 
   /**
