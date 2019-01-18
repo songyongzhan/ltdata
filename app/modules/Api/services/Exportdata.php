@@ -452,8 +452,6 @@ class ExportdataService extends BaseService {
         $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[0]+\'<br>销售量(千克)：\'+value[1];}';
 
       } elseif (isset($value['shipper'])) { //出口企业
-
-
         $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
         $series_data[] = [
           'name' => $value['shipper'], //国家
