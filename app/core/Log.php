@@ -80,7 +80,7 @@ class Log {
       if (!is_writable(dirname($file)))
         throw new Exceptions(dirname($file) . ' Directory not to write', 500);
       file_put_contents($file, $message, LOCK_EX);
-      chmod($file, 0644);
+      chmod($file, 0666);
     }
   }
 

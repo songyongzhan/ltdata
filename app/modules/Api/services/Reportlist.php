@@ -19,8 +19,8 @@ class ReportlistService extends BaseService {
   /**
    * 获取权限列表 分页
    * @param array $where
-   * @param int $page_num <number>
-   * @param int $page_size <number>
+   * @param int $page_num <require> 分页
+   * @param int $page_size <require> 分页数量
    */
   public function getList(array $where, $page_num, $page_size) {
     $result = $this->reportlistModel->getListPage($where, $this->field, $page_num, $page_size);
