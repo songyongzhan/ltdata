@@ -26,38 +26,6 @@ class Data2dbController extends BaseController {
 
   const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
 
-
-  public function testAction() {
-
-    Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
-
-    foreach (glob(APP_PATH . '/data/uploads/csv/*.csv') as $file) {
-
-      debugMessage(" $file 开始自动导入...");
-
-      try {
-        $csv = new helperCsv($file, 0, FALSE);
-        $csv->addFilter('\""', ' ');
-        $multi_time = time();
-
-        //$importFlag = TRUE;
-        $multiData = [];
-        foreach ($csv as $row => $data) {
-          if (!$data) continue;
-          $this->format($data);
-          p($row + 1);
-          //P($data);
-
-        }
-
-      } catch (Exception $e) {
-
-        debugMessage('Cli import error' . $e->getMessage() . ' code ' . $e->getCode() . var_export($e->getTrace(), TRUE));
-
-      }
-    }
-
-  }
   /**
    * HTTP_ENV=develop php index.php index/data2db/initRedisData
    */

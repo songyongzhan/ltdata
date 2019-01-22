@@ -230,7 +230,7 @@ class ManageController extends ApiBaseController {
   public function aaAction() {
 
 
-    $result=$this->ydylareachinaService->createTemporaryTable();
+    $this->ydylareachinaService->createTemporaryTable();
 
 
     $this->ydylareachinaService->fillTemporaryTable(3);

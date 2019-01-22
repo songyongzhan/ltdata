@@ -170,7 +170,6 @@ class ExportdataModel extends BaseModel {
     $result = $this->_db->get($this->table, NULL, $field);
     $this->_logSql();
 
-
     if ($type == 1 && is_numeric($limit) && $limit > 0)
       $rowNum = $limit;
     else
