@@ -27,6 +27,37 @@ class Data2dbController extends BaseController {
   const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
 
 
+  public function testAction() {
+
+    Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
+
+    foreach (glob(APP_PATH . '/data/uploads/csv/*.csv') as $file) {
+
+      debugMessage(" $file 开始自动导入...");
+
+      try {
+        $csv = new helperCsv($file, 0, FALSE);
+        $csv->addFilter('\""', ' ');
+        $multi_time = time();
+
+        //$importFlag = TRUE;
+        $multiData = [];
+        foreach ($csv as $row => $data) {
+          if (!$data) continue;
+          $this->format($data);
+          p($row + 1);
+          //P($data);
+
+        }
+
+      } catch (Exception $e) {
+
+        debugMessage('Cli import error' . $e->getMessage() . ' code ' . $e->getCode() . var_export($e->getTrace(), TRUE));
+
+      }
+    }
+
+  }
   /**
    * HTTP_ENV=develop php index.php index/data2db/initRedisData
    */
@@ -66,7 +97,7 @@ class Data2dbController extends BaseController {
       debugMessage(" $file 开始自动导入...");
 
       $csv = new helperCsv($file, 0, FALSE);
-
+      $csv->addFilter('\""', ' ');
       $this->cliExportdataModel->startTransaction();
       try {
         $importFlag = TRUE;
@@ -104,7 +135,6 @@ class Data2dbController extends BaseController {
   /**
    * 没有事务的情况下执行操作
    * @throws Exception
-
    **
    * php index.php index/data2db/import
    * HTTP_ENV=develop php index.php index/data2db/importUnTransaction
@@ -118,28 +148,26 @@ class Data2dbController extends BaseController {
     foreach (glob(APP_PATH . '/data/uploads/csv/*.csv') as $file) {
 
       debugMessage(" $file 开始自动导入...");
-
-
       try {
         $csv = new helperCsv($file, 0, FALSE);
+        $csv->addFilter('\""', ' ');
         $multi_time = time();
 
         //$importFlag = TRUE;
         $multiData = [];
         foreach ($csv as $row => $data) {
           if (!$data) continue;
+
           $this->format($data);
 
-          if (count($multiData) < 1000) {
+          $data['updatetime'] = time();
+          $data['createtime'] = time();
+          $data['multidata'] = $multi_time;
+          $multiData[] = $data;
 
-            $data['updatetime'] = time();
-            $data['createtime'] = time();
-            $data['multidata'] = $multi_time;
-
-            $multiData[] = $data;
-
-          } else {
+          if (count($multiData) >= 1000) {
             $result = $this->cliExportdataModel->importMulti($multiData);
+            debugMessage("$file 插入一次...:" . count($multiData));
             if (!$result) {
               debugMessage("$file 导入出错...");
               $this->cliExportdataModel->delMulti($multi_time);
@@ -149,22 +177,15 @@ class Data2dbController extends BaseController {
           }
         }
         //执行退出后，如果multiData 还有数据，则再次添加
-        if (count($multiData)) {
+        if (count($multiData) > 0) {
           $result = $this->cliExportdataModel->importMulti($multiData);
+          debugMessage("$file 最后一次...:" . count($multiData));
           if (!$result) {
             debugMessage("$file 导入出错...");
             $this->cliExportdataModel->delMulti($multi_time);
             break;
           }
         }
-
-        /*if ($importFlag) {
-          debugMessage("$file 导入成功...");
-
-        } else {
-
-          debugMessage("$file 导入失败...");
-        }*/
 
         $this->mvFiletoDist($file);
 
@@ -207,9 +228,9 @@ class Data2dbController extends BaseController {
     $data['transport_mode'] = $this->cliExportdataModel->transport($data['transport_mode']);
     $data['madein'] = $this->cliExportdataModel->madein($data['madein']);
 
-    if(strtolower($data['specification_title'])=='null'){
+    if (strtolower($data['specification_title']) == 'null') {
       $data['specification_title'] = '';
-    }else{
+    } else {
       $data['specification_title'] = mb_strlen($data['specification_title'], 'utf-8') > 200 ? mb_substr($data['specification_title'], 0, 200) : $data['specification_title'];
     }
 
@@ -219,8 +240,8 @@ class Data2dbController extends BaseController {
     $data['export_year'] = date('Y', $data['export_date']);
     $data['export_month'] = date('m', $data['export_date']);
 
-    $data['price_amount'] = sprintf("%.2f",substr(sprintf("%.3f", $data['price_amount']), 0, -1));
-    $data['total_amount'] = sprintf("%.2f",substr(sprintf("%.3f", $data['total_amount']), 0, -1));
+    $data['price_amount'] = sprintf("%.2f", substr(sprintf("%.3f", $data['price_amount']), 0, -1));
+    $data['total_amount'] = sprintf("%.2f", substr(sprintf("%.3f", $data['total_amount']), 0, -1));
 
 
     //匹配一个正则表达式规格，存放于数据库 用于模糊搜索

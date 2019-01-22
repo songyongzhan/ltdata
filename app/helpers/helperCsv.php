@@ -9,6 +9,7 @@ class helperCsv implements Iterator {
   private $_headers   = NULL; //字段
   private $_current   = NULL;
   private $_lockFile  = NULL; //锁定文件
+  private $_filter    = [];
 
   /**
    *
@@ -40,7 +41,28 @@ class helperCsv implements Iterator {
   }
 
   private function readline() {
-    return fgetcsv($this->_handle, 1024);
+    $result = str_getcsv($this->_replace(fgets($this->_handle)));
+
+    return isset($result[0]) ? $result : NULL;
+  }
+
+  private function _replace($str) {
+    foreach ($this->_filter as $filter) {
+      $str = str_replace($filter['find'], $filter['replace'], $str);
+    }
+    return $str;
+  }
+
+  /**
+   * 添加字符特殊字符过滤
+   * @param $find
+   * @param $replace
+   */
+  public function addFilter($find, $replace) {
+    array_push($this->_filter, [
+      'find' => $find,
+      'replace' => $replace
+    ]);
   }
 
   public function rewind() {
