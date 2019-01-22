@@ -229,6 +229,18 @@ class ManageController extends ApiBaseController {
   //test
   public function aaAction() {
 
+
+    $result=$this->ydylareachinaService->createTemporaryTable();
+
+
+    $this->ydylareachinaService->fillTemporaryTable(3);
+
+
+    //$r=$this->ydylareachinaService->getList([]);
+    //print_r($r);
+
+
+    exit;
     //var_dump($this->_post('username'));
     //
     //var_dump($_POST);

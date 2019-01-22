@@ -39,7 +39,7 @@ class RoleaccessService extends BaseService {
    * 返回当前用户可以访问的url
    * @return array
    */
-  public function getRoleMenuApi() {
+  public function getRoleMenuUrls() {
     $roleResult = $this->menuService->getList([], 1);
     $roleResult = $roleResult['result'];
 

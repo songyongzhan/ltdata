@@ -20,7 +20,7 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
         'Exportdata' => ['createCsv'],
         'Menu' => ['getAppointMenuList', 'getList'],
         'Reportlist' => ['getListByreport'],
-        'Roleaccess' => ['checkUrl'],
+        'Roleaccess' => ['checkUrl', 'getRoleMenuUrls'],
         //'Menu' => ['getOne']
       ];
 

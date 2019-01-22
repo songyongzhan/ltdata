@@ -2,12 +2,13 @@
 
 class helperCsv implements Iterator {
 
-  private $_handle = NULL;
-  private $_lines = NULL;
+  private $_handle    = NULL;
+  private $_lines     = NULL;
   private $_delimiter = NULL;
-  private $_index = NULL; //行号
-  private $_headers = NULL; //字段
-  private $_current = NULL;
+  private $_index     = NULL; //行号
+  private $_headers   = NULL; //字段
+  private $_current   = NULL;
+  private $_lockFile  = NULL; //锁定文件
 
   /**
    *
@@ -22,11 +23,16 @@ class helperCsv implements Iterator {
     if (PHP_OS === 'Darwin') {
       $original = ini_get('auto_detect_line_endings');
       $original || ini_set('auto_detect_line_endings', TRUE);
-    }
-    else $original = TRUE;
+    } else $original = TRUE;
+
+    $this->_lockFile = ini_get('session.save_path') . DS . $filename . '.lock';
+
+    if (file_exists($this->_lockFile)) throw new Exception('The file "' . $filename . '" to locked.');
 
     if (!$this->_handle = fopen($filename, 'r')) throw new Exception('The file "' . $filename . '" cannot be read.');
     $original || ini_set('auto_detect_line_endings', $original);
+
+    file_put_contents($this->_lockFile, 'locked');
 
     $this->_lines = $lines;
     $this->_delimiter = $delimiter;
@@ -64,6 +70,7 @@ class helperCsv implements Iterator {
     elseif (!$this->next()) {
       fclose($this->_handle);
 
+      @unlink($this->_lockFile);
       return FALSE;
     }
 

@@ -227,7 +227,8 @@ class ExportdataService extends BaseService {
           'normal' => [
             'show' => TRUE,
             'position' => 'outside',
-            'formatter' => '{b} ' . $result['unit'] . '{c} ' . $result['prompt_sign']
+            //'formatter' => '{b} ' . $result['unit'] . '{c} ' . $result['prompt_sign']
+            'formatter' => $result['unit'] . '{c} ' . $result['prompt_sign']
           ]
         ],
         'itemSytle' => [
@@ -482,6 +483,40 @@ class ExportdataService extends BaseService {
         //$series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
         $series_data_selected[$value['shipper']] = TRUE;
         $legend_data[] = $value['shipper'];
+
+        $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[1]+\'<br>销售量(千克)：\'+value[0];}';
+
+      } elseif (isset($value['specification'])) { //规格
+        $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
+        $total_weight > $maxValue && $maxValue = $total_weight;
+        $series_data[] = [
+          'name' => $value['specification'],
+          'type' => 'scatter',
+          'data' => [
+            [$total_weight, $value['val'], $total_weight, $value['specification']]
+          ],//$_data
+          'symbolSize' => 'symbolSizefun',
+          'label' => [
+            'emphasis' => [
+              'show' => TRUE,
+              'formatter' => 'labelFormatterfun',
+              'position' => 'top'
+            ]
+          ],
+          'itemStyle' => [
+            'normal' => [
+              'shadowBlur' => 10,
+              'shadowColor' => 'rgba(120, 36, 50, 0.5)',
+              'shadowOffsetY' => 5,
+              //'opacity' => 0.6,
+              'color' => "itemStyleColorfun"
+            ]
+          ]
+        ];
+
+        //$series_data_selected[$value['shipper']] = $key < $defaultSelected ? TRUE : FALSE;
+        $series_data_selected[$value['specification']] = TRUE;
+        $legend_data[] = $value['specification'];
 
         $tooltipFormatterFunStr = 'function (obj) {var value = obj . value; return value[3]+\'<br>销售单价(美元)：\'+value[1]+\'<br>销售量(千克)：\'+value[0];}';
 
