@@ -24,7 +24,13 @@ class Data2dbController extends BaseController {
   ];
 
 
-  const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
+  //const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?R[0-9\.]{1,}[a-z]?/im';
+  //const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?[ZR|R]+[0-9\.]{1,}/im';
+  //const  NOT_SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?[ZR|R]+[0-9\.]{1,}([-])/im';
+
+  const  SEPCIFICATION_PATTERN = '/[0-9\/]*([0-9\.]{1,})\s?[ZR|R]+[0-9\.]{1,}/im';
+  const  NOT_SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})\s?[ZR|R]+[0-9\.]{1,}([-])/im';
+  const  REPLACE_PATTERN = '/^R[0-9]+$/i';
 
   /**
    * HTTP_ENV=develop php index.php index/data2db/initRedisData
@@ -213,10 +219,29 @@ class Data2dbController extends BaseController {
 
 
     //匹配一个正则表达式规格，存放于数据库 用于模糊搜索
+    /*
     if (preg_match_all(self::SEPCIFICATION_PATTERN, $data['specification_title'], $result)) {
       $data['specification'] = isset($result[0][0]) ? $result[0][0] : '';
     } else
       $data['specification'] = '';
+    */
+
+
+    if (preg_match_all(self::SEPCIFICATION_PATTERN, $data['specification_title'], $result) && !preg_match(self::NOT_SEPCIFICATION_PATTERN, $data['specification_title'])) {
+      if (isset($result[0][0])) {
+        if (preg_match(self::REPLACE_PATTERN, $result[0][0])) {
+          //$guige = '混合规格';
+          $data['specification'] = '混合规格';
+        } else {
+          $data['specification'] = str_replace('ZR', 'R', str_replace(' ', '', strtoupper($result[0][0])));
+          //$guige = str_replace('ZR', 'R', strtoupper($result[0][0]));
+        }
+      }
+      //$data['specification'] = isset($result[0][0]) ? $result[0][0] : '';
+    } else {
+      $data['specification'] = '混合规格';
+      //$guige = '混合规格';
+    }
 
     $data['status'] = 1;
   }
