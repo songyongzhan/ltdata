@@ -95,11 +95,22 @@ class ExportdataService extends BaseService {
    * 分析相关数据，并返回
    * @param array $where 条件
    * @param int $report_id 根据这个可以做报表 汇总、平均值、及求和
+   * @param string $date_type
    * @param $type 使用类型 1 json  2导出文件 只是记录到列表 当时并不下载
+   * @param $ydylarea 一带一路区域id
+   * @param $ydylarea_country 一带一路选择的国家
+   * @return array
+   * @throws Exception
    */
-  public function getReportData($where, $report_id, $date_type = '', $type) {
+  public function getReportData($where, $report_id, $date_type = '', $type, $ydylarea, $ydylarea_country) {
     if ($type == 1) {
-      $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
+
+      if ($ydylarea)
+        $result = $this->exportdataModel->getReportDataByReportlistYdyl($where, $report_id, $date_type, $type, $ydylarea, $ydylarea_country);
+      else
+        $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
+
+
       switch (strtolower($result['viewtype'])) {
         case 'pie':
           $result['option'] = $this->_createPie($result, $date_type);;
@@ -114,10 +125,12 @@ class ExportdataService extends BaseService {
       }
       $result['list'] = array_slice($result['list'], 0, 12);
     } else if ($type == 2) {
+
       //下载csv文件
       $csvData = [
         'manage_id' => $this->tokenService->manage_id,
         'where_condition' => serialize($where),
+        'ydyl_param' => serialize(['ydylarea' => $ydylarea, 'ydylarea_country' => $ydylarea_country]),
         'download_num' => 0,
         'download_file' => '',
         'date_type' => $date_type,
@@ -583,13 +596,17 @@ class ExportdataService extends BaseService {
     if (preg_match($symbolSizePattern, $str)) {
 
       //为了让最大的这个数值的大小不超过100 则 计算一个被除数
-      $divNum = 50;
+      $divNum = 5;
       while (TRUE) {
         if (sqrt($maxValue) / $divNum > 120) {
-          $divNum += 10;
+          $divNum += 5;
         } else
           break;
       }
+
+      //如果点特别小，则统一放大5倍
+      if (sqrt($maxValue) / $divNum < 10)
+        $divNum = $divNum / 5;
 
       $str = preg_replace($symbolSizePattern, 'function (data){return Math.sqrt(data[2])/' . $divNum . ';}', $str);
     }
@@ -603,7 +620,7 @@ class ExportdataService extends BaseService {
       }, $str);
     }
     if (preg_match($yAxisMaxfunPattern, $str)) {
-      $str = preg_replace($yAxisMaxfunPattern, 'function(value) {return value.max*0.2 + value.max;}', $str);
+      $str = preg_replace($yAxisMaxfunPattern, 'function(value) {return Math.ceil(value.max*0.2 + value.max);}', $str);
     }
 
     if (preg_match($tooltipFormatfunPattern, $str) && isset($tooltipFormatterFunStr)) {
@@ -623,8 +640,11 @@ class ExportdataService extends BaseService {
 
     if ($createCsvJob) {
       $where = unserialize($createCsvJob['where_condition']);
+      $ydyl_param = unserialize($createCsvJob['ydyl_param']);
 
-      $result = $this->exportdataModel->getReportDataByReportlist($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2);
+      if (isset($ydyl_param['ydylarea']) && $ydyl_param['ydylarea'] != '')
+        $result = $this->exportdataModel->getReportDataByReportlistYdyl($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2, $ydyl_param['ydylarea'], $ydyl_param['ydylarea_country']);
+      else $result = $this->exportdataModel->getReportDataByReportlist($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2);
 
       $table_column = $result['table_column'];
 

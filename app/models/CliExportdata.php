@@ -203,6 +203,21 @@ class CliExportdataModel extends BaseModel {
 
   }
 
+
+  /**
+   * 初始化未生成的文件
+   * @throws InvalideException
+   */
+  public function initCsvList() {
+
+    $csvList = $this->getList([getWhereCondition('status', 0)], ['id', 'manage_id', 'where_condition', 'ydyl_param', 'date_type', 'report_id'],'','csvlist');
+    foreach ($csvList as $val) {
+
+      $this->redis->lpush('csvlist', serialize($val), FALSE);
+    }
+
+  }
+
   //初始化reids数据
   public function initRedisData($array) {
 

@@ -72,8 +72,14 @@ class RoleaccessService extends BaseService {
     $checkUrlData = [];
     foreach ($roleResult as $val) {
 
-      if ($val['relation_url'] != '')
-        $checkUrlData[] = $val['relation_url'];
+      if ($val['relation_url'] != '') {
+
+        foreach (explode(',', $val['relation_url']) as $_u) {
+          $checkUrlData[] = $_u;
+        }
+        
+      }
+
 
       if ($val['type_id'] == 2) {
         if ($val['url'] != '')

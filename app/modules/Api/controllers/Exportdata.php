@@ -109,7 +109,15 @@ class ExportdataController extends ApiBaseController {
 
     $type = $this->_post('type', 1); //2 导出csv  1 正常显示图表
 
-    $result = $this->exportdataService->getReportData($where, $report_id, $date_type, $type);
+
+    //是否一带一路
+    $ydylarea = $this->_post('ydylarea', '');
+
+    //是否选择了国家
+    $ydylarea_country = $this->_post('ydylarea_country', '');
+
+
+    $result = $this->exportdataService->getReportData($where, $report_id, $date_type, $type, $ydylarea, $ydylarea_country);
     return $result;
   }
 

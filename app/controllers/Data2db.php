@@ -43,7 +43,7 @@ class Data2dbController extends BaseController {
       ]
     );
 
-
+    $this->cliExportdataModel->initCsvList();
   }
 
 
