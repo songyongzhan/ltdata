@@ -40,7 +40,7 @@ class Data2dbController extends BaseController {
   // */30 * * * * php index.php index/data2db/initRedisData
   public function initRedisDataAction() {
 
-    /*$this->cliExportdataModel->initRedisData(
+    $this->cliExportdataModel->initRedisData(
       [
         'ciq',
         'country',
@@ -48,7 +48,7 @@ class Data2dbController extends BaseController {
         'trade',
         'transport'
       ]
-    );*/
+    );
 
     $this->cliExportdataModel->initCsvList();
   }

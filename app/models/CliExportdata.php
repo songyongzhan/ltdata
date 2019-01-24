@@ -210,11 +210,8 @@ class CliExportdataModel extends BaseModel {
    */
   public function initCsvList() {
 
-    $csvList = $this->getList([getWhereCondition('status', 0)], ['id', 'manage_id', 'where_condition', 'ydyl_param', 'date_type', 'report_id'],'','csvlist');
-
-    print_r($csvList);
-    exit;
-
+    $csvList = $this->getList([getWhereCondition('status', 0)], ['id', 'manage_id', 'where_condition', 'ydyl_param', 'date_type', 'report_id'], '', 'csvlist');
+    
     foreach ($csvList as $val) {
       $this->redis->lpush('csvlist', serialize($val), FALSE);
     }

@@ -168,7 +168,7 @@ class ExportdataService extends BaseService {
           'name' => $country_name,
           'selected' => $key == 0 ? TRUE : FALSE
         ];
-        
+
         $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
         $legend_data[] = $country_name;
         $value['dist_country'] = $country_name;
