@@ -100,3 +100,8 @@ define('IS_CHECK_MENU', TRUE);
 
 define("DB_AUTOADDTIME", TRUE);
 define("DB_AUTOTIME_OUT_FORMAT", 'Y-m-d H:i:s'); //输入日期格式
+
+//系统记录日志 敏感字符过滤
+$filterParam = [
+  'mobile'
+];

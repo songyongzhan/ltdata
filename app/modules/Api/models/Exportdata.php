@@ -277,8 +277,18 @@ class ExportdataModel extends BaseModel {
 
     //直接获取区域id
     if ($ydylarea_country == '') {
-      $ydldAreaChina = $this->ydylareaModel->getOne($ydylarea, ['china_ids']);
-      $ydylarea_country = $ydldAreaChina['china_ids'];
+
+      if (intval($ydylarea) === 0) { //如果是0 则获取整个列表，进行匹配
+        $list = $this->ydylareaModel->getList([], ['china_ids']);
+        $ydylarea_data = [];
+        foreach ($list as $val) {
+          $ydylarea_data[] = $val['china_ids'];
+        }
+        $ydylarea_country = implode(',', $ydylarea_data);
+      } else { //如果是数字 则获取单个
+        $ydldAreaChina = $this->ydylareaModel->getOne($ydylarea, ['china_ids']);
+        $ydylarea_country = $ydldAreaChina['china_ids'];
+      }
     } else
       $ydylarea_country = trim($ydylarea_country, ',');
 
@@ -373,7 +383,6 @@ class ExportdataModel extends BaseModel {
 
     $groupBy = [];
     if ($reportRules['group_str']) {
-
       $group_str = (explode('|', $reportRules['group_str']))[$date_type - 1];
       foreach (explode(',', $group_str) as $val) {
         $groupBy[] = $val;

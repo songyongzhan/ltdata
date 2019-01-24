@@ -105,7 +105,7 @@ class ExportdataService extends BaseService {
   public function getReportData($where, $report_id, $date_type = '', $type, $ydylarea, $ydylarea_country) {
     if ($type == 1) {
 
-      if ($ydylarea)
+      if ($ydylarea !== '')
         $result = $this->exportdataModel->getReportDataByReportlistYdyl($where, $report_id, $date_type, $type, $ydylarea, $ydylarea_country);
       else
         $result = $this->exportdataModel->getReportDataByReportlist($where, $report_id, $date_type, $type);
@@ -156,7 +156,7 @@ class ExportdataService extends BaseService {
     $series_data = [];
     $legend_data = [];
     $series_data_selected = [];
-    $defaultSelected = 10;
+    $defaultSelected = 15;
     foreach ($result['list'] as $key => &$value) {
 
       if (isset($value['dist_country'])) { //国家处理
@@ -168,6 +168,7 @@ class ExportdataService extends BaseService {
           'name' => $country_name,
           'selected' => $key == 0 ? TRUE : FALSE
         ];
+        
         $series_data_selected[$country_name] = $key < $defaultSelected ? TRUE : FALSE;
         $legend_data[] = $country_name;
         $value['dist_country'] = $country_name;
@@ -200,6 +201,8 @@ class ExportdataService extends BaseService {
         $value['trade_mode'] = $trade_mode;
 
       } elseif (isset($value['specification'])) { //规格处理
+
+        if ($value['specification'] == '混合规格') continue;
 
         //$num = number_format($value['val'] / $result['sum_val'], 2);
         $series_data[] = [
@@ -502,6 +505,9 @@ class ExportdataService extends BaseService {
       } elseif (isset($value['specification'])) { //规格
         $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
         $total_weight > $maxValue && $maxValue = $total_weight;
+
+        if ($value['specification'] == '混合规格') continue;
+
         $series_data[] = [
           'name' => $value['specification'],
           'type' => 'scatter',
@@ -642,9 +648,11 @@ class ExportdataService extends BaseService {
       $where = unserialize($createCsvJob['where_condition']);
       $ydyl_param = unserialize($createCsvJob['ydyl_param']);
 
-      if (isset($ydyl_param['ydylarea']) && $ydyl_param['ydylarea'] != '')
-        $result = $this->exportdataModel->getReportDataByReportlistYdyl($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2, $ydyl_param['ydylarea'], $ydyl_param['ydylarea_country']);
-      else $result = $this->exportdataModel->getReportDataByReportlist($where, $createCsvJob['report_id'], $createCsvJob['report_id'], $createCsvJob['date_type'], 2);
+      $createCsvJob['date_type'] === 0 && $createCsvJob['date_type'] = 1;
+
+      if (isset($ydyl_param['ydylarea']) && $ydyl_param['ydylarea'] !== '')
+        $result = $this->exportdataModel->getReportDataByReportlistYdyl($where, $createCsvJob['report_id'], $createCsvJob['date_type'], 2, $ydyl_param['ydylarea'], $ydyl_param['ydylarea_country']);
+      else $result = $this->exportdataModel->getReportDataByReportlist($where, $createCsvJob['report_id'], $createCsvJob['date_type'], 2);
 
       $table_column = $result['table_column'];
 

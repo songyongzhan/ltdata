@@ -28,8 +28,9 @@ class Data2dbController extends BaseController {
   //const  SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?[ZR|R]+[0-9\.]{1,}/im';
   //const  NOT_SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})?[ZR|R]+[0-9\.]{1,}([-])/im';
 
-  const  SEPCIFICATION_PATTERN = '/[0-9\/]*([0-9\.]{1,})\s?[ZR|R]+[0-9\.]{1,}/im';
-  const  NOT_SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})\s?[ZR|R]+[0-9\.]{1,}([-])/im';
+  const  SEPCIFICATION_PATTERN = '/[0-9\/]*([0-9\.]{1,})\s?(ZR|R)+[0-9\.]{1,}/im';
+  const  NOT_SEPCIFICATION_PATTERN = '/([0-9\/]+)?([0-9\.]{1,})\s?(ZR|R)+[0-9\.]{1,}([-])/im';
+
   const  REPLACE_PATTERN = '/^R[0-9]+$/i';
 
   /**
@@ -39,7 +40,7 @@ class Data2dbController extends BaseController {
   // */30 * * * * php index.php index/data2db/initRedisData
   public function initRedisDataAction() {
 
-    $this->cliExportdataModel->initRedisData(
+    /*$this->cliExportdataModel->initRedisData(
       [
         'ciq',
         'country',
@@ -47,7 +48,7 @@ class Data2dbController extends BaseController {
         'trade',
         'transport'
       ]
-    );
+    );*/
 
     $this->cliExportdataModel->initCsvList();
   }

@@ -129,7 +129,7 @@ class ExportdataController extends ApiBaseController {
     $file = new File($_FILES['uploadFile']['tmp_name']);
 
     $file->rule('');
-    $result = $file->setUploadInfo($_FILES['uploadFile'])->validate(['size' => 10485760, 'ext' => 'csv'])->move(APP_PATH . DS . 'data/uploads/csv', '');
+    $result = $file->setUploadInfo($_FILES['uploadFile'])->validate(['size' => 26214400, 'ext' => 'csv'])->move(APP_PATH . DS . 'data/uploads/csv', '');
 
     if ($result) {
       $data = [
