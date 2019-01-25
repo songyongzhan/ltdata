@@ -227,7 +227,6 @@ class Data2dbController extends BaseController {
       $data['specification'] = '';
     */
 
-
     if (preg_match_all(self::SEPCIFICATION_PATTERN, $data['specification_title'], $result) && !preg_match(self::NOT_SEPCIFICATION_PATTERN, $data['specification_title'])) {
       if (isset($result[0][0])) {
         if (preg_match(self::REPLACE_PATTERN, $result[0][0])) {

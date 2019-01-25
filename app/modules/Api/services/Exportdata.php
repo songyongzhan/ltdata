@@ -506,7 +506,10 @@ class ExportdataService extends BaseService {
         $total_weight = isset($value['total_weight']) ? $value['total_weight'] : 0;
         $total_weight > $maxValue && $maxValue = $total_weight;
 
-        if ($value['specification'] == '混合规格') continue;
+        if ($value['specification'] == '混合规格') {
+          unset($result['list'][$key]);
+          continue;
+        }
 
         $series_data[] = [
           'name' => $value['specification'],
@@ -632,6 +635,9 @@ class ExportdataService extends BaseService {
     if (preg_match($tooltipFormatfunPattern, $str) && isset($tooltipFormatterFunStr)) {
       $str = preg_replace($tooltipFormatfunPattern, $tooltipFormatterFunStr, $str);
     }
+
+    echo $str;
+    exit;
 
     return $str;
   }
