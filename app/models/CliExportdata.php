@@ -48,7 +48,6 @@ class CliExportdataModel extends BaseModel {
     $this->_db->delete('exportdata');
   }
 
-
   public function ciq($ciq) {
     if (!$ciq) return '';
     static $ciqDatas;
@@ -211,7 +210,7 @@ class CliExportdataModel extends BaseModel {
   public function initCsvList() {
 
     $csvList = $this->getList([getWhereCondition('status', 0)], ['id', 'manage_id', 'where_condition', 'ydyl_param', 'date_type', 'report_id'], '', 'csvlist');
-    
+
     foreach ($csvList as $val) {
       $this->redis->lpush('csvlist', serialize($val), FALSE);
     }

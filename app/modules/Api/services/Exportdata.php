@@ -157,6 +157,7 @@ class ExportdataService extends BaseService {
     $legend_data = [];
     $series_data_selected = [];
     $defaultSelected = 15;
+    $hunheGuigeWeight = 0; //混合规格的一个占比
     foreach ($result['list'] as $key => &$value) {
 
       if (isset($value['dist_country'])) { //国家处理
@@ -202,12 +203,22 @@ class ExportdataService extends BaseService {
 
       } elseif (isset($value['specification'])) { //规格处理
 
-        if ($value['specification'] == '混合规格') continue;
+        //首先找到混合规格，如果混合规格不是第一个则，会出现数据异常
+        if ($hunheGuigeWeight === 0) {
+          $_tempHunheData = array_column($result['list'], 'val', $value['specification']);
+          if (array_key_exists('混合规格', $_tempHunheData))
+            $hunheGuigeWeight = $_tempHunheData['混合规格'];
+        }
+
+        if ($value['specification'] == '混合规格') {
+          unset($result['list'][$key]);
+          continue;
+        };
 
         //$num = number_format($value['val'] / $result['sum_val'], 2);
         $series_data[] = [
           'value' => $result['is_siglepricle'] == 1 ? $value['val'] :
-            (sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) > 0 ? sprintf("%.2f", $value['val'] / $result['sum_val'] * 100) : 0.01),
+            (sprintf("%.2f", $value['val'] / ($result['sum_val'] - $hunheGuigeWeight) * 100) > 0 ? sprintf("%.2f", $value['val'] / ($result['sum_val'] - $hunheGuigeWeight) * 100) : 0.01),
           'name' => $value['specification'],
           'selected' => $key == 0 ? TRUE : FALSE
         ];
@@ -299,13 +310,16 @@ class ExportdataService extends BaseService {
     $resultData = [];
 
     foreach ($result['list'] as $val) {
+
       $resultData[$val['export_year']][] = [
         'title' => $val['export_year'],
         'numval' => $val['val'],
         'month' => isset($val['export_month']) ? $val['export_month'] : '',
         'data' => $val
       ];
+
     }
+
 
     $legendData = array_map(function ($val) {
       return $val . '年';
@@ -320,6 +334,7 @@ class ExportdataService extends BaseService {
     foreach (array_keys($resultData) as $yearval) {
       $temp = $resultData[$yearval];
       if ($date_type == 1) { //1 年 月   2年  当等于2 的时候不考虑排序
+
         usort($temp, function ($a, $b) {
           if ($a['month'] == $b['month'])
             return 0;
@@ -327,17 +342,21 @@ class ExportdataService extends BaseService {
           return $a['month'] > $b['month'] ? 1 : -1;
         });
 
-
         foreach ($temp as $k => $val) {
-          if (isset($val['month']))
+          if (isset($val['month']) && !in_array(($val['month'] - 1), $xAxisMax))
             $xAxisMax[] = $val['month'] - 1;
         }
 
+        $_seriestemp = array_column($temp, 'numval', 'month');
+        $seriesData_data = [];
+        for ($i = 1; $i <= 12; $i++) {
+          $seriesData_data[] = array_key_exists($i, $_seriestemp) ? $_seriestemp[$i] : 0;
+        }
 
         $seriesData[] = [
           'name' => $yearval . '年',
           'type' => 'line',
-          'data' => array_column($temp, 'numval')
+          'data' => $seriesData_data
         ];
 
       } else if ($date_type == 2) { //年处理逻辑
@@ -358,12 +377,13 @@ class ExportdataService extends BaseService {
       $xAxisDataText = [
         '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
       ];
-
+      sort($xAxisMax);
       foreach ($xAxisMax as $val) {
         $xAxisData[] = $xAxisDataText[$val];
       }
 
     } elseif ($date_type == 2) {
+
       $xAxisData = $legendData;
     }
 
@@ -413,6 +433,11 @@ class ExportdataService extends BaseService {
 
       'series' => $seriesData
     ];
+
+
+    //echo jsonencode($option);
+    //
+    //exit;
 
     return $option;
   }
@@ -636,9 +661,6 @@ class ExportdataService extends BaseService {
       $str = preg_replace($tooltipFormatfunPattern, $tooltipFormatterFunStr, $str);
     }
 
-    echo $str;
-    exit;
-
     return $str;
   }
 
@@ -684,7 +706,7 @@ class ExportdataService extends BaseService {
 
       $header = [
         [
-          $result['title'] . ((isset($whereData['start_date']) && isset($whereData['end_date'])) ? '(' . date('Y/m', $whereData['start_date']) . '-' . date('Y/m', $whereData['end_date']) . ')' : '')
+          $result['title'] . ((isset($whereData['start_date']) && isset($whereData['end_date'])) ? date('Ym', $whereData['start_date']) . '_' . date('Ym', $whereData['end_date']) : '')
         ]
       ];
 
@@ -717,10 +739,10 @@ class ExportdataService extends BaseService {
 
           }
 
-          if ($field != 'val')
-            $temp[] = (isset($val[$field]) ? $val[$field] : '') . "\t";
-          else
+          if ($field == 'val' || $field == 'total_weight')
             $temp[] = $val[$field];
+          else
+            $temp[] = (isset($val[$field]) ? $val[$field] : '') . "\t";
 
         }
         $csvDatas[] = $temp;

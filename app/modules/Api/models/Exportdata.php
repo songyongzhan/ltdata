@@ -271,9 +271,9 @@ class ExportdataModel extends BaseModel {
 
     $limit = $reportRules['limit_str'];
 
-    foreach ($where as &$val) {
-      $val['field'] = $val['field'];
-    }
+    /* foreach ($where as &$val) {
+       $val['field'] = $val['field'];
+     }*/
 
     //直接获取区域id
     if ($ydylarea_country == '') {
@@ -322,12 +322,10 @@ class ExportdataModel extends BaseModel {
     $this->_logSql();
 
     if ($type == 1 && is_numeric($limit) && $limit > 0)
-      $rowNum = $limit;
+      $reportRules['list'] = array_slice($result, 0, $limit);
     else
-      $rowNum = count($result);
+      $reportRules['list'] = $result;
 
-
-    $reportRules['list'] = array_slice($result, 0, $rowNum);
     $reportRules['sum_val'] = sprintf('%.2f', array_sum(array_column($result, 'val')));
 
     if ($type == 1)
