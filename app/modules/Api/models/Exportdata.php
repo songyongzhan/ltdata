@@ -12,6 +12,10 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class ExportdataModel extends BaseModel {
 
+  //为了不拼接status 真实删除数据
+  protected $realDelete = TRUE;
+
+
   //protected $output_time_format = 'Y-m-d';
   public function getExportDataList($where = [], $fileds = [], $pageNum = 1, $pageSize = PAGESIZE, $order = '', $table = NULL) {
 

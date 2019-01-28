@@ -255,7 +255,6 @@ class BaseModel extends CoreModel {
       //  debugMessage('系统自动添加了逻辑删除过滤值 status ');
       //}
 
-
       $this->_db->where('status', -1, '>');
       debugMessage('系统自动添加了逻辑删除过滤值 status ');
     }

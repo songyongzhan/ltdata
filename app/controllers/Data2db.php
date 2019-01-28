@@ -193,7 +193,7 @@ class Data2dbController extends BaseController {
   private function format(&$data) {
     $data = convert_encodeing($data, 'gbk', 'utf-8');
 
-    $data = array_combine(self::FIELDS, $data);
+    $data = array_combine(self::FIELDS, array_slice($data, 0, 13));
 
     //从这里进行一系列替换  文字到数字的转换
 
