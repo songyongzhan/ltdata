@@ -50,6 +50,7 @@ class Data2dbController extends BaseController {
       ]
     );
 
+    $this->cliExportdataModel->initMp();
     $this->cliExportdataModel->initCsvList();
   }
 

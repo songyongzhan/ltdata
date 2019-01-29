@@ -197,7 +197,6 @@ class CliExportdataModel extends BaseModel {
       }
 
       return $madeId;
-
     }
 
   }
@@ -242,6 +241,23 @@ class CliExportdataModel extends BaseModel {
         $this->redis->hmSet($val, array_column($data, 'title', 'id'));
       }
 
+    }
+
+  }
+
+
+  /**
+   * 初始化数据到redis
+   */
+  public function initMp() {
+
+    $mpPinpaiList = $this->getList([
+      getWhereCondition('status', 1)
+    ], ['id', 'ppname'], 'id desc', 'mppinpai', 0);
+
+    if ($mpPinpaiList) {
+      $this->redis->del('mppinpai');
+      $this->redis->hmSet('mppinpai', array_column($mpPinpaiList, 'ppname', 'id'));
     }
 
   }
