@@ -226,7 +226,7 @@ class MpinfoController extends ApiBaseController {
       'email' => $this->_post('email'),
       'weburl' => $this->_post('weburl'),
       'indexshow' => $this->_post('indexshow'),
-      'gongkai' => $this->_post('isfufei'),
+      'isfufei' => $this->_post('isfufei'),
       'allshow' => $this->_post('allshow'),
       'gongkai' => $this->_post('gongkai')
     ];

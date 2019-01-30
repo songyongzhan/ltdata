@@ -17,8 +17,30 @@ class MppinpaiController extends ApiBaseController {
    */
   public function getListAction() {
 
-    $result = $this->mppinpaiService->getList();
+    //如果传递了page_size 就分页
+    $page_size = $this->_post('page_size', PAGESIZE);
+    $page_num = $this->_post('page_num', 1);
+    $ppname = $this->_post('ppname', '');
+    $pid = $this->_post('pid', '');
+
+    $rules = [
+      ['condition' => 'like',
+        'key_field' => ['ppname'],
+        'db_field' => ['ppname']
+      ],
+      ['condition' => '=',
+        'key_field' => ['pid'],
+        'db_field' => ['pid']
+      ]
+    ];
+    $data = ['ppname' => $ppname, 'pid' => $pid];
+
+    $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
+
+    $result = $this->mppinpaiService->getListPage($where, $page_num, $page_size);
     return $result;
+
+
   }
 
 

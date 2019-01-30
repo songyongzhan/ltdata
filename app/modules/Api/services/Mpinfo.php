@@ -48,14 +48,11 @@ class MpinfoService extends BaseService {
     }
     $csvDatas = $result;
 
-
-    print_r($csvDatas);
-    exit;
     $csvHeader = ['公司名称', '企业类型', '所属品类', '所属品牌', '省', '市', '联系人', '经营品牌', '手机', '电话', '网址', '邮箱', '是否首页显示', '是否公开', '名片形式展示', '是否付费'];
 
     $header = [];
     $footer = [];
-    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], time() . '.csv');
+    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录_' . time());
   }
 
   /**
@@ -65,7 +62,7 @@ class MpinfoService extends BaseService {
    * @param int $sheng_id <require|number> 省份不能为空
    * @param int $shi_id <require|number> 所在城市不能为空
    * @param int $qylx_id <require|number> 企业类型不能为空
-   * @param string $title <require|number> 企业名称不能为空
+   * @param string $title <require> 企业名称不能为空
    * @return mixed 返回最后插入的id
    */
 
@@ -109,7 +106,7 @@ class MpinfoService extends BaseService {
    * @param int $sheng_id <require|number> 省份不能为空
    * @param int $shi_id <require|number> 所在城市不能为空
    * @param int $qylx_id <require|number> 企业类型不能为空
-   * @param string $title <require|number> 企业名称不能为空
+   * @param string $title <require> 企业名称不能为空
    * @return array mixed 返回用户数据
    */
 

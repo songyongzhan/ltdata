@@ -32,4 +32,16 @@ class MppinpaiService extends BaseService {
   }
 
 
+  /**
+   * 获取列表
+   * @param array $where
+   * @param $field
+   * @return mixed
+   */
+  public function getListPage(array $where, $page_num, $page_size) {
+    $result = $this->mppinpaiModel->getListPage($where, $this->field, $page_num, $page_size);
+    return $this->show($result);
+  }
+
+
 }
