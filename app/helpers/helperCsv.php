@@ -63,6 +63,7 @@ class helperCsv implements Iterator {
       'find' => $find,
       'replace' => $replace
     ]);
+    return $this;
   }
 
   public function rewind() {

@@ -229,11 +229,16 @@ class ManageController extends ApiBaseController {
   //test
   public function aaAction() {
 
+    $table=$this->mpinfoService->cloneTmpTable();
 
-    $this->ydylareachinaService->createTemporaryTable();
 
+    var_dump($table);
+    //$this->redisModel->copyData('logs');
 
-    $this->ydylareachinaService->fillTemporaryTable(3);
+    //$this->ydylareachinaService->createTemporaryTable();
+    //
+    //
+    //$this->ydylareachinaService->fillTemporaryTable(3);
 
 
     //$r=$this->ydylareachinaService->getList([]);

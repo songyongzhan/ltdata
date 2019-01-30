@@ -287,11 +287,74 @@ class BaseModel extends CoreModel {
     return $this->_db->tableExists($table);
   }
 
-
-  public final function getTableScnema($table, $filed = '*', $autoAddPrefix = FALSE) {
+  /**
+   * 获取表相关信息
+   * @param $table
+   * @param string $filed
+   * @param bool $autoAddPrefix
+   * @return mixed
+   */
+  public final function getTableInfo($table, $filed = '*', $autoAddPrefix = FALSE) {
     $table = $autoAddPrefix ? $this->prefix . $table : $table;
     return $this->_db->getTableScnema($table, $filed);
   }
+
+
+  /**
+   * 创建临时表
+   * @return bool
+   */
+  public function cloneTmpTable($srcTable = '') {
+    $srcTable = str_replace($this->prefix, '', $srcTable);
+    $srcTable === '' && $srcTable = $this->prefix . $this->table;
+
+    $sql = 'CREATE TEMPORARY TABLE %s ENGINE=MyISAM AS SELECT * FROM %s WHERE %s < 0';
+
+    $temporaryTable = $srcTable . time();
+
+    $sql = sprintf($sql, $temporaryTable, $srcTable, $this->id);
+
+    $this->query($sql);
+
+    if ($this->_db->getLastErrno() > 0)
+      return FALSE;
+    else
+      return str_replace($this->prefix, '', $temporaryTable);
+
+  }
+  /**
+   * @param $tmpTable
+   * @param string $distTable
+   */
+  public function copyData($tmpTable, $distTable = '') {
+    $tmpTable = str_replace($this->prefix, '', $tmpTable);
+    $distTable = str_replace($this->prefix, '', $distTable);
+
+    if ($distTable === '')
+      $distTable = $this->prefix . $this->table;
+    else
+      $distTable = $this->prefix . $distTable;
+
+    $data = $this->getTableInfo($tmpTable);
+    if ($data) {
+      $field = array_column($data, 'COLUMN_NAME', 'COLUMN_NAME');
+      unset($field[$this->id]);
+      $field = implode(',', $field);
+    } else
+      $field = NULL;
+
+    if (!$field)
+      return FALSE;
+
+    $sql = sprintf('INSERT INTO %s(%s) select %s from %s', $distTable, $field, $field, $this->prefix . $tmpTable);
+    $this->query($sql);
+    $this->query(sprintf('DROP TABLE %s', $this->prefix . $tmpTable));
+    if ($this->_db->getLastErrno() > 0)
+      return FALSE;
+    else
+      return TRUE;
+  }
+
 
   /**
    * 自动处理添加 createtime  updatetime
