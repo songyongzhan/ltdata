@@ -28,7 +28,6 @@ class MppinpaiService extends BaseService {
         'text' => $val
       ];
     }
-
     return $this->show(['mppinpai' => $list]);
   }
 

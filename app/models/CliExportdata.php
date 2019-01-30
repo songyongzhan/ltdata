@@ -252,7 +252,8 @@ class CliExportdataModel extends BaseModel {
   public function initMp() {
 
     $mpPinpaiList = $this->getList([
-      getWhereCondition('status', 1)
+      getWhereCondition('status', 1),
+      getWhereCondition('title', '', '!=')
     ], ['id', 'ppname'], 'id desc', 'mppinpai', 0);
 
     if ($mpPinpaiList) {

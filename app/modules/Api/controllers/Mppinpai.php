@@ -17,13 +17,9 @@ class MppinpaiController extends ApiBaseController {
    */
   public function getListAction() {
 
-    $result = $this->regionService->getList($where);
+    $result = $this->mppinpaiService->getList();
     return $result;
   }
-
-
-
-
 
 
 }
