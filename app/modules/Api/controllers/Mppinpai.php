@@ -39,7 +39,12 @@ class MppinpaiController extends ApiBaseController {
 
     $result = $this->mppinpaiService->getListPage($where, $page_num, $page_size);
     return $result;
+  }
 
+
+  public function getListOptionAction() {
+    $result = $this->mppinpaiService->getList();
+    return $result;
 
   }
 
