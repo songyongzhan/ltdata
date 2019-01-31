@@ -44,12 +44,13 @@ class MenuService extends BaseService {
     if (!$manageRoleAccess)
       showApiException('数据不存在', StatusCode::DATA_NOT_EXISTS);
 
+
+
     if (isset($manageRoleAccess['role_access']) && $manageRoleAccess['role_access'] != '') {
       $manageResult = $this->getAppointMenuList($manageRoleAccess['role_access'], $useType);
       isset($manageResult['result']) && $manageResult = $manageResult['result'];
     }
 
-    $where = [];
     if ($useType == 0) {
       array_push($where, getWhereCondition('type_id', '1'));
       array_push($where, getWhereCondition('status', '1'));
