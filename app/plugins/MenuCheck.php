@@ -18,6 +18,7 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
         'Manage' => ['logout', 'checkToken', 'login', 'password', 'getClientIp', 'searchData', 'getUserInfo', 'password', 'checkCode', 'getCode', 'aa'],
         'Dictionaries' => '*',
         'Region' => '*',
+        'Ydylarea' => ['getList', 'getChinaList'],
         'Exportdata' => ['createCsv'],
         'Menu' => ['getAppointMenuList', 'getList'],
         'Reportlist' => ['getListByreport'],

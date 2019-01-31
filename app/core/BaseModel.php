@@ -291,14 +291,12 @@ class BaseModel extends CoreModel {
    * 获取表相关信息
    * @param $table
    * @param string $filed
-   * @param bool $autoAddPrefix
    * @return mixed
    */
-  public final function getTableInfo($table, $filed = '*', $autoAddPrefix = FALSE) {
-    $table = $autoAddPrefix ? $this->prefix . $table : $table;
+  public final function getTableInfo($table, $filed = '*') {
+    $table = strpos($table, '.') ? $table : str_replace($this->prefix, '', $table);
     return $this->_db->getTableScnema($table, $filed);
   }
-
 
   /**
    * 创建临时表
@@ -306,7 +304,9 @@ class BaseModel extends CoreModel {
    */
   public function cloneTmpTable($srcTable = '') {
     $srcTable = str_replace($this->prefix, '', $srcTable);
-    $srcTable === '' && $srcTable = $this->prefix . $this->table;
+    $srcTable === '' && $srcTable = $this->table;
+
+    $srcTable = $this->prefix . $srcTable;
 
     $sql = 'CREATE TEMPORARY TABLE %s ENGINE=MyISAM AS SELECT * FROM %s WHERE %s < 0';
 
@@ -322,6 +322,7 @@ class BaseModel extends CoreModel {
       return str_replace($this->prefix, '', $temporaryTable);
 
   }
+
   /**
    * @param $tmpTable
    * @param string $distTable
@@ -335,7 +336,7 @@ class BaseModel extends CoreModel {
     else
       $distTable = $this->prefix . $distTable;
 
-    $data = $this->getTableInfo($tmpTable);
+    $data = $this->getTableInfo($distTable);
     if ($data) {
       $field = array_column($data, 'COLUMN_NAME', 'COLUMN_NAME');
       unset($field[$this->id]);
@@ -347,8 +348,12 @@ class BaseModel extends CoreModel {
       return FALSE;
 
     $sql = sprintf('INSERT INTO %s(%s) select %s from %s', $distTable, $field, $field, $this->prefix . $tmpTable);
+
+    debugMessage('copyData temporary to table Sql:' . $sql);
+
     $this->query($sql);
     $this->query(sprintf('DROP TABLE %s', $this->prefix . $tmpTable));
+
     if ($this->_db->getLastErrno() > 0)
       return FALSE;
     else

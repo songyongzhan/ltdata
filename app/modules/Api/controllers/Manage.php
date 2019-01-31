@@ -221,7 +221,7 @@ class ManageController extends ApiBaseController {
    * 公开化 用于搜索 填充数据使用
    */
   public function searchDataAction() {
-    $type = $this->_post('type','');
+    $type = $this->_post('type', '');
     $result = $this->manageService->searchData($type);
     return $result;
   }
@@ -229,10 +229,30 @@ class ManageController extends ApiBaseController {
   //test
   public function aaAction() {
 
-    $table=$this->mpinfoService->cloneTmpTable();
+    //$table=$this->mpinfoService->cloneTmpTable();
 
+
+    //$b=$this->mpinfoModel->getTableInfo('role_copy');
+    //var_dump($b);
+    //
+    //exit;
+    $table = $this->mpinfoModel->cloneTmpTable('role_copy');
 
     var_dump($table);
+    $this->mpinfoModel->insert([
+      'title' => '123',
+      'remarks' => '',
+      'status' => 1
+    ], $table);
+
+
+    $b=$this->mpinfoModel->copyData($table, 'role_copy');
+
+    var_dump($b);
+
+    exit;
+
+    //var_dump($table);
     //$this->redisModel->copyData('logs');
 
     //$this->ydylareachinaService->createTemporaryTable();
