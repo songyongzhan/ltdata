@@ -15,7 +15,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
  */
 class PcrdataService extends BaseService {
 
-  protected $field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade', 'pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
+  protected $field = ['id', 'export_date', 'export_year', 'export_month', 'city', 'brand', 'specification', 'huawen', 'grade', 'pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle', 'createtime'];
 
   /**
    * 获取列表
@@ -48,7 +48,7 @@ class PcrdataService extends BaseService {
     }
     $csvDatas = $result;
 
-    $csvHeader = ['公司名称', '企业类型', '所属品类', '所属品牌', '省', '市', '联系人', '经营品牌', '手机', '电话', '网址', '邮箱', '是否首页显示', '是否公开', '名片形式展示', '是否付费'];
+    $csvHeader = ['日期', '城市', '品牌', '花纹', '等级', '-', '联系人', '经营品牌', '手机', '电话', '网址', '邮箱', '是否首页显示', '是否公开', '名片形式展示', '是否付费'];
 
     $header = [];
     $footer = [];
@@ -84,8 +84,15 @@ class PcrdataService extends BaseService {
 
     if (isset($pinpaiData[$mppinpaiId]))
       return $pinpaiData[$mppinpaiId];
-    else
-      return '';
+    else {
+      $lastId = $this->mppinpaiModel->insert([
+        'ppname' => $mppinpaiId,
+        'pid=' => 45,
+        'status' => 1
+      ]);
+      $this->redisModel->redis->hSet('mppinpai', $lastId, $mppinpaiId);
+      return $lastId;
+    }
   }
 
 
@@ -132,6 +139,18 @@ class PcrdataService extends BaseService {
 
     isset($shengData[$value['city']]) && $value['city'] = $shengData[$value['city']];
 
+  }
+
+  /**
+   * 没有限制，直接显示出pcrdata城市
+   */
+  public function getCity() {
+
+    $cityIdsList = $this->pcrdataModel->getList([], [], '', 'pcrcity_view');
+    $cityIdsList = array_column($cityIdsList, 'city');
+    $result = $this->regionService->getListById($cityIdsList);
+
+    return $result;
   }
 
 }

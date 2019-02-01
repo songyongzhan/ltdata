@@ -16,7 +16,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 class RegionService extends BaseService {
 
   protected $field = ['region_id as id', 'parent_id', 'region_name as text', 'region_type'];
-  
+
   /**
    * 获取列表
    * @param array $where
@@ -24,6 +24,21 @@ class RegionService extends BaseService {
    * @return mixed
    */
   public function getList(array $where) {
+    $result = $this->regionModel->getList($where, ['region_id as id', 'region_name as text']);
+
+    return $this->show($result);
+  }
+
+
+  /**
+   * 根据ids获取所有城市
+   * @param mixed $ids <require> 城市id不能为空
+   */
+  public function getListById($ids) {
+    $where = [
+      getWhereCondition('region_id', is_array() ? $ids : explode(',', trim($ids, ',')), 'in')
+    ];
+
     $result = $this->regionModel->getList($where, ['region_id as id', 'region_name as text']);
 
     return $this->show($result);

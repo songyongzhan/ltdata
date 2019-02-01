@@ -14,7 +14,6 @@ class PcrdataController extends ApiBaseController {
 
   const IMPORT_FIELD = ['export_date', 'city', 'brand', 'specification', 'huawen', 'grade', 'pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
 
-
   /**
    * 获取名片列表
    * @return mixed
@@ -50,6 +49,43 @@ class PcrdataController extends ApiBaseController {
 
     return $this->baseService->show($data, $data ? API_SUCCESS : API_FAILURE);
   }
+
+  /**
+   * 获取city城市列表
+   * @return mixed
+   */
+  public function getCityAction() {
+    $result = $this->pcrdataService->getCity();
+    return $result;
+  }
+
+  /**
+   * 获取品牌列表
+   * @return mixed
+   */
+  public function getBrandAction() {
+    $result = $this->pcrdataService->getCity();
+    return $result;
+  }
+
+  /**
+   * 获取等级列表
+   * @return mixed
+   */
+  public function getGradeAction() {
+    $result = $this->pcrdataService->getCity();
+    return $result;
+  }
+
+  /**
+   * 获取规格列表
+   * @return mixed
+   */
+  public function getSpecificationAction() {
+    $result = $this->pcrdataService->getCity();
+    return $result;
+  }
+
 
   /**
    * 下载代理商名录列表
@@ -160,15 +196,16 @@ class PcrdataController extends ApiBaseController {
     $city = $this->_post('city', '');
     $brand = $this->_post('brand', '');
     $specification = $this->_post('specification', '');
+    $huawen = $this->_post('huawen', '');
+    $grade = $this->_post('grade', '');
 
     $start_date = $export_date ? strtotime($export_date) : '';
     $end_date = $export_date ? (strtotime('+1 month', strtotime($export_date)) - 1) : '';
 
-
     $rules = [
       ['condition' => 'like',
-        'key_field' => ['title', 'person'],
-        'db_field' => ['title', 'person']
+        'key_field' => ['huawen'],
+        'db_field' => ['huawen']
       ],
       ['condition' => 'between',
         'key_field' => ['start_date', 'end_date'],
@@ -176,18 +213,21 @@ class PcrdataController extends ApiBaseController {
       ],
       [
         'condition' => '=',
-        'key_field' => ['city', 'brand', 'specification'],
-        'db_field' => ['city', 'brand', 'specification'],
+        'key_field' => ['city', 'brand', 'specification', 'grade'],
+        'db_field' => ['city', 'brand', 'specification', 'grade'],
       ]
     ];
+
     $data = [
       'city' => $city,
       'brand' => $brand,
       'specification' => $specification,
       'start_date' => $start_date,
-      'end_date' => $end_date
-
+      'end_date' => $end_date,
+      'grade' => $grade,
+      'huawen' => $huawen
     ];
+
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
     return $where;
   }

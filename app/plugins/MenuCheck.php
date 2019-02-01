@@ -21,6 +21,7 @@ class MenuCheckPlugin extends Yaf_Plugin_Abstract {
         'Ydylarea' => ['getList', 'getChinaList'],
         'Exportdata' => ['createCsv'],
         'Menu' => ['getAppointMenuList', 'getList'],
+        'Pcrdata' => ['getCity', 'getBrand', 'getGrade', 'getSpecification'],
         'Reportlist' => ['getListByreport'],
         'Roleaccess' => ['checkUrl', 'getRoleMenuUrls'],
         //'Menu' => ['getOne']
