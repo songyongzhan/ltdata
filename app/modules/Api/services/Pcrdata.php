@@ -56,6 +56,11 @@ class PcrdataService extends BaseService {
   }
 
 
+  /**
+   * 城市转化成id
+   * @param $sheng_id
+   * @return string
+   */
   public function sheng_id($sheng_id) {
     static $shengData;
     $sheng_id = trim($sheng_id);
@@ -72,6 +77,11 @@ class PcrdataService extends BaseService {
       return '';
   }
 
+  /**
+   * 品牌 转换 成id
+   * @param $mppinpaiId
+   * @return bool
+   */
   public function mppinpaiId($mppinpaiId) {
     static $pinpaiData;
     $mppinpaiId = trim($mppinpaiId);
@@ -128,7 +138,6 @@ class PcrdataService extends BaseService {
 
     isset($pinpaiData[$value['brand']]) && $value['brand'] = $pinpaiData[$value['brand']];
 
-
     static $shengData;
     if (!$shengData) {
       $data = $this->regionService->getList([
@@ -138,19 +147,53 @@ class PcrdataService extends BaseService {
     }
 
     isset($shengData[$value['city']]) && $value['city'] = $shengData[$value['city']];
-
   }
 
   /**
    * 没有限制，直接显示出pcrdata城市
    */
-  public function getCity() {
+  public function getCity($where) {
 
-    $cityIdsList = $this->pcrdataModel->getList([], [], '', 'pcrcity_view');
-    $cityIdsList = array_column($cityIdsList, 'city');
-    $result = $this->regionService->getListById($cityIdsList);
+    $cityIds = $this->pcrdataModel->getList($where, ['city'], '', '', 0, 'city');
+    $cityIds = array_column($cityIds, 'city');
+    $result = $this->regionModel->getList(
+      [getWhereCondition('region_id', $cityIds, 'in')],
+      ['region_id as id', 'region_name as text'], '', '', 0
+    );
+    return $this->show($result);
+  }
 
-    return $result;
+  /**
+   * 获取所有规格
+   * @param $where
+   */
+  public function getSpecification($where) {
+    $result = $this->pcrdataModel->getList($where, ['specification as id', 'specification as text'], '', '', 0, 'specification');
+    return $this->show($result);
+  }
+
+  /**
+   * @param $where
+   * @return array
+   */
+  public function getGrade($where) {
+    $result = $this->pcrdataModel->getList($where, ['grade as id', 'grade as text'], '', '', 0, 'grade');
+    return $this->show($result);
+  }
+
+  /**
+   * @param $where
+   * @return array
+   * @throws InvalideException]
+   */
+  public function getBrand($where) {
+    $result = $this->pcrdataModel->getList($where, ['DISTINCT brand']);
+    $brandIds = array_column($result, 'brand');
+    $result = $this->mppinpaiModel->getList(
+      [getWhereCondition('id', $brandIds, 'in')],
+      ['id', 'ppname as text']
+    );
+    return $this->show($result);
   }
 
 }

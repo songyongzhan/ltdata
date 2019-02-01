@@ -55,7 +55,8 @@ class PcrdataController extends ApiBaseController {
    * @return mixed
    */
   public function getCityAction() {
-    $result = $this->pcrdataService->getCity();
+    $where = $this->_where();
+    $result = $this->pcrdataService->getCity($where);
     return $result;
   }
 
@@ -64,7 +65,8 @@ class PcrdataController extends ApiBaseController {
    * @return mixed
    */
   public function getBrandAction() {
-    $result = $this->pcrdataService->getCity();
+    $where = $this->_where();
+    $result = $this->pcrdataService->getBrand($where);
     return $result;
   }
 
@@ -73,7 +75,8 @@ class PcrdataController extends ApiBaseController {
    * @return mixed
    */
   public function getGradeAction() {
-    $result = $this->pcrdataService->getCity();
+    $where = $this->_where();
+    $result = $this->pcrdataService->getGrade($where);
     return $result;
   }
 
@@ -82,7 +85,8 @@ class PcrdataController extends ApiBaseController {
    * @return mixed
    */
   public function getSpecificationAction() {
-    $result = $this->pcrdataService->getCity();
+    $where = $this->_where();
+    $result = $this->pcrdataService->getSpecification($where);
     return $result;
   }
 
@@ -103,7 +107,6 @@ class PcrdataController extends ApiBaseController {
   public function import2dbAction() {
 
     Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
-
 
     foreach (glob(APP_PATH . '/data/uploads/pcrdata/*.csv') as $file) {
 

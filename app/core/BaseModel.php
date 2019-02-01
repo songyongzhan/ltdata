@@ -153,12 +153,21 @@ class BaseModel extends CoreModel {
    * @return array
    * @throws InvalideException
    */
-  public final function getList($where, $fileds = [], $order = '', $table = NULL, $maxSize = 1000) {
-    is_null($table) || $this->table = $table;
+  public final function getList($where, $fileds = [], $order = '', $table = NULL, $maxSize = 1000, $group = '') {
+    if ($table) $this->table = $table;
     empty($fileds) && $fileds = '*';
     $this->setCond($where);
     empty($order) && $order = $this->id . ' desc';
     list($orderField, $orderType) = explode(' ', $order);
+
+    //设置group
+    if ($group) {
+      $group = explode(',', trim($group));
+      foreach ($group as $field) {
+        $this->_db->groupBy($field);
+      }
+    }
+
     $this->_db->orderBy($orderField, $orderType);
     $rowNum = [0, abs($maxSize)];
     $maxSize === 0 && $rowNum = NULL;
@@ -218,6 +227,18 @@ class BaseModel extends CoreModel {
     }, $result);
     $this->_logSql();
     return page_data($result, $this->_db->totalCount, $pageNum, $pageSize, $this->_db->totalPages);
+  }
+
+
+  /**
+   * 获取view中的数据
+   * @param $viewName
+   * @param bool $prefix
+   */
+  public function getViewData($viewName, $field = '') {
+    $result = $this->_db->get($viewName, NULL, $field);
+    $this->_logSql();
+    return $result;
   }
 
   /**

@@ -36,11 +36,9 @@ class RegionService extends BaseService {
    */
   public function getListById($ids) {
     $where = [
-      getWhereCondition('region_id', is_array() ? $ids : explode(',', trim($ids, ',')), 'in')
+      getWhereCondition('region_id', is_array($ids) ? $ids : explode(',', trim($ids, ',')), 'in')
     ];
-
     $result = $this->regionModel->getList($where, ['region_id as id', 'region_name as text']);
-
     return $this->show($result);
   }
 
