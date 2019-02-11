@@ -196,4 +196,36 @@ class PcrdataService extends BaseService {
     return $this->show($result);
   }
 
+  /**
+   * 从条件得到数据
+   * @param $where
+   */
+  public function getReportData($where, $report_id) {
+
+    $field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
+
+    //结合权限，组合字段
+    $authorityField = ['pf_pricle'];
+
+    $field = array_merge($field, $authorityField);
+
+
+    $result = $this->pcrdataModel->getReportData($where, $field);
+
+    //组合数据
+
+
+
+
+
+
+
+
+
+
+
+    return $this->show($result);
+
+  }
+
 }

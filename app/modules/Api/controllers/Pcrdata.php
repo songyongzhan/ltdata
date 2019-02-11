@@ -27,6 +27,16 @@ class PcrdataController extends ApiBaseController {
     return $result;
   }
 
+  /**
+   *
+   */
+  public function reportAction() {
+    $where = $this->_where();
+    $report_id = $this->_post('report_id');
+    $result = $this->pcrdataService->getReportData($where, $report_id);
+    return $result;
+  }
+
 
   /**
    * 文件上传，需要进行授权才可以上传
@@ -97,8 +107,7 @@ class PcrdataController extends ApiBaseController {
    */
   public function downloadAction() {
     $where = $this->_where();
-    $result = $this->pcrdataService->downloadCsv($where);
-    return $result;
+    $this->pcrdataService->downloadCsv($where);
   }
 
   /**
