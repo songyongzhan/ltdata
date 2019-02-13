@@ -19,7 +19,7 @@ class PermissionService extends BaseService {
 
   /**
    * 获取当前用户的权限
-   * @param $id
+   * @param int $id <require|number> 用户id不能为空
    */
   public function getPermission($id) {
 
@@ -35,19 +35,22 @@ class PermissionService extends BaseService {
     ]);
   }
 
+  /**
+   * 获取用户横向权限
+   * @param int $id <require|number> 用户id不能为空
+   * @return array
+   */
   public function getManagePermission($id) {
     $result = $this->permissionModel->getPermission($id);
+    $permissionData = [];
     if ($result['permission'] != '') {
-      $permissionData = [];
       $permission = explode('|', trim($result['permission'], '|'));
-
       foreach ($permission as $key => $val) {
         list($pdKey, $pdVal) = explode(':', $val);
         $permissionData[$pdKey] = explode(',', trim($pdVal, ','));
       }
-
-      $result['permission_data'] = $permissionData;
     }
+    $result['permission_data'] = $permissionData;
 
     return $this->show($result);
   }
@@ -56,7 +59,7 @@ class PermissionService extends BaseService {
   /**
    * 设置用户权限
    * @param int $id <require|number> 用户id不能为空
-   * @param string $permission <require> 权限必须设置
+   * @param string $permission 权限必须设置
    * @return array
    */
   public function setPermission($id, $permission) {

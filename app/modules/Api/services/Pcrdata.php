@@ -226,7 +226,6 @@ class PcrdataService extends BaseService {
 
     $result = $this->pcrdataModel->getReportData($where, $authorityField, $date_type, $report_id);
 
-
     switch ($result['viewtype']) {
       case 'bar':
         $result = $this->_createBar($result, $authorityField, 'bar');
@@ -237,9 +236,9 @@ class PcrdataService extends BaseService {
       default:
         showApiException('无法处理这类数据请求');
     }
-    echo jsonencode($result['option']);
-
-    exit;
+    //echo jsonencode($result['option']);
+    //
+    //exit;
     return $this->show($result);
 
     /**
@@ -317,12 +316,12 @@ class PcrdataService extends BaseService {
   private function _createBar($result, $authorityField, $viewtype) {
     //组合 图表 数据
     $legendData = [];
-    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+    /*$permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
 
     foreach ($authorityField as $key) {
       if (array_key_exists($key, $permissionText))
         $legendData[$key] = $permissionText[$key];
-    }
+    }*/
 
     $xAxisData = [];
     $seriesData = [];//获取显示数据
@@ -330,6 +329,7 @@ class PcrdataService extends BaseService {
       $temp = $value;
       $this->_format($value);
       $xAxisData[$temp['val']] = $value['val'];
+
       $tempData = [
         'name' => $value['brand'] . ' ' . $value['specification'] . ' ' . $value['huawen'] . ' ' . $value['grade'],
         'type' => $viewtype,

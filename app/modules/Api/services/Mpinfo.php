@@ -15,7 +15,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
  */
 class MpinfoService extends BaseService {
 
-  protected $field = ['id', 'title', 'qylx_id', 'wn_np_type', 'mppinpaiId', 'sheng_id', 'shi_id', 'person', 'jypp', 'mobile', 'tel', 'weburl', 'email', 'indexshow', 'gongkai', 'allshow', 'isfufei', 'status', 'createtime'];
+  protected $field = ['id','wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'tel', 'mobile', 'contract_year', 'manufacturer', 'mppinpaiId', 'sell_area', 'year_sell', 'verification_date', 'contract','createtime'];
 
   /**
    * 获取列表
@@ -224,7 +224,7 @@ class MpinfoService extends BaseService {
 
   private function _format(&$value) {
 
-    static $shiData;
+  /*  static $shiData;
     if (!$shiData) {
       $data = $this->regionService->getList([
         getWhereCondition('region_type', 2)
@@ -232,7 +232,7 @@ class MpinfoService extends BaseService {
       $shiData = array_column($data['result'], 'text', 'id');
     }
 
-    isset($shiData[$value['shi_id']]) && $value['shi_id'] = $shiData[$value['shi_id']];
+    isset($shiData[$value['shi']]) && $value['shi'] = $shiData[$value['shi']];*/
 
 
     static $pinpaiData;
@@ -256,14 +256,14 @@ class MpinfoService extends BaseService {
 
     isset($shengData[$value['sheng_id']]) && $value['sheng_id'] = $shengData[$value['sheng_id']];
 
-    switch (trim($value['qylx_id'])) {
-      case 49:
-        $value['qylx_id'] = '厂商';
-        break;
-      case 50:
-        $value['qylx_id'] = '代理商';
-        break;
-    }
+    //switch (trim($value['qylx_id'])) {
+    //  case 49:
+    //    $value['qylx_id'] = '厂商';
+    //    break;
+    //  case 50:
+    //    $value['qylx_id'] = '代理商';
+    //    break;
+    //}
 
     switch (trim($value['wn_np_type'])) {
       case 45:
