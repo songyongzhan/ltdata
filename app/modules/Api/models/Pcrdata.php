@@ -90,7 +90,7 @@ class PcrdataModel extends BaseModel {
     $this->setCond($where);
     $result = $this->_db->get($this->table, NULL, $field);
     $this->_logSql();
-    $reportRules['result'] = $result;
+    $reportRules['list'] = $result;
 
     return $reportRules;
   }

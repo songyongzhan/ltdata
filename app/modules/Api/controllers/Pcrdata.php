@@ -213,7 +213,7 @@ class PcrdataController extends ApiBaseController {
   }
 
   private function _where() {
-    $export_date = $this->_post('export_date', '');
+    $export_date = $this->_post('start_date', '');
     $city = $this->_post('city', '');
     $brand = $this->_post('brand', '');
     $specification = $this->_post('specification', '');
@@ -254,8 +254,6 @@ class PcrdataController extends ApiBaseController {
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
-
-
     return $where;
   }
 

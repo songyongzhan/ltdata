@@ -219,6 +219,7 @@ class PcrdataService extends BaseService {
       debugMessage('pcr getReportData 权限为空,不能显示价格数字，请设置相关权限');
       showApiException('不能显示相关信息，请设置相关权限');
     }*/
+
     $authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
     //$authorityField = ['pf_pricle', 'stls_pricle'];
 
@@ -227,22 +228,40 @@ class PcrdataService extends BaseService {
     //$field = array_merge($field, $authorityField);
 
     //是否平均值
-    $avg = [41, 43];
+    $avg = [41, 42, 43];
     if (in_array($report_id, $avg)) {
       $authorityField = array_map(function ($val) {
         return 'truncate(avg(' . $val . '),2) as ' . $val;
       }, $authorityField);
     }
 
+    //连续12月指定规格价格指定城市的总体趋势分析
+    /*if ($report_id == 42) {
+      $authorityField = array_map(function ($val) {
+        return 'truncate(avg(' . $val . '),2) as ' . $val;
+      }, $authorityField);
+    }*/
+
 
     $result = $this->pcrdataModel->getReportData($where, $authorityField, $date_type, $report_id);
 
+
+    //处理显示表格数据
+    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+    $authorityTableColumn = '';
+    foreach ($srcAuthorityField as $tab_column) {
+      if (array_key_exists($tab_column, $permissionText))
+        $authorityTableColumn .= $permissionText[$tab_column] . ',' . $tab_column . '|';
+    }
+    $result['table_column'] = trim($result['table_column'], '|') . '|' . trim($authorityTableColumn, '|');
+
+
     switch ($result['viewtype']) {
       case 'bar':
-        $result = $this->_createBar($result, $srcAuthorityField, 'bar');
+        $result = $this->_createBar($result, $srcAuthorityField);
         break;
       case 'line':
-        $result = $this->_createBar($result, $srcAuthorityField, 'line');
+        $result = $this->_createLine($result, $srcAuthorityField);
         break;
       default:
         showApiException('无法处理这类数据请求');
@@ -252,71 +271,6 @@ class PcrdataService extends BaseService {
     //exit;
     return $this->show($result);
 
-    /**
-     * option = {
-     * title : {
-     * text: '某地区蒸发量和降水量',
-     * subtext: '纯属虚构'
-     * },
-     * tooltip : {
-     * trigger: 'axis'
-     * },
-     * legend: {
-     * data:['蒸发量','降水量']
-     * },
-     * toolbox: {
-     * show : true,
-     * feature : {
-     * dataView : {show: true, readOnly: false},
-     * magicType : {show: true, type: ['line', 'bar']},
-     * restore : {show: true},
-     * saveAsImage : {show: true}
-     * }
-     * },
-     * calculable : true,
-     * xAxis : [
-     * {
-     * type : 'category',
-     * data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-     * }
-     * ],
-     * yAxis : [
-     * {
-     * type : 'value'
-     * }
-     * ],
-     * series : [
-     * {
-     * name:'蒸发量',
-     * type:'bar',
-     * data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
-     * },
-     * {
-     * name:'降水量',
-     * type:'bar',
-     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-     * },
-     * {
-     * name:'温度量',
-     * type:'bar',
-     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-     * }
-     * ,
-     * {
-     * name:'条例量',
-     * type:'bar',
-     * data:[2.6]
-     * }
-     * ,
-     * {
-     * name:'风速量',
-     * type:'bar',
-     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-     * }
-     * ]
-     * };
-     */
-
   }
 
   /**
@@ -324,7 +278,7 @@ class PcrdataService extends BaseService {
    * @param $authorityField
    * @return mixed
    */
-  private function _createBar($result, $authorityField, $viewtype) {
+  private function _createBar($result, $authorityField) {
 
     //组合 图表 数据
     $viewPricle = [];
@@ -343,7 +297,7 @@ class PcrdataService extends BaseService {
 
     $seriesBarData = [];
     $seriesData = [];//获取显示数据
-    foreach ($result['result'] as $value) {
+    foreach ($result['list'] as $value) {
       //$temp = $value;
       $this->_format($value);
 
@@ -351,10 +305,6 @@ class PcrdataService extends BaseService {
       foreach ($reportListHorizontal as $hval) {
         $horizontalVal .= $value[$hval] . ' ';
       }
-
-      //$horizontalKey = $temp['horizontal'] . (isset($temp['horizontal2']) ? $temp['horizontal2'] : '');
-      //$horizontalVal = $value['horizontal'] . (isset($value['horizontal2']) ? ' ' . $value['horizontal2'] : '');
-      //$horizontalVal = $value['brand'] . (isset($value['horizontal2']) ? ' ' . $value['horizontal2'] : '');
 
       $xAxisData[md5($horizontalVal)] = $horizontalVal;
 
@@ -377,7 +327,7 @@ class PcrdataService extends BaseService {
     foreach ($viewPricle as $k => $v) {
       $tempData = [
         'name' => $v,
-        'type' => $viewtype,
+        'type' => 'bar',
         'data' => $seriesBarData[$k]
       ];
       $seriesData[] = $tempData;
@@ -423,22 +373,107 @@ class PcrdataService extends BaseService {
       ],
 
       'yAxis' => [
-        'type' => 'value'
+        'type' => 'value',
+        'axisLabel' => [
+          'formatter' => '{value} ' . $result['unit']
+        ]
       ],
 
       'series' => $seriesData
     ];
 
-
-    echo jsonencode($option);
-    exit;
+    //echo jsonencode($option);
+    //exit;
     $result['option'] = $option;
 
     return $result;
-    //echo jsonencode($option);
   }
 
   private function _createLine($result, $authorityField) {
+    //组合 图表 数据
+    $viewPricle = [];
+    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+
+    foreach ($authorityField as $key) {
+      if (array_key_exists($key, $permissionText))
+        $viewPricle[$key] = $permissionText[$key];
+    }
+
+    $legendData = $viewPricle;
+
+    $xAxisData = [];
+
+    $seriesBarData = [];
+    $seriesData = [];//获取显示数据
+    foreach ($result['list'] as $value) {
+      $this->_format($value);
+      $xAxisData[$value['export_month']] = $value['export_month'] . '月';
+
+      foreach ($viewPricle as $k => $v) {
+        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      }
+    }
+
+    foreach ($viewPricle as $k => $v) {
+      $tempData = [
+        'name' => $v,
+        'type' => 'line',
+        'data' => $seriesBarData[$k]
+      ];
+      $seriesData[] = $tempData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => $result['title2'] //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        'data' => array_values($legendData),
+        'show' => TRUE,
+        'bottom' => 0,
+        'type' => 'scroll',
+        'padding' => [15, 0, 0, 0]
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '6%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'calculable' => TRUE,
+      'xAxis' => [
+        'type' => 'category',
+        'data' => array_values($xAxisData)
+      ],
+
+      'yAxis' => [
+        'type' => 'value',
+        'axisLabel' => [
+          'formatter' => '{value} ' . $result['unit']
+        ]
+      ],
+
+      'series' => $seriesData
+    ];
+
+    $result['option'] = $option;
+
     return $result;
   }
 
