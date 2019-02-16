@@ -46,7 +46,7 @@ class BaseModel extends CoreModel {
    * 如果设置true 则所有表中必须包含此字段，否则报错
    * @var bool
    */
-  protected $autoaddtime = DB_AUTOADDTIME;
+  protected $autoaddtime;
 
   protected $output_time_format = FALSE;
   //输入格式，默认为false 则时间戳输出，可以定义 Y-m-d H:i:s 格式化输出
@@ -65,7 +65,9 @@ class BaseModel extends CoreModel {
   protected function _init() {
     $this->_db = Yaf_Registry::has('db') ? Yaf_Registry::get('db') : NULL;
     $this->table = is_null($this->table) ? $this->prefix . strtolower(substr(get_class($this), 0, -5)) : $this->table;
-    $this->autoaddtime = Tools_Config::getConfig('db.mysql.auto_addtime');
+    if (is_null($this->autoaddtime))
+      $this->autoaddtime = Tools_Config::getConfig('db.mysql.auto_addtime');
+
     $this->prefix = Tools_Config::getConfig('db.mysql.prefix');
     if (!$this->output_time_format)
       $this->output_time_format = (defined('DB_AUTOTIME_OUT_FORMAT') && DB_AUTOTIME_OUT_FORMAT) ? DB_AUTOTIME_OUT_FORMAT : FALSE;

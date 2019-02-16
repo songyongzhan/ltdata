@@ -17,6 +17,8 @@ class PermissionModel extends BaseModel {
 
   protected $id = 'manage_id';
 
+  protected $realDelete = TRUE;
+
   /**
    * 设置权限
    * @param $id
@@ -24,7 +26,7 @@ class PermissionModel extends BaseModel {
    * @return int|string
    */
   public function setPermission($id, $permission) {
-    return $this->update($id, ['permission' => jsonencode($permission)]);
+    return $this->update($id, ['permission' => serialize($permission)]);
   }
 
   /**
@@ -40,7 +42,7 @@ class PermissionModel extends BaseModel {
     }
 
     if (isset($result['permission']) && $result['permission'] != '')
-      $result['permission'] = jsondecode($result['permission']);
+      $result['permission'] = unserialize($result['permission']);
 
     return $result;
   }

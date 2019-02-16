@@ -200,99 +200,47 @@ class PcrdataService extends BaseService {
    * 从条件得到数据
    * @param $where
    */
-  public function getReportData($where, $report_id) {
+  public function getReportData($where, $date_type, $report_id) {
 
-    $field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
+    //$field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
 
     //结合权限，组合字段
-    //$authorityField = ['pf_pricle'];
+    $authorityField = [];
+
+    /*$permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+
+    print_r($permission);exit;
+
+    if (isset($permission['result']['pcr']) && $permission['result']['pcr'])
+      $authorityField = $permission['result']['pcr'];
+    else {
+      debugMessage('pcr getReportData 权限为空,不能显示价格数字，请设置相关权限');
+      showApiException('不能显示相关信息，请设置相关权限');
+    }*/
     $authorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
     //$authorityField = ['pf_pricle', 'stls_pricle'];
 
     //字段从权限中获取
 
-    $field = array_merge($field, $authorityField);
+    //$field = array_merge($field, $authorityField);
 
-    $result = $this->pcrdataModel->getReportData($where, $field);
+    $result = $this->pcrdataModel->getReportData($where, $authorityField, $date_type, $report_id);
 
-    //组合数据
 
-    $legendData = [];
-    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
-
-    foreach ($authorityField as $key) {
-      if (array_key_exists($key, $permissionText))
-        $legendData[$key] = $permissionText[$key];
+    switch ($result['viewtype']) {
+      case 'bar':
+        $result = $this->_createBar($result, $authorityField, 'bar');
+        break;
+      case 'line':
+        $result = $this->_createBar($result, $authorityField, 'line');
+        break;
+      default:
+        showApiException('无法处理这类数据请求');
     }
+    echo jsonencode($result['option']);
 
-    $xAxisData = [];
-    $seriesData = [];//获取显示数据
-    foreach ($result as $value) {
-      $temp = $value;
-      $this->_format($value);
-      $xAxisData['brand_' . $temp['brand']] = $value['brand'];
-
-      $tempData = [
-        'name' => $value['brand'] . ' ' . $value['specification'] . ' ' . $value['huawen'] . ' ' . $value['grade'],
-        'type' => 'bar',
-      ];
-      $tempData_data = [];
-      foreach ($legendData as $k => $v) {
-        $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
-      }
-      $tempData['data'] = $tempData_data;
-
-      $seriesData[] = $tempData;
-    }
-
-    $option = [
-      'title' => [
-        'text' => '---------------',
-        'subtext' => '' //副标题
-      ],
-      'tooltip' => [ //鼠标放上去是否信息显示
-        'trigger' => 'axis'
-      ],
-
-      'legend' => [ //栏目显示
-        '' => array_values($legendData),
-        'show' => TRUE,
-        'bottom' => 0,
-        'padding' => [15, 0, 0, 0]
-      ],
-
-      'grid' => [ //位置调整
-        'left' => '3%',
-        'right' => '4%',
-        'bottom' => '6%',
-        'containLabel' => TRUE
-      ],
-
-      'toolbox' => [
-        'feature' => [
-          'magicType' => [
-            'type' => ['line', 'bar']
-          ],
-          'restore' => [],
-          'saveAsImage' => []
-        ]
-      ],
-      'calculable' => TRUE,
-      'xAxis' => [
-        'type' => 'category',
-        'data' => array_values($legendData)
-      ],
-
-      'yAxis' => [
-        'type' => 'value'
-      ],
-
-      'series' => $seriesData
-    ];
-
-    echo jsonencode($option);
     exit;
-
+    return $this->show($result);
 
     /**
      * option = {
@@ -359,12 +307,100 @@ class PcrdataService extends BaseService {
      * };
      */
 
+  }
 
+  /**
+   * @param $result
+   * @param $authorityField
+   * @return mixed
+   */
+  private function _createBar($result, $authorityField, $viewtype) {
+    //组合 图表 数据
+    $legendData = [];
+    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+
+    foreach ($authorityField as $key) {
+      if (array_key_exists($key, $permissionText))
+        $legendData[$key] = $permissionText[$key];
+    }
+
+    $xAxisData = [];
+    $seriesData = [];//获取显示数据
+    foreach ($result['result'] as $value) {
+      $temp = $value;
+      $this->_format($value);
+      $xAxisData[$temp['val']] = $value['val'];
+      $tempData = [
+        'name' => $value['brand'] . ' ' . $value['specification'] . ' ' . $value['huawen'] . ' ' . $value['grade'],
+        'type' => $viewtype,
+      ];
+      $tempData_data = [];
+      foreach ($legendData as $k => $v) {
+        $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      }
+      $tempData['data'] = $tempData_data;
+
+      $seriesData[] = $tempData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => $result['title2'] //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        '' => array_values($legendData),
+        'show' => TRUE,
+        'bottom' => 0,
+        'type' => 'scroll',
+        'padding' => [15, 0, 0, 0]
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '6%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'calculable' => TRUE,
+      'xAxis' => [
+        'type' => 'category',
+        'data' => array_values($legendData)
+      ],
+
+      'yAxis' => [
+        'type' => 'value'
+      ],
+
+      'series' => $seriesData
+    ];
+
+
+
+    echo jsonencode($option);
     exit;
+    $result['option'] = $option;
 
+    return $result;
+    //echo jsonencode($option);
+  }
 
-    return $this->show($result);
-
+  private function _createLine($result, $authorityField) {
+    return $result;
   }
 
 }

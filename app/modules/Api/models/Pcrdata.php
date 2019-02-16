@@ -14,17 +14,20 @@ class PcrdataModel extends BaseModel {
 
   /**
    * @param $where
+   * @param $field
    * @param $report_id
+   * @return array
+   * @throws InvalideException
    */
-  public function getReportData($where, $field) {
+  public function getReportData($where, $authorityField, $date_type = '', $report_id) {
 
-    /*$reportRules = $this->reportlistModel->getOne($report_id);
-
+    $reportRules = $this->reportlistModel->getOne($report_id);
+    $this->_logSql();
     if (!$reportRules)
       showApiException('reportlist data 不存在', StatusCode::REPORTLIST_NOT_EXISTS);
 
     $orderBy = [];
-    if ($reportRules['order_str']) {
+    if ($reportRules['order_str'] && $reportRules['order_str'] != '-') {
       foreach (explode('|', $reportRules['order_str']) as $val) {
         $_temp = explode(',', $val);
         $orderBy[$_temp[0]] = isset($_temp[1]) ? $_temp[1] : 'asc';
@@ -35,13 +38,12 @@ class PcrdataModel extends BaseModel {
       $date_type = $reportRules['date_type'];
 
     $groupBy = [];
-    if ($reportRules['group_str']) {
+    if ($reportRules['group_str'] && $reportRules['group_str'] != '-') {
       $group_str = (explode('|', $reportRules['group_str']))[$date_type - 1];
       foreach (explode(',', $group_str) as $val) {
         $groupBy[] = $val;
       }
     }
-
 
     foreach ($groupBy as $groupByVal) {
       $this->_db->groupBy($groupByVal);
@@ -51,9 +53,8 @@ class PcrdataModel extends BaseModel {
       $this->_db->orderBy($orderField, $orderSortVal);
     }
 
-
     $having = [];
-    if ($reportRules['having_str']) {
+    if ($reportRules['having_str'] && $reportRules['having_str'] != '-') {
       foreach (explode('|', $reportRules['having_str']) as $val) {
         $_temp = explode(',', $val);
         if (count($_temp) < 2)
@@ -67,7 +68,6 @@ class PcrdataModel extends BaseModel {
         ];
       }
     }
-
 
     foreach ($having as $key => $havingVal) {
       if (!isset($havingVal['field']) || !isset($havingVal['val']))
@@ -83,11 +83,14 @@ class PcrdataModel extends BaseModel {
       foreach (explode(',', $reportRules['field_str']) as $val) {
         $field[] = $val;
       }
-    }*/
+      //如果不需要合并，传递空数组
+      is_array($authorityField) && $field = array_merge($field, $authorityField);
+    }
     $this->setCond($where);
     $result = $this->_db->get($this->table, NULL, $field);
     $this->_logSql();
+    $reportRules['result'] = $result;
 
-    return $result;
+    return $reportRules;
   }
 }

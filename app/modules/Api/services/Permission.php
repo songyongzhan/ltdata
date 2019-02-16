@@ -33,11 +33,21 @@ class PermissionService extends BaseService {
       'view_data' => $viewData,
       'permission' => $permissionResult
     ]);
-
   }
 
   public function getManagePermission($id) {
     $result = $this->permissionModel->getPermission($id);
+    if ($result['permission'] != '') {
+      $permissionData = [];
+      $permission = explode('|', trim($result['permission'], '|'));
+
+      foreach ($permission as $key => $val) {
+        list($pdKey, $pdVal) = explode(':', $val);
+        $permissionData[$pdKey] = explode(',', trim($pdVal, ','));
+      }
+
+      $result['permission_data'] = $permissionData;
+    }
 
     return $this->show($result);
   }

@@ -30,10 +30,11 @@ class PermissionController extends ApiBaseController {
    * @param string $permission <POST> 权限
    * @return array
    */
+  //id=16&permission=pcr:pf_pricle,stls_pricle|export:40111000
   public function setPermissionAction() {
     $id = $this->_post('id');
     $permission = $this->_post('permission');
-    $result = $this->permissionervice->setPermission($id, $permission);
+    $result = $this->permissionService->setPermission($id, $permission);
     return $result;
   }
 

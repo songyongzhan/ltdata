@@ -12,7 +12,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class MpinfoController extends ApiBaseController {
 
-  const IMPORT_FIELD = ['qylx_id', 'wn_np_type', 'sheng_id', 'mppinpaiId', 'shi_id', 'title', 'jypp', 'tel', 'mobile', 'person', 'email', 'weburl', 'indexshow', 'isfufei', 'allshow', 'gongkai'];
+  const IMPORT_FIELD = ['wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'tel', 'mobile', 'contract_year', 'manufacturer', 'mppinpaiId', 'sell_area', 'year_sell', 'verification_date', 'contract'];
 
   /**
    * 获取名片列表
@@ -118,6 +118,7 @@ class MpinfoController extends ApiBaseController {
 
   /**
    * 自动入库
+   * HTTP_ENV=develop php index.php api/mpinfo/import2db
    */
   public function import2dbAction() {
 
@@ -139,8 +140,6 @@ class MpinfoController extends ApiBaseController {
 
           $this->format($data);
 
-          $data['updatetime'] = time();
-          $data['createtime'] = time();
           $multiData[] = $data;
 
           if (count($multiData) >= 1000) {
@@ -155,7 +154,7 @@ class MpinfoController extends ApiBaseController {
         }
         //执行退出后，如果multiData 还有数据，则再次添加
         if (count($multiData) > 0) {
-          $result = $this->mpinfoModel->importMulti($multiData, $tmpTable);
+          $result = $this->mpinfoModel->inserMulti($multiData, $tmpTable);
           debugMessage("$file 最后一次...:" . count($multiData));
           if (!$result) {
             debugMessage("$file 导入出错...");
@@ -179,14 +178,15 @@ class MpinfoController extends ApiBaseController {
   private function format(&$data) {
     $data = convert_encodeing($data, 'gbk', 'utf-8');
 
-    $data = array_combine(self::IMPORT_FIELD, array_slice($data, 0, 16));
+    $data = array_combine(self::IMPORT_FIELD, array_slice($data, 0, 17));
 
-    $data['qylx_id'] = $this->mpinfoService->qylx_id($data['qylx_id']);
     $data['wn_np_type'] = $this->mpinfoService->wn_np_type($data['wn_np_type']);
     $data['sheng_id'] = $this->mpinfoService->sheng_id($data['sheng_id']);
     $data['mppinpaiId'] = $this->mpinfoService->mppinpaiId($data['mppinpaiId']);
-    $data['shi_id'] = $this->mpinfoService->shi_id($data['shi_id']);
-
+    //$data['shi_id'] = $this->mpinfoService->shi_id($data['shi_id']);
+    $data['contract'] = trim($data['contract']) == '是' ? 1 : 0;
+    $data['updatetime'] = time();
+    $data['createtime'] = time();
     $data['status'] = 1;
   }
 
@@ -213,31 +213,31 @@ class MpinfoController extends ApiBaseController {
   private function _getData() {
 
     return [
-      'qylx_id' => $this->_post('qylx_id'),
       'wn_np_type' => $this->_post('wn_np_type'),
       'mppinpaiId' => $this->_post('mppinpaiId'),
       'sheng_id' => $this->_post('sheng_id'),
-      'shi_id' => $this->_post('shi_id'),
+      'shi' => $this->_post('shi'),
       'person' => $this->_post('person'),
       'title' => $this->_post('title'),
-      'jypp' => $this->_post('jypp'),
+      'legal_person' => $this->_post('legal_person'),
       'tel' => $this->_post('tel'),
       'mobile' => $this->_post('mobile'),
-      'email' => $this->_post('email'),
-      'weburl' => $this->_post('weburl'),
-      'indexshow' => $this->_post('indexshow'),
-      'isfufei' => $this->_post('isfufei'),
-      'allshow' => $this->_post('allshow'),
-      'gongkai' => $this->_post('gongkai')
+      'partner' => $this->_post('partner'),
+      'address' => $this->_post('address'),
+      'contract_year' => $this->_post('contract_year'),
+      'manufacturer' => $this->_post('manufacturer'),
+      'sell_area' => $this->_post('sell_area'),
+      'verification_date' => $this->_post('verification_date'),
+      'contract' => $this->_post('contract'),
+      'year_sell' => $this->_post('year_sell')
     ];
   }
 
   private function _where() {
-    $qylx_id = $this->_post('qylx_id', '');
     $wn_np_type = $this->_post('wn_np_type', '');
     $mppinpaiId = $this->_post('mppinpaiId', '');
     $sheng_id = $this->_post('sheng_id', '');
-    $shi_id = $this->_post('shi_id', '');
+    $shi = $this->_post('shi', '');
     $person = $this->_post('person', '');
     $title = $this->_post('title', '');
     $rules = [
@@ -247,16 +247,15 @@ class MpinfoController extends ApiBaseController {
       ],
       [
         'condition' => '=',
-        'key_field' => ['qylx_id', 'wn_np_type', 'mppinpaiId', 'sheng_id', 'shi_id'],
-        'db_field' => ['qylx_id', 'wn_np_type', 'mppinpaiId', 'sheng_id', 'shi_id'],
+        'key_field' => ['wn_np_type', 'mppinpaiId', 'sheng_id', 'shi'],
+        'db_field' => ['wn_np_type', 'mppinpaiId', 'sheng_id', 'shi'],
       ]
     ];
     $data = [
-      'qylx_id' => $qylx_id,
       'wn_np_type' => $wn_np_type,
       'mppinpaiId' => $mppinpaiId,
       'sheng_id' => $sheng_id,
-      'shi_id' => $shi_id,
+      'shi' => $shi,
       'person' => $person,
       'title' => $title
     ];

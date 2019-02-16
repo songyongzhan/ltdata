@@ -145,7 +145,7 @@ class MpinfoService extends BaseService {
       case '轿车轮胎':
         $id = 45;
         break;
-      case '载重卡客车轮胎':
+      case '卡客车轮胎':
         $id = 46;
         break;
     }
@@ -155,7 +155,7 @@ class MpinfoService extends BaseService {
 
   public function sheng_id($sheng_id) {
     static $shengData;
-    $sheng_id = trim($sheng_id);
+    $sheng_id = str_replace('省', '', trim($sheng_id));
     if (!$shengData) {
       $data = $this->regionService->getList([
         getWhereCondition('region_type', 1)
@@ -188,7 +188,7 @@ class MpinfoService extends BaseService {
 
   public function shi_id($shi_id) {
     static $shiData;
-    $shi_id = trim($shi_id);
+    $shi_id = str_replace('市', '', trim($shi_id));
     if (!$shiData) {
       $data = $this->regionService->getList([
         getWhereCondition('region_type', 2)

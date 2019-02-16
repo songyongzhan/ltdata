@@ -29,12 +29,14 @@ class PcrdataController extends ApiBaseController {
 
 
   /**
-   *
+   * 生成图表文件
+   * @return array
    */
   public function reportAction() {
     $where = $this->_where();
     $report_id = $this->_post('report_id');
-    $result = $this->pcrdataService->getReportData($where, $report_id);
+    $date_type = $this->_post('date_type', '');
+    $result = $this->pcrdataService->getReportData($where, $date_type, $report_id);
     return $result;
   }
 
@@ -113,6 +115,7 @@ class PcrdataController extends ApiBaseController {
 
   /**
    * 自动入库
+   * HTTP_ENV=develop php index.php api/pcrdata/import2db
    */
   public function import2dbAction() {
 
@@ -188,6 +191,11 @@ class PcrdataController extends ApiBaseController {
 
   }
 
+
+  /**
+   * 移动文件
+   * @param $file
+   */
   private function mvFiletoDist($file) {
     $distPath = APP_PATH . '/data/uploads/pcrdata/dist/';
 
