@@ -223,10 +223,14 @@ class PcrdataController extends ApiBaseController {
         'key_field' => ['start_date', 'end_date'],
         'db_field' => ['export_date', 'export_date']
       ],
+      ['condition' => 'in',
+        'key_field' => ['brand', 'brand'],
+        'db_field' => ['brand', 'brand']
+      ],
       [
         'condition' => '=',
-        'key_field' => ['city', 'brand', 'specification', 'grade'],
-        'db_field' => ['city', 'brand', 'specification', 'grade'],
+        'key_field' => ['city', 'specification', 'grade'],
+        'db_field' => ['city', 'specification', 'grade'],
       ]
     ];
 

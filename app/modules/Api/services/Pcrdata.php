@@ -205,23 +205,162 @@ class PcrdataService extends BaseService {
     $field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
 
     //结合权限，组合字段
-    $authorityField = ['pf_pricle'];
+    //$authorityField = ['pf_pricle'];
+    $authorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
+    //$authorityField = ['pf_pricle', 'stls_pricle'];
+
+    //字段从权限中获取
 
     $field = array_merge($field, $authorityField);
-
 
     $result = $this->pcrdataModel->getReportData($where, $field);
 
     //组合数据
 
+    $legendData = [];
+    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+
+    foreach ($authorityField as $key) {
+      if (array_key_exists($key, $permissionText))
+        $legendData[$key] = $permissionText[$key];
+    }
+
+    $xAxisData = [];
+    $seriesData = [];//获取显示数据
+    foreach ($result as $value) {
+      $temp = $value;
+      $this->_format($value);
+      $xAxisData['brand_' . $temp['brand']] = $value['brand'];
+
+      $tempData = [
+        'name' => $value['brand'] . ' ' . $value['specification'] . ' ' . $value['huawen'] . ' ' . $value['grade'],
+        'type' => 'bar',
+      ];
+      $tempData_data = [];
+      foreach ($legendData as $k => $v) {
+        $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      }
+      $tempData['data'] = $tempData_data;
+
+      $seriesData[] = $tempData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => '---------------',
+        'subtext' => '' //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        '' => array_values($legendData),
+        'show' => TRUE,
+        'bottom' => 0,
+        'padding' => [15, 0, 0, 0]
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '6%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'calculable' => TRUE,
+      'xAxis' => [
+        'type' => 'category',
+        'data' => array_values($legendData)
+      ],
+
+      'yAxis' => [
+        'type' => 'value'
+      ],
+
+      'series' => $seriesData
+    ];
+
+    echo jsonencode($option);
+    exit;
 
 
+    /**
+     * option = {
+     * title : {
+     * text: '某地区蒸发量和降水量',
+     * subtext: '纯属虚构'
+     * },
+     * tooltip : {
+     * trigger: 'axis'
+     * },
+     * legend: {
+     * data:['蒸发量','降水量']
+     * },
+     * toolbox: {
+     * show : true,
+     * feature : {
+     * dataView : {show: true, readOnly: false},
+     * magicType : {show: true, type: ['line', 'bar']},
+     * restore : {show: true},
+     * saveAsImage : {show: true}
+     * }
+     * },
+     * calculable : true,
+     * xAxis : [
+     * {
+     * type : 'category',
+     * data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+     * }
+     * ],
+     * yAxis : [
+     * {
+     * type : 'value'
+     * }
+     * ],
+     * series : [
+     * {
+     * name:'蒸发量',
+     * type:'bar',
+     * data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+     * },
+     * {
+     * name:'降水量',
+     * type:'bar',
+     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+     * },
+     * {
+     * name:'温度量',
+     * type:'bar',
+     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+     * }
+     * ,
+     * {
+     * name:'条例量',
+     * type:'bar',
+     * data:[2.6]
+     * }
+     * ,
+     * {
+     * name:'风速量',
+     * type:'bar',
+     * data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+     * }
+     * ]
+     * };
+     */
 
 
-
-
-
-
+    exit;
 
 
     return $this->show($result);

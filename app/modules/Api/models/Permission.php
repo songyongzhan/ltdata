@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: songyongzhan
- * Date: 2019/221
+ * Date: 2019/2/21
  * Time: 22:45
  * Email: 574482856@qq.com
  *
@@ -17,18 +17,51 @@ class PermissionModel extends BaseModel {
 
   protected $id = 'manage_id';
 
-  
-  public function getPermission() {
+  /**
+   * 设置权限
+   * @param $id
+   * @param $premission
+   * @return int|string
+   */
+  public function setPermission($id, $permission) {
+    return $this->update($id, ['permission' => jsonencode($permission)]);
+  }
+
+  /**
+   * 获取当前用户权限
+   * @param $id
+   * @return array
+   */
+  public function getPermission($id) {
+    $result = $this->getOne($id);
+    if (!$result) {
+      $result = ['manage_id' => $id, 'permission' => ''];
+      $this->insert($result);
+    }
+
+    if (isset($result['permission']) && $result['permission'] != '')
+      $result['permission'] = jsondecode($result['permission']);
+
+    return $result;
+  }
+
+  /**
+   * 显示权限数据
+   * @return array
+   */
+  public function viewPermission() {
     $data = [
       'export' => [
         'text' => '出口数据',
+        'text_key' => 'export',
         'data' => [
-          '40111000' => '40111000',
-          '40112000' => '40112000'
+          '40111000' => '轿车轮胎',
+          '40112000' => '卡客车轮胎'
         ]
       ],
       'pcr' => [
         'text' => 'PCR价格数据',
+        'text_key' => 'pcr',
         'data' => [
           'pf_pricle' => '批发净价',
           'stls_pricle' => '实体零售均价',
@@ -39,6 +72,7 @@ class PermissionModel extends BaseModel {
       ],
       'mpinfo' => [
         'text' => '代理商信息',
+        'text_key' => 'mpinfo',
         'data' => [
           'mobile' => '手机',
           'xsarea' => '销售区域',
