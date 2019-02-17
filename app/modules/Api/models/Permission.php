@@ -82,8 +82,9 @@ class PermissionModel extends BaseModel {
         'text_key' => 'mpinfo',
         'data' => [
           'mobile' => '手机',
-          'xsarea' => '销售区域',
-          'sell' => '销售量'
+          'tel' => '电话',
+          'sell_area' => '销售区域',
+          'year_sell' => '销售量'
         ]
       ]
     ];

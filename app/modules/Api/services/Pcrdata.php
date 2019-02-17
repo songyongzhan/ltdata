@@ -60,7 +60,14 @@ class PcrdataService extends BaseService {
       $csvHeader[] = $v_field;
     }
 
-    $csvDatas = $result['result']['list'];
+    $csvDatas = [];
+    foreach ($result['result']['list'] as $data) {
+      $_temp = [];
+      foreach ($field as $field_key) {
+        $_temp[$field_key] = isset($data[$field_key]) ? $data[$field_key] : '';
+      }
+      $csvDatas[] = $_temp;
+    }
 
     $header = [];
     $footer = [];
@@ -224,10 +231,8 @@ class PcrdataService extends BaseService {
 
     $permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
 
-    //print_r($permission);exit;
-
-    if (isset($permission['result']['pcr']) && $permission['result']['pcr'])
-      $srcAuthorityField = $authorityField = $permission['result']['pcr'];
+    if (isset($permission['result']['permission_data']['pcr']) && $permission['result']['permission_data']['pcr'])
+      $srcAuthorityField = $authorityField = $permission['result']['permission_data']['pcr'];
     else {
       debugMessage('pcr getReportData 权限为空,不能显示价格数字，请设置相关权限');
       showApiException('不能显示相关信息，请设置相关权限');
@@ -261,6 +266,10 @@ class PcrdataService extends BaseService {
 
 
     $result = $this->pcrdataModel->getReportData($where, $authorityField, $date_type, $report_id);
+
+
+    if (!$result['list'])
+      showApiException('没有查找到对应数据', StatusCode::DATA_NOT_EXISTS);
 
 
     //处理显示表格数据
@@ -345,7 +354,7 @@ class PcrdataService extends BaseService {
       $tempData = [
         'name' => $v,
         'type' => 'bar',
-        'data' => $seriesBarData[$k]
+        'data' => isset($seriesBarData[$k]) ? $seriesBarData[$k] : []
       ];
       $seriesData[] = $tempData;
     }
