@@ -201,19 +201,19 @@ class ApiBaseController extends BaseController {
    */
   private function _in_condition($val, $where, $condition_type, $data) {
 
-    isset($val['db_field'][0]) && $_db_fields = $val['db_field'][0];
+    foreach ($val['key_field'] as $f_key => $f_filed) {
+      if (!isset($data[$f_filed])) continue;
 
-    if (!$_db_fields || !isset($data[$_db_fields])) return $where;
+      if (isset($data[$f_filed]) && is_string($data[$f_filed]))
+        $data[$f_filed] = explode(',', trim($data[$f_filed], ','));
 
-    if (is_string($data[$_db_fields]))
-      $data[$_db_fields] = explode(',', $data[$_db_fields]);
-
-    $where[] = [
-      'field' => $_db_fields,
-      'val' => $data[$_db_fields],
-      'operator' => $condition_type,
-      'condition' => 'AND'
-    ];
+      $where[] = [
+        'field' => trim($val['db_field'][$f_key]),
+        'val' => isset($data[$f_filed]) ? $data[$f_filed] : '',
+        'operator' => $condition_type,
+        'condition' => 'AND'
+      ];
+    }
 
     return $where;
   }

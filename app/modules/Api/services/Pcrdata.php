@@ -136,7 +136,8 @@ class PcrdataService extends BaseService {
       }
     }
 
-    isset($pinpaiData[$value['brand']]) && $value['brand'] = $pinpaiData[$value['brand']];
+    if (isset($value['brand']))
+      isset($pinpaiData[$value['brand']]) && $value['brand'] = $pinpaiData[$value['brand']];
 
     static $shengData;
     if (!$shengData) {
@@ -146,14 +147,15 @@ class PcrdataService extends BaseService {
       $shengData = array_column($data['result'], 'text', 'id');
     }
 
-    isset($shengData[$value['city']]) && $value['city'] = $shengData[$value['city']];
+    if (isset($value['city']))
+      isset($shengData[$value['city']]) && $value['city'] = $shengData[$value['city']];
+
   }
 
   /**
    * 没有限制，直接显示出pcrdata城市
    */
   public function getCity($where) {
-
     $cityIds = $this->pcrdataModel->getList($where, ['city'], '', '', 0, 'city');
     $cityIds = array_column($cityIds, 'city');
     $result = $this->regionModel->getList(
@@ -217,21 +219,30 @@ class PcrdataService extends BaseService {
       debugMessage('pcr getReportData 权限为空,不能显示价格数字，请设置相关权限');
       showApiException('不能显示相关信息，请设置相关权限');
     }*/
-    $authorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
+    $authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
     //$authorityField = ['pf_pricle', 'stls_pricle'];
 
     //字段从权限中获取
 
     //$field = array_merge($field, $authorityField);
 
+    //是否平均值
+    $avg = [41, 43];
+    if (in_array($report_id, $avg)) {
+      $authorityField = array_map(function ($val) {
+        return 'truncate(avg(' . $val . '),2) as ' . $val;
+      }, $authorityField);
+    }
+
+
     $result = $this->pcrdataModel->getReportData($where, $authorityField, $date_type, $report_id);
 
     switch ($result['viewtype']) {
       case 'bar':
-        $result = $this->_createBar($result, $authorityField, 'bar');
+        $result = $this->_createBar($result, $srcAuthorityField, 'bar');
         break;
       case 'line':
-        $result = $this->_createBar($result, $authorityField, 'line');
+        $result = $this->_createBar($result, $srcAuthorityField, 'line');
         break;
       default:
         showApiException('无法处理这类数据请求');
@@ -314,32 +325,61 @@ class PcrdataService extends BaseService {
    * @return mixed
    */
   private function _createBar($result, $authorityField, $viewtype) {
+
     //组合 图表 数据
-    $legendData = [];
-    /*$permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
+    $viewPricle = [];
+    $permissionText = $this->permissionModel->viewPermission()['pcr']['data'];
 
     foreach ($authorityField as $key) {
       if (array_key_exists($key, $permissionText))
-        $legendData[$key] = $permissionText[$key];
-    }*/
+        $viewPricle[$key] = $permissionText[$key];
+    }
+
+    $legendData = $viewPricle;
 
     $xAxisData = [];
+    $reportListHorizontal = explode('|', trim($result['horizontal'], '|'));
+
+
+    $seriesBarData = [];
     $seriesData = [];//获取显示数据
     foreach ($result['result'] as $value) {
-      $temp = $value;
+      //$temp = $value;
       $this->_format($value);
-      $xAxisData[$temp['val']] = $value['val'];
 
-      $tempData = [
-        'name' => $value['brand'] . ' ' . $value['specification'] . ' ' . $value['huawen'] . ' ' . $value['grade'],
-        'type' => $viewtype,
-      ];
-      $tempData_data = [];
-      foreach ($legendData as $k => $v) {
-        $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      $horizontalVal = '';
+      foreach ($reportListHorizontal as $hval) {
+        $horizontalVal .= $value[$hval] . ' ';
       }
-      $tempData['data'] = $tempData_data;
 
+      //$horizontalKey = $temp['horizontal'] . (isset($temp['horizontal2']) ? $temp['horizontal2'] : '');
+      //$horizontalVal = $value['horizontal'] . (isset($value['horizontal2']) ? ' ' . $value['horizontal2'] : '');
+      //$horizontalVal = $value['brand'] . (isset($value['horizontal2']) ? ' ' . $value['horizontal2'] : '');
+
+      $xAxisData[md5($horizontalVal)] = $horizontalVal;
+
+      foreach ($viewPricle as $k => $v) {
+        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      }
+      //$tempData = [
+      //  'name' => $legendData[$legendKey],
+      //  'type' => $viewtype,
+      //];
+      //$tempData_data = [];
+      //foreach ($viewPricle as $k => $v) {
+      //  $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      //}
+      //$tempData['data'] = $tempData_data;
+      //
+      //$seriesData[] = $tempData;
+    }
+
+    foreach ($viewPricle as $k => $v) {
+      $tempData = [
+        'name' => $v,
+        'type' => $viewtype,
+        'data' => $seriesBarData[$k]
+      ];
       $seriesData[] = $tempData;
     }
 
@@ -353,7 +393,7 @@ class PcrdataService extends BaseService {
       ],
 
       'legend' => [ //栏目显示
-        '' => array_values($legendData),
+        'data' => array_values($legendData),
         'show' => TRUE,
         'bottom' => 0,
         'type' => 'scroll',
@@ -379,7 +419,7 @@ class PcrdataService extends BaseService {
       'calculable' => TRUE,
       'xAxis' => [
         'type' => 'category',
-        'data' => array_values($legendData)
+        'data' => array_values($xAxisData)
       ],
 
       'yAxis' => [
@@ -388,7 +428,6 @@ class PcrdataService extends BaseService {
 
       'series' => $seriesData
     ];
-
 
 
     echo jsonencode($option);

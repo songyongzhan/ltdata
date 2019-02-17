@@ -11,6 +11,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
 
 class PcrdataModel extends BaseModel {
 
+  protected $realDelete = TRUE;
 
   /**
    * @param $where

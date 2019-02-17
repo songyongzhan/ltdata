@@ -233,13 +233,13 @@ class PcrdataController extends ApiBaseController {
         'db_field' => ['export_date', 'export_date']
       ],
       ['condition' => 'in',
-        'key_field' => ['brand', 'brand'],
-        'db_field' => ['brand', 'brand']
+        'key_field' => ['brand', 'city'],
+        'db_field' => ['brand', 'city']
       ],
       [
         'condition' => '=',
-        'key_field' => ['city', 'specification', 'grade'],
-        'db_field' => ['city', 'specification', 'grade'],
+        'key_field' => ['specification', 'grade'],
+        'db_field' => ['specification', 'grade'],
       ]
     ];
 
@@ -254,6 +254,8 @@ class PcrdataController extends ApiBaseController {
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
+
+
     return $where;
   }
 
