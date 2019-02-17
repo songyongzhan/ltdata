@@ -103,14 +103,15 @@ class PcrdataController extends ApiBaseController {
     return $result;
   }
 
-
   /**
-   * 下载代理商名录列表
+   * 下载项目相关数据
    * @throws InvalideException
    */
   public function downloadAction() {
     $where = $this->_where();
-    $this->pcrdataService->downloadCsv($where);
+    $report_id = $this->_post('report_id');
+    $date_type = $this->_post('date_type', '');
+    $this->pcrdataService->downloadCsv($where, $date_type, $report_id);
   }
 
   /**

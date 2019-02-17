@@ -45,7 +45,8 @@ class StatusCode {
   const PLEASE_LOGIN = 42022409;//请登录
   const CODE_ERROR = 42023409;//验证码输入错误
   const RULE_NOT_ARRAY = 42024409;//验证规则不是数组
-  const REPORTLIST_NOT_EXISTS = 42025409; //reportlist data 不存在
+  const REPORTLIST_NOT_EXISTS = 42025409;//reportlist data 不存在
+  const TABLE_COLUMN_EMPTY = 42026409;
 
 
   /**
@@ -86,7 +87,8 @@ class StatusCode {
       55802405 => '接口目录异常',
       42023409 => '验证码输入错误',
       42024409 => '验证规则不是数组',
-      42025409 => 'reportlist data 不存在'
+      42025409 => 'reportlist data 不存在',
+      42026409 => '导出数据表头为空'
     ];
 
     return isset($data[$code]) ? $data[$code] : '';

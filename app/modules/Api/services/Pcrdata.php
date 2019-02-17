@@ -35,24 +35,36 @@ class PcrdataService extends BaseService {
    * 下载代理商列表
    * @param $where
    * @throws InvalideException
+   * @throws Exception
    */
-  public function downloadCsv($where) {
+  public function downloadCsv($where, $date_type, $report_id) {
     set_time_limit(0);
     ini_set('memory_limit', '1000M');
 
-    $field = ['title', 'qylx_id', 'wn_np_type', 'mppinpaiId', 'sheng_id', 'shi_id', 'person', 'jypp', 'mobile', 'tel', 'weburl', 'email', 'indexshow', 'gongkai', 'allshow', 'isfufei'];;
+    $result = $this->getReportData($where, $date_type, $report_id);
 
-    $result = $this->pcrdataModel->getList($where, $field);
-    foreach ($result as $key => &$value) {
-      $this->_format($value);
+    $table_column = trim($result['result']['table_column'], '|');
+
+    if ($table_column == '')
+      showApiException('导出数据表头为空', StatusCode::TABLE_COLUMN_EMPTY);
+    $table_column = explode('|', $table_column);
+
+    $field = [];
+    $csvHeader = [];
+    foreach ($table_column as $val) {
+      list($v_field, $v_header) = explode(',', $val);
+      if (!$v_field || !$v_header)
+        continue;
+
+      $field[] = $v_header;
+      $csvHeader[] = $v_field;
     }
-    $csvDatas = $result;
 
-    $csvHeader = ['日期', '城市', '品牌', '花纹', '等级', '-', '联系人', '经营品牌', '手机', '电话', '网址', '邮箱', '是否首页显示', '是否公开', '名片形式展示', '是否付费'];
+    $csvDatas = $result['result']['list'];
 
     $header = [];
     $footer = [];
-    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录_' . time());
+    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], 'PCR数据_' . time());
   }
 
 
@@ -201,6 +213,7 @@ class PcrdataService extends BaseService {
   /**
    * 从条件得到数据
    * @param $where
+   * @param int $report_id <require|number> 分析项目report_id
    */
   public function getReportData($where, $date_type, $report_id) {
 
