@@ -45,7 +45,7 @@ class PermissionController extends ApiBaseController {
    * @return array
    */
   public function getSelfPermissionAction() {
-    $result = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+    $result = $this->permissionService->getSelfPermission($this->tokenService->manage_id);
     return $result;
   }
 

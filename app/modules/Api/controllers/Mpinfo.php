@@ -116,6 +116,19 @@ class MpinfoController extends ApiBaseController {
     $this->mpinfoService->downloadCsv($where, $date_type, $report_id);
   }
 
+  /**
+   * 获取生产企业列表
+   */
+  public function getManufacturerAction() {
+    $result = $this->mpinfoService->getManufacturer();
+    return $result;
+  }
+
+  public function getTitleAction() {
+    $result = $this->mpinfoService->getTitle();
+    return $result;
+  }
+
 
   /**
    * 生成图表文件

@@ -22,7 +22,7 @@ class StatusCode {
   const TOKEN_TIMEOUT_EXPIRE = 42302409; //token 过期  登录超时
   const TOKEN_ERROR = 42303409; //token解析错误
   const REMOTEIP_CHANGED = 42202409; //网络环境发生变化
-  const DATA_NOT_EXISTS = API_SUCCESS; //数据不存在
+  const DATA_NOT_EXISTS = 42203409; //数据不存在
   const NO_DATA_CHANGE = 42402409; //没有数据被改变
   const PARAMS_ERROR = 42000409; //请求参数异常
   const URL_MENU_DENIED = 42016409; //您没有权限访问此栏目
@@ -88,7 +88,8 @@ class StatusCode {
       42023409 => '验证码输入错误',
       42024409 => '验证规则不是数组',
       42025409 => 'reportlist data 不存在',
-      42026409 => '导出数据表头为空'
+      42026409 => '导出数据表头为空',
+      42203409 => '数据不存在',
     ];
 
     return isset($data[$code]) ? $data[$code] : '';

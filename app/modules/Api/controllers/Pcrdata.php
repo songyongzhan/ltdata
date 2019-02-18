@@ -36,7 +36,8 @@ class PcrdataController extends ApiBaseController {
     $where = $this->_where();
     $report_id = $this->_post('report_id');
     $date_type = $this->_post('date_type', '');
-    $result = $this->pcrdataService->getReportData($where, $date_type, $report_id);
+    $pricle_id = $this->_post('pricle_id', '');
+    $result = $this->pcrdataService->getReportData($where, $date_type, $report_id, $pricle_id);
     return $result;
   }
 

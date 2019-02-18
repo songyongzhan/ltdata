@@ -183,9 +183,11 @@ class MpinfoService extends BaseService {
 
       $xAxisData[md5($horizontalVal)] = $horizontalVal;
 
-      foreach ($viewPricle as $k => $v) {
+
+      $seriesBarData[] = $value['val'];
+      /*foreach ($viewPricle as $k => $v) {
         $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
-      }
+      }*/
       //$tempData = [
       //  'name' => $legendData[$legendKey],
       //  'type' => $viewtype,
@@ -199,24 +201,34 @@ class MpinfoService extends BaseService {
       //$seriesData[] = $tempData;
     }
 
-    foreach ($viewPricle as $k => $v) {
+    /*foreach ($viewPricle as $k => $v) {
       $tempData = [
         'name' => $v,
         'type' => 'bar',
         'data' => $seriesBarData[$k]
       ];
       $seriesData[] = $tempData;
-    }
+    }*/
+
+
+    $seriesData[] = [
+      'name' => $result['title2'],
+      'type' => 'bar',
+      'data' => $seriesBarData,
+    ];
 
     $option = [
       'title' => [
         'text' => $result['title'],
-        'subtext' => $result['title2'] //副标题
+        //'subtext' => $result['title2'] //副标题
+        'subtext' => '' //副标题
       ],
       'tooltip' => [ //鼠标放上去是否信息显示
-        'trigger' => 'axis'
+        'trigger' => 'axis',
+        'axisPointer' => [ // 坐标轴指示器，坐标轴触发有效
+          'type' => 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+        ]
       ],
-
       'legend' => [ //栏目显示
         'data' => array_values($legendData),
         'show' => TRUE,
@@ -574,6 +586,40 @@ class MpinfoService extends BaseService {
           break;
       }
     }
+
+  }
+
+  /**
+   * 获取生产企业所有列表  从视图中获取
+   */
+  public function getManufacturer() {
+
+    $mpinfomanufacturer_view = $this->exportdataModel->getViewData('mpinformanufacturer_view');
+    $result = [];
+    foreach ($mpinfomanufacturer_view as $key => $val) {
+      $result[] = [
+        'id' => $val['manufacturer'],
+        'text' => $val['manufacturer']
+      ];
+    }
+    return $this->show($result);
+
+  }
+
+  /**
+   * 获取所有代理商
+   * @return array
+   */
+  public function getTitle() {
+    $mpinfotitle_view = $this->exportdataModel->getViewData('mpinfotitle_view');
+    $result = [];
+    foreach ($mpinfotitle_view as $key => $val) {
+      $result[] = [
+        'id' => $val['title'],
+        'text' => $val['title']
+      ];
+    }
+    return $this->show($result);
 
   }
 

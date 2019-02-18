@@ -222,7 +222,7 @@ class PcrdataService extends BaseService {
    * @param $where
    * @param int $report_id <require|number> 分析项目report_id
    */
-  public function getReportData($where, $date_type, $report_id) {
+  public function getReportData($where, $date_type, $report_id, $pricle_id) {
 
     //$field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
 
@@ -242,6 +242,13 @@ class PcrdataService extends BaseService {
       showApiException('不能显示相关信息，请设置相关权限');
 
 
+    //判断客户端是否传递了pricle_id 如果传递，则执行客户传递过来的信息
+    if ($pricle_id != '' && $pricle_id != '0') {
+      $pricle_id = trim($pricle_id, ',');
+      $srcAuthorityField = $authorityField = explode(',', $pricle_id);
+    }
+
+
     //$authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
     //$authorityField = ['pf_pricle', 'stls_pricle'];
 
@@ -250,7 +257,7 @@ class PcrdataService extends BaseService {
     //$field = array_merge($field, $authorityField);
 
     //是否平均值
-    $avg = [41, 42, 43];
+    $avg = [41, 42, 43, 53];
     if (in_array($report_id, $avg)) {
       $authorityField = array_map(function ($val) {
         return 'truncate(avg(' . $val . '),2) as ' . $val;

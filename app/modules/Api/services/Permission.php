@@ -36,6 +36,30 @@ class PermissionService extends BaseService {
   }
 
   /**
+   * 用于pcr 价格选择 展示使用
+   * @param int $id <require|number> 用户id不能为空
+   * @return array
+   */
+  public function getSelfPermission($id) {
+    $result = $this->getManagePermission($id);
+    $result = $result['result'];
+    $permissionText = $this->permissionModel->viewPermission();
+
+    $data = [];
+    foreach ($result['permission_data'] as $key => $val) {
+      $temp = [];
+      $permisstext = $permissionText[$key]['data'];
+      foreach ($val as $v) {
+        if (isset($permisstext[$v]))
+          $temp[] = ['id' => $v, 'text' => $permisstext[$v]];
+      }
+      $data[$key] = $temp;
+    }
+    $result['permission_data'] = $data;
+    return $this->show($result);
+  }
+
+  /**
    * 获取用户横向权限
    * @param int $id <require|number> 用户id不能为空
    * @return array

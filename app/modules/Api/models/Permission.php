@@ -70,11 +70,11 @@ class PermissionModel extends BaseModel {
           //'th_pricle' => '途虎',
           //'jd_pricle' => '京东',
           //'gfqj_pricle' => '官方旗舰店'
-          'pf_pricle' => '批发价',
-          'stls_pricle' => '实体零售价',
-          'th_pricle' => '途虎价',
-          'jd_pricle' => '京东价',
-          'gfqj_pricle' => '官方旗舰店价'
+          'pf_pricle' => '批发净价',
+          'stls_pricle' => '实体店零售均价',
+          'th_pricle' => '途虎网价格',
+          'jd_pricle' => '京东自营价格',
+          'gfqj_pricle' => '官方旗舰店价格'
         ]
       ],
       'mpinfo' => [
