@@ -220,20 +220,24 @@ class PcrdataService extends BaseService {
     //$field = ['id', 'export_date', 'city', 'brand', 'specification', 'huawen', 'grade'];
 
     //结合权限，组合字段
-    $authorityField = [];
+    $srcAuthorityField = $authorityField = [];
 
-    /*$permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+    $permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
 
-    print_r($permission);exit;
+    //print_r($permission);exit;
 
     if (isset($permission['result']['pcr']) && $permission['result']['pcr'])
-      $authorityField = $permission['result']['pcr'];
+      $srcAuthorityField = $authorityField = $permission['result']['pcr'];
     else {
       debugMessage('pcr getReportData 权限为空,不能显示价格数字，请设置相关权限');
       showApiException('不能显示相关信息，请设置相关权限');
-    }*/
+    }
 
-    $authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
+    if (!$authorityField)
+      showApiException('不能显示相关信息，请设置相关权限');
+
+
+    //$authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
     //$authorityField = ['pf_pricle', 'stls_pricle'];
 
     //字段从权限中获取

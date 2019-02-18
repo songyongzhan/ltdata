@@ -15,7 +15,7 @@ defined('APP_PATH') OR exit('No direct script access allowed');
  */
 class MpinfoService extends BaseService {
 
-  protected $field = ['id','wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'tel', 'mobile', 'contract_year', 'manufacturer', 'mppinpaiId', 'sell_area', 'year_sell', 'verification_date', 'contract','createtime'];
+  protected $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'tel', 'mobile', 'contract_year', 'manufacturer', 'mppinpaiId', 'sell_area', 'year_sell', 'verification_date', 'contract', 'createtime'];
 
   /**
    * 获取列表
@@ -24,7 +24,17 @@ class MpinfoService extends BaseService {
    * @return mixed
    */
   public function getListPage(array $where, $page_num, $page_size) {
-    $result = $this->mpinfoModel->getListPage($where, $this->field, $page_num, $page_size);
+
+    $field = [];
+    if ($this->tokenService->isadmin)
+      $field = $this->field;
+    else {
+
+      $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year'];
+      
+    }
+
+    $result = $this->mpinfoModel->getListPage($where, $field, $page_num, $page_size);
     foreach ($result['list'] as $key => &$value) {
       $this->_format($value);
     }
@@ -36,23 +46,310 @@ class MpinfoService extends BaseService {
    * @param $where
    * @throws InvalideException
    */
-  public function downloadCsv($where) {
+  public function downloadCsv($where, $date_type, $report_id) {
     set_time_limit(0);
     ini_set('memory_limit', '1000M');
 
-    $field = ['title', 'qylx_id', 'wn_np_type', 'mppinpaiId', 'sheng_id', 'shi_id', 'person', 'jypp', 'mobile', 'tel', 'weburl', 'email', 'indexshow', 'gongkai', 'allshow', 'isfufei'];;
+    $result = $this->getReportData($where, $date_type, $report_id);
 
-    $result = $this->mpinfoModel->getList($where, $field);
-    foreach ($result as $key => &$value) {
-      $this->_format($value);
+    $table_column = trim($result['result']['table_column'], '|');
+
+    if ($table_column == '')
+      showApiException('导出数据表头为空', StatusCode::TABLE_COLUMN_EMPTY);
+    $table_column = explode('|', $table_column);
+
+    $field = [];
+    $csvHeader = [];
+    foreach ($table_column as $val) {
+      list($v_field, $v_header) = explode(',', $val);
+      if (!$v_field || !$v_header)
+        continue;
+
+      $field[] = $v_header;
+      $csvHeader[] = $v_field;
     }
-    $csvDatas = $result;
 
-    $csvHeader = ['公司名称', '企业类型', '所属品类', '所属品牌', '省', '市', '联系人', '经营品牌', '手机', '电话', '网址', '邮箱', '是否首页显示', '是否公开', '名片形式展示', '是否付费'];
+    $csvDatas = $result['result']['list'];
 
     $header = [];
     $footer = [];
-    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录_' . time());
+    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录数据_' . time());
+  }
+
+
+  public function getReportData($where, $date_type, $report_id) {
+    //结合权限，组合字段
+    $srcAuthorityField = $authorityField = [];
+
+    $permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+
+    //print_r($permission);exit;
+
+    if (isset($permission['result']['mpinfo']) && $permission['result']['mpinfo'])
+      $srcAuthorityField = $authorityField = $permission['result']['mpinfo'];
+    else {
+      debugMessage('mpinfo getReportData 权限为空,不能显示价格数字，请设置相关权限');
+      showApiException('不能显示相关信息，请设置相关权限');
+    }
+
+    if (!$authorityField)
+      showApiException('不能显示相关信息，请设置相关权限');
+
+
+    //$authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
+    //$authorityField = ['pf_pricle', 'stls_pricle'];
+
+    //字段从权限中获取
+
+    //$field = array_merge($field, $authorityField);
+
+    //是否平均值
+    /*   $avg = [41, 42, 43];
+       if (in_array($report_id, $avg)) {
+         $authorityField = array_map(function ($val) {
+           return 'truncate(avg(' . $val . '),2) as ' . $val;
+         }, $authorityField);
+       }*/
+
+    //连续12月指定规格价格指定城市的总体趋势分析
+    /*if ($report_id == 42) {
+      $authorityField = array_map(function ($val) {
+        return 'truncate(avg(' . $val . '),2) as ' . $val;
+      }, $authorityField);
+    }*/
+
+
+    $result = $this->mpinfoModel->getReportData($where, $authorityField, $date_type, $report_id);
+
+
+    //处理显示表格数据
+    $permissionText = $this->permissionModel->viewPermission()['mpinfo']['data'];
+    $authorityTableColumn = '';
+    foreach ($srcAuthorityField as $tab_column) {
+      if (array_key_exists($tab_column, $permissionText))
+        $authorityTableColumn .= $permissionText[$tab_column] . ',' . $tab_column . '|';
+    }
+    $result['table_column'] = trim($result['table_column'], '|') . '|' . trim($authorityTableColumn, '|');
+
+
+    switch ($result['viewtype']) {
+      case 'bar':
+        $result = $this->_createBar($result, $srcAuthorityField);
+        break;
+      case 'line':
+        $result = $this->_createLine($result, $srcAuthorityField);
+        break;
+      default:
+        showApiException('无法处理这类数据请求');
+    }
+    //echo jsonencode($result['option']);
+    //
+    //exit;
+    return $this->show($result);
+  }
+
+  /**
+   * @param $result
+   * @param $authorityField
+   * @return mixed
+   */
+  private function _createBar($result, $authorityField) {
+
+    //组合 图表 数据
+    $viewPricle = [];
+    $permissionText = $this->permissionModel->viewPermission()['mpinfo']['data'];
+
+    foreach ($authorityField as $key) {
+      if (array_key_exists($key, $permissionText))
+        $viewPricle[$key] = $permissionText[$key];
+    }
+
+    $legendData = $viewPricle;
+
+    $xAxisData = [];
+    $reportListHorizontal = explode('|', trim($result['horizontal'], '|'));
+
+
+    $seriesBarData = [];
+    $seriesData = [];//获取显示数据
+    foreach ($result['list'] as $value) {
+      //$temp = $value;
+      $this->_format($value);
+
+      $horizontalVal = '';
+      foreach ($reportListHorizontal as $hval) {
+        $horizontalVal .= $value[$hval] . ' ';
+      }
+
+      $xAxisData[md5($horizontalVal)] = $horizontalVal;
+
+      foreach ($viewPricle as $k => $v) {
+        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      }
+      //$tempData = [
+      //  'name' => $legendData[$legendKey],
+      //  'type' => $viewtype,
+      //];
+      //$tempData_data = [];
+      //foreach ($viewPricle as $k => $v) {
+      //  $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      //}
+      //$tempData['data'] = $tempData_data;
+      //
+      //$seriesData[] = $tempData;
+    }
+
+    foreach ($viewPricle as $k => $v) {
+      $tempData = [
+        'name' => $v,
+        'type' => 'bar',
+        'data' => $seriesBarData[$k]
+      ];
+      $seriesData[] = $tempData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => $result['title2'] //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        'data' => array_values($legendData),
+        'show' => TRUE,
+        'bottom' => 0,
+        'type' => 'scroll',
+        'padding' => [15, 0, 0, 0]
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '6%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'calculable' => TRUE,
+      'xAxis' => [
+        'type' => 'category',
+        'data' => array_values($xAxisData)
+      ],
+
+      'yAxis' => [
+        'type' => 'value',
+        'axisLabel' => [
+          'formatter' => '{value} ' . $result['unit']
+        ]
+      ],
+
+      'series' => $seriesData
+    ];
+
+    //echo jsonencode($option);
+    //exit;
+    $result['option'] = $option;
+
+    return $result;
+  }
+
+  private function _createLine($result, $authorityField) {
+    //组合 图表 数据
+    $viewPricle = [];
+    $permissionText = $this->permissionModel->viewPermission()['mpinfo']['data'];
+
+    foreach ($authorityField as $key) {
+      if (array_key_exists($key, $permissionText))
+        $viewPricle[$key] = $permissionText[$key];
+    }
+
+    $legendData = $viewPricle;
+
+    $xAxisData = [];
+
+    $seriesBarData = [];
+    $seriesData = [];//获取显示数据
+    foreach ($result['list'] as $value) {
+      $this->_format($value);
+      $xAxisData[$value['export_month']] = $value['export_month'] . '月';
+
+      foreach ($viewPricle as $k => $v) {
+        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      }
+    }
+
+    foreach ($viewPricle as $k => $v) {
+      $tempData = [
+        'name' => $v,
+        'type' => 'line',
+        'data' => $seriesBarData[$k]
+      ];
+      $seriesData[] = $tempData;
+    }
+
+    $option = [
+      'title' => [
+        'text' => $result['title'],
+        'subtext' => $result['title2'] //副标题
+      ],
+      'tooltip' => [ //鼠标放上去是否信息显示
+        'trigger' => 'axis'
+      ],
+
+      'legend' => [ //栏目显示
+        'data' => array_values($legendData),
+        'show' => TRUE,
+        'bottom' => 0,
+        'type' => 'scroll',
+        'padding' => [15, 0, 0, 0]
+      ],
+
+      'grid' => [ //位置调整
+        'left' => '3%',
+        'right' => '4%',
+        'bottom' => '6%',
+        'containLabel' => TRUE
+      ],
+
+      'toolbox' => [
+        'feature' => [
+          'magicType' => [
+            'type' => ['line', 'bar']
+          ],
+          'restore' => [],
+          'saveAsImage' => []
+        ]
+      ],
+      'calculable' => TRUE,
+      'xAxis' => [
+        'type' => 'category',
+        'data' => array_values($xAxisData)
+      ],
+
+      'yAxis' => [
+        'type' => 'value',
+        'axisLabel' => [
+          'formatter' => '{value} ' . $result['unit']
+        ]
+      ],
+
+      'series' => $seriesData
+    ];
+
+    $result['option'] = $option;
+
+    return $result;
   }
 
   /**
@@ -224,15 +521,15 @@ class MpinfoService extends BaseService {
 
   private function _format(&$value) {
 
-  /*  static $shiData;
-    if (!$shiData) {
-      $data = $this->regionService->getList([
-        getWhereCondition('region_type', 2)
-      ]);
-      $shiData = array_column($data['result'], 'text', 'id');
-    }
+    /*  static $shiData;
+      if (!$shiData) {
+        $data = $this->regionService->getList([
+          getWhereCondition('region_type', 2)
+        ]);
+        $shiData = array_column($data['result'], 'text', 'id');
+      }
 
-    isset($shiData[$value['shi']]) && $value['shi'] = $shiData[$value['shi']];*/
+      isset($shiData[$value['shi']]) && $value['shi'] = $shiData[$value['shi']];*/
 
 
     static $pinpaiData;

@@ -111,10 +111,23 @@ class MpinfoController extends ApiBaseController {
    */
   public function downloadAction() {
     $where = $this->_where();
-    $result = $this->mpinfoService->downloadCsv($where);
-    return $result;
+    $report_id = $this->_post('report_id');
+    $date_type = $this->_post('date_type', '');
+    $this->mpinfoService->downloadCsv($where, $date_type, $report_id);
   }
 
+
+  /**
+   * 生成图表文件
+   * @return array
+   */
+  public function reportAction() {
+    $where = $this->_where();
+    $report_id = $this->_post('report_id');
+    $date_type = $this->_post('date_type', '');
+    $result = $this->mpinfoService->getReportData($where, $date_type, $report_id);
+    return $result;
+  }
 
   /**
    * 自动入库
