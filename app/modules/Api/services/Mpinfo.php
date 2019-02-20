@@ -85,8 +85,8 @@ class MpinfoService extends BaseService {
 
     //print_r($permission);exit;
 
-    if (isset($permission['result']['mpinfo']) && $permission['result']['mpinfo'])
-      $srcAuthorityField = $authorityField = $permission['result']['mpinfo'];
+    if (isset($permission['result']['permission_data']['mpinfo']) && $permission['result']['permission_data']['mpinfo'])
+      $srcAuthorityField = $authorityField = $permission['result']['permission_data']['mpinfo'];
     else {
       debugMessage('mpinfo getReportData 权限为空,不能显示价格数字，请设置相关权限');
       showApiException('不能显示相关信息，请设置相关权限');
@@ -540,7 +540,8 @@ class MpinfoService extends BaseService {
       }
     }
 
-    isset($pinpaiData[$value['mppinpaiId']]) && $value['mppinpaiId'] = $pinpaiData[$value['mppinpaiId']];
+    if (isset($value['mppinpaiId']))
+      isset($pinpaiData[$value['mppinpaiId']]) && $value['mppinpaiId'] = $pinpaiData[$value['mppinpaiId']];
 
 
     static $shengData;
@@ -551,7 +552,8 @@ class MpinfoService extends BaseService {
       $shengData = array_column($data['result'], 'text', 'id');
     }
 
-    isset($shengData[$value['sheng_id']]) && $value['sheng_id'] = $shengData[$value['sheng_id']];
+    if (isset($value['sheng_id']))
+      isset($shengData[$value['sheng_id']]) && $value['sheng_id'] = $shengData[$value['sheng_id']];
 
     //switch (trim($value['qylx_id'])) {
     //  case 49:
@@ -562,13 +564,15 @@ class MpinfoService extends BaseService {
     //    break;
     //}
 
-    switch (trim($value['wn_np_type'])) {
-      case 45:
-        $value['wn_np_type'] = '轿车轮胎';
-        break;
-      case 46:
-        $value['wn_np_type'] = '载重卡客车轮胎';
-        break;
+    if (isset($value['wn_np_type'])) {
+      switch (trim($value['wn_np_type'])) {
+        case 45:
+          $value['wn_np_type'] = '轿车轮胎';
+          break;
+        case 46:
+          $value['wn_np_type'] = '载重卡客车轮胎';
+          break;
+      }
     }
 
   }

@@ -214,15 +214,24 @@ class PcrdataController extends ApiBaseController {
   }
 
   private function _where() {
+
     $export_date = $this->_post('start_date', '');
     $city = $this->_post('city', '');
     $brand = $this->_post('brand', '');
     $specification = $this->_post('specification', '');
     $huawen = $this->_post('huawen', '');
     $grade = $this->_post('grade', '');
+    $export_year = $this->_post('export_year', '');
 
     $start_date = $export_date ? strtotime($export_date) : '';
     $end_date = $export_date ? (strtotime('+1 month', strtotime($export_date)) - 1) : '';
+
+
+    //兼容获取全部数据
+    $brand == '0' && $brand = '';
+    $city == '0' && $city = '';
+    $specification == '0' && $specification = '';
+
 
     $rules = [
       ['condition' => 'like',
@@ -234,13 +243,13 @@ class PcrdataController extends ApiBaseController {
         'db_field' => ['export_date', 'export_date']
       ],
       ['condition' => 'in',
-        'key_field' => ['brand', 'city'],
-        'db_field' => ['brand', 'city']
+        'key_field' => ['brand', 'city', 'specification'],
+        'db_field' => ['brand', 'city', 'specification']
       ],
       [
         'condition' => '=',
-        'key_field' => ['specification', 'grade'],
-        'db_field' => ['specification', 'grade'],
+        'key_field' => ['grade', 'export_year'],
+        'db_field' => ['grade', 'export_year'],
       ]
     ];
 
@@ -251,7 +260,8 @@ class PcrdataController extends ApiBaseController {
       'start_date' => $start_date,
       'end_date' => $end_date,
       'grade' => $grade,
-      'huawen' => $huawen
+      'huawen' => $huawen,
+      'export_year' => $export_year
     ];
 
     $where = $this->where($rules, array_filter($data, 'filter_empty_callback'));
