@@ -31,7 +31,7 @@ class MpinfoService extends BaseService {
     else {
 
       $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year'];
-      
+
     }
 
     $result = $this->mpinfoModel->getListPage($where, $field, $page_num, $page_size);
