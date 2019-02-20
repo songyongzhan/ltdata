@@ -253,10 +253,11 @@ class MpinfoController extends ApiBaseController {
     $shi = $this->_post('shi', '');
     $person = $this->_post('person', '');
     $title = $this->_post('title', '');
+    $manufacturer = $this->_post('manufacturer', '');
     $rules = [
       ['condition' => 'like',
-        'key_field' => ['title', 'person'],
-        'db_field' => ['title', 'person']
+        'key_field' => ['title', 'manufacturer', 'person'],
+        'db_field' => ['title', 'manufacturer', 'person']
       ],
       [
         'condition' => '=',
@@ -269,6 +270,7 @@ class MpinfoController extends ApiBaseController {
       'mppinpaiId' => $mppinpaiId,
       'sheng_id' => $sheng_id,
       'shi' => $shi,
+      'manufacturer' => $manufacturer,
       'person' => $person,
       'title' => $title
     ];
