@@ -162,7 +162,6 @@ class MpinfoController extends ApiBaseController {
 
     Yaf_Loader::import(APP_PATH . '/app/helpers/helperCsv.php');
 
-
     foreach (glob(APP_PATH . '/data/uploads/mpinfo/*.csv') as $file) {
 
       debugMessage(" $file 开始自动导入...");

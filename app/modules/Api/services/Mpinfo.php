@@ -65,7 +65,7 @@ class MpinfoService extends BaseService {
     set_time_limit(0);
     ini_set('memory_limit', '1000M');
 
-    $result = $this->getReportData($where, $date_type, $report_id);
+    $result = $this->getReportData($where, $date_type, $report_id, TRUE);
 
     $table_column = trim($result['result']['table_column'], '|');
 
@@ -99,7 +99,7 @@ class MpinfoService extends BaseService {
    * @throws Exception
    * @throws InvalideException
    */
-  public function getReportData($where, $date_type, $report_id) {
+  public function getReportData($where, $date_type, $report_id, $isdownload = FALSE) {
     //结合权限，组合字段
     $srcAuthorityField = $authorityField = [];
 
@@ -164,6 +164,10 @@ class MpinfoService extends BaseService {
       default:
         showApiException('无法处理这类数据请求');
     }
+
+    if (!$isdownload)
+      $result['list'] = array_slice($result['list'], 0, 10);
+
     //echo jsonencode($result['option']);
     //
     //exit;
@@ -194,7 +198,7 @@ class MpinfoService extends BaseService {
 
     $seriesBarData = [];
     $seriesData = [];//获取显示数据
-    foreach ($result['list'] as $value) {
+    foreach ($result['list'] as &$value) {
       //$temp = $value;
       $this->_format($value);
 
@@ -316,7 +320,7 @@ class MpinfoService extends BaseService {
 
     $seriesBarData = [];
     $seriesData = [];//获取显示数据
-    foreach ($result['list'] as $value) {
+    foreach ($result['list'] as &$value) {
       //$temp = $value;
       $this->_format($value);
 
@@ -472,7 +476,7 @@ class MpinfoService extends BaseService {
       $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
       $field = $this->getAuthField($field);
     }
-    
+
     $result = $this->mpinfoModel->getOne($id, $field);
     if ($result)
       $this->_format($result);
@@ -625,20 +629,24 @@ class MpinfoService extends BaseService {
       }
     }
 
-    if (isset($value['mppinpaiId']))
-      isset($pinpaiData[$value['mppinpaiId']]) && $value['mppinpaiId'] = $pinpaiData[$value['mppinpaiId']];
+    if (isset($value['mppinpaiId']) && isset($pinpaiData[$value['mppinpaiId']]))
+      $value['mppinpaiId'] = $pinpaiData[$value['mppinpaiId']];
 
 
     static $shengData;
     if (!$shengData) {
-      $data = $this->regionService->getList([
+      /*$data = $this->regionService->getList([
         getWhereCondition('region_type', 1)
-      ]);
+      ]);*/
+      $data = $this->getSheng();
       $shengData = array_column($data['result'], 'text', 'id');
     }
 
-    if (isset($value['sheng_id']))
-      isset($shengData[$value['sheng_id']]) && $value['sheng_id'] = $shengData[$value['sheng_id']];
+
+
+
+    if (isset($value['sheng_id']) && isset($shengData[$value['sheng_id']]))
+      $value['sheng_id'] = $shengData[$value['sheng_id']];
 
     //switch (trim($value['qylx_id'])) {
     //  case 49:
