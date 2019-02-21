@@ -116,6 +116,13 @@ class MpinfoController extends ApiBaseController {
     $this->mpinfoService->downloadCsv($where, $date_type, $report_id);
   }
 
+  /**
+   * 获取代理商名片中品牌
+   */
+  public function getPinpaiAction() {
+    $result = $this->mpinfoService->getPinpai();
+    return $result;
+  }
 
   /**
    * 获取代理商名片中省份

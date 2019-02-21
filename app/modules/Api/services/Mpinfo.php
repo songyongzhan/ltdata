@@ -643,8 +643,6 @@ class MpinfoService extends BaseService {
     }
 
 
-
-
     if (isset($value['sheng_id']) && isset($shengData[$value['sheng_id']]))
       $value['sheng_id'] = $shengData[$value['sheng_id']];
 
@@ -709,15 +707,33 @@ class MpinfoService extends BaseService {
    */
   public function getSheng() {
 
-    $shengId = $this->mppinpaiModel->query('select DISTINCT sheng_id from ' . $this->mppinpaiModel->prefix . 'mpinfo');
+    $shengId = $this->mpinfoModel->query('select DISTINCT sheng_id from ' . $this->mpinfoModel->prefix . 'mpinfo');
 
     $shengId = array_column($shengId, 'sheng_id');
 
-    $sheng = $this->regionModel->getList([
+    $shengResult = $this->regionModel->getList([
       getWhereCondition('region_id', $shengId, 'in')
     ], ['region_id as id', 'region_name as text']);
 
-    return $this->show($sheng);
+    return $this->show($shengResult);
+  }
+
+  /**
+   * 获取品牌
+   * @return array
+   * @throws InvalideException
+   */
+  public function getPinpai() {
+    $pinpai = $this->mpinfoModel->query('select DISTINCT mppinpaiId from ' . $this->mpinfoModel->prefix . 'mpinfo');
+
+    $mppinpaiIds = array_column($pinpai, 'mppinpaiId');
+
+    $pinpaiResult = $this->mppinpaiModel->getList([
+      getWhereCondition('id', $mppinpaiIds, 'in')
+    ], ['id', 'ppname as text']);
+
+    return $this->show($pinpaiResult);
+
   }
 
 }
