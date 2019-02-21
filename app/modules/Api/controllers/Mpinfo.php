@@ -256,13 +256,13 @@ class MpinfoController extends ApiBaseController {
     $manufacturer = $this->_post('manufacturer', '');
     $rules = [
       ['condition' => 'like',
-        'key_field' => ['title', 'manufacturer', 'person'],
-        'db_field' => ['title', 'manufacturer', 'person']
+        'key_field' => ['title', 'person'],
+        'db_field' => ['title', 'person']
       ],
       [
         'condition' => '=',
-        'key_field' => ['wn_np_type', 'mppinpaiId', 'sheng_id', 'shi'],
-        'db_field' => ['wn_np_type', 'mppinpaiId', 'sheng_id', 'shi'],
+        'key_field' => ['wn_np_type', 'manufacturer', 'mppinpaiId', 'sheng_id', 'shi'],
+        'db_field' => ['wn_np_type', 'manufacturer', 'mppinpaiId', 'sheng_id', 'shi'],
       ]
     ];
     $data = [

@@ -39,4 +39,15 @@ class PermissionController extends ApiBaseController {
   }
 
 
+  /**
+   * 获取当前用户横向的权限
+   * 用于显示当前用户可以查询的功能。
+   * @return array
+   */
+  public function getSelfPermissionAction() {
+    $result = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+    return $result;
+  }
+
+
 }

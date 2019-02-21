@@ -81,7 +81,7 @@ class MpinfoService extends BaseService {
     //结合权限，组合字段
     $srcAuthorityField = $authorityField = [];
 
-    $permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
+    /*$permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
 
     //print_r($permission);exit;
 
@@ -93,7 +93,7 @@ class MpinfoService extends BaseService {
     }
 
     if (!$authorityField)
-      showApiException('不能显示相关信息，请设置相关权限');
+      showApiException('不能显示相关信息，请设置相关权限');*/
 
 
     //$authorityField = $srcAuthorityField = ['pf_pricle', 'stls_pricle', 'th_pricle', 'jd_pricle', 'gfqj_pricle'];
@@ -104,12 +104,12 @@ class MpinfoService extends BaseService {
     //$field = array_merge($field, $authorityField);
 
     //是否平均值
-    /*   $avg = [41, 42, 43];
-       if (in_array($report_id, $avg)) {
-         $authorityField = array_map(function ($val) {
-           return 'truncate(avg(' . $val . '),2) as ' . $val;
-         }, $authorityField);
-       }*/
+    /*$avg = [41, 42, 43];
+    if (in_array($report_id, $avg)) {
+      $authorityField = array_map(function ($val) {
+        return 'truncate(avg(' . $val . '),2) as ' . $val;
+      }, $authorityField);
+    }*/
 
     //连续12月指定规格价格指定城市的总体趋势分析
     /*if ($report_id == 42) {
@@ -123,13 +123,13 @@ class MpinfoService extends BaseService {
 
 
     //处理显示表格数据
-    $permissionText = $this->permissionModel->viewPermission()['mpinfo']['data'];
+    /*$permissionText = $this->permissionModel->viewPermission()['mpinfo']['data'];
     $authorityTableColumn = '';
     foreach ($srcAuthorityField as $tab_column) {
       if (array_key_exists($tab_column, $permissionText))
         $authorityTableColumn .= $permissionText[$tab_column] . ',' . $tab_column . '|';
     }
-    $result['table_column'] = trim($result['table_column'], '|') . '|' . trim($authorityTableColumn, '|');
+    $result['table_column'] = trim($result['table_column'], '|') . '|' . trim($authorityTableColumn, '|');*/
 
 
     switch ($result['viewtype']) {
