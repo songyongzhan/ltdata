@@ -116,6 +116,15 @@ class MpinfoController extends ApiBaseController {
     $this->mpinfoService->downloadCsv($where, $date_type, $report_id);
   }
 
+
+  /**
+   * 获取代理商名片中省份
+   */
+  public function getShengAction() {
+    $result = $this->mpinfoService->getSheng();
+    return $result;
+  }
+
   /**
    * 获取生产企业列表
    */
@@ -124,6 +133,10 @@ class MpinfoController extends ApiBaseController {
     return $result;
   }
 
+  /**
+   * 获取所有代理商
+   * @return array
+   */
   public function getTitleAction() {
     $result = $this->mpinfoService->getTitle();
     return $result;

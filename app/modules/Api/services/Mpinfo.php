@@ -183,7 +183,6 @@ class MpinfoService extends BaseService {
 
       $xAxisData[md5($horizontalVal)] = $horizontalVal;
 
-
       $seriesBarData[] = $value['val'];
       /*foreach ($viewPricle as $k => $v) {
         $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
@@ -286,29 +285,71 @@ class MpinfoService extends BaseService {
         $viewPricle[$key] = $permissionText[$key];
     }
 
+
     $legendData = $viewPricle;
 
     $xAxisData = [];
+    $reportListHorizontal = explode('|', trim($result['horizontal'], '|'));
+
 
     $seriesBarData = [];
     $seriesData = [];//获取显示数据
     foreach ($result['list'] as $value) {
+      //$temp = $value;
       $this->_format($value);
-      $xAxisData[$value['export_month']] = $value['export_month'] . '月';
 
-      foreach ($viewPricle as $k => $v) {
-        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      $horizontalVal = '';
+      foreach ($reportListHorizontal as $hval) {
+        $horizontalVal .= $value[$hval] . ' ';
       }
+
+      $xAxisData[md5($horizontalVal)] = $horizontalVal;
+
+      $seriesBarData[] = $value['val'];
+      /*foreach ($viewPricle as $k => $v) {
+        $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+      }*/
+      //$tempData = [
+      //  'name' => $legendData[$legendKey],
+      //  'type' => $viewtype,
+      //];
+      //$tempData_data = [];
+      //foreach ($viewPricle as $k => $v) {
+      //  $tempData_data[] = isset($value[$k]) ? $value[$k] : 0;
+      //}
+      //$tempData['data'] = $tempData_data;
+      //
+      //$seriesData[] = $tempData;
     }
 
-    foreach ($viewPricle as $k => $v) {
-      $tempData = [
-        'name' => $v,
-        'type' => 'line',
-        'data' => $seriesBarData[$k]
-      ];
-      $seriesData[] = $tempData;
-    }
+    $seriesData[] = [
+      'name' => $result['title2'],
+      'type' => 'line',
+      'data' => $seriesBarData,
+    ];
+
+
+    /* $xAxisData = [];
+
+     $seriesBarData = [];
+     $seriesData = [];//获取显示数据
+     foreach ($result['list'] as $value) {
+       $this->_format($value);
+       $xAxisData[$value['export_month']] = $value['export_month'] . '月';
+
+       foreach ($viewPricle as $k => $v) {
+         $seriesBarData[$k][] = isset($value[$k]) ? $value[$k] : 0;
+       }
+     }
+
+     foreach ($viewPricle as $k => $v) {
+       $tempData = [
+         'name' => $v,
+         'type' => 'line',
+         'data' => $seriesBarData[$k]
+       ];
+       $seriesData[] = $tempData;
+     }*/
 
     $option = [
       'title' => [
@@ -621,6 +662,22 @@ class MpinfoService extends BaseService {
     }
     return $this->show($result);
 
+  }
+
+  /**
+   * 获取代理商名录中存在的省份列表
+   */
+  public function getSheng() {
+
+    $shengId = $this->mppinpaiModel->query('select DISTINCT sheng_id from ' . $this->mppinpaiModel->prefix . 'mpinfo');
+
+    $shengId = array_column($shengId, 'sheng_id');
+
+    $sheng = $this->regionModel->getList([
+      getWhereCondition('region_id', $shengId, 'in')
+    ], ['region_id as id', 'region_name as text']);
+
+    return $this->show($sheng);
   }
 
 }

@@ -29,7 +29,7 @@ class BaseModel extends CoreModel {
 
   private $_querySqls; //执行过的sql语句
 
-  protected $prefix = ''; //表前缀
+  public $prefix = ''; //表前缀
   /**
    * 创建时间的字段  设置成 protected 在子类中修改
    * @var string
