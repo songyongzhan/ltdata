@@ -142,7 +142,6 @@ class MpinfoController extends ApiBaseController {
     return $result;
   }
 
-
   /**
    * 生成图表文件
    * @return array

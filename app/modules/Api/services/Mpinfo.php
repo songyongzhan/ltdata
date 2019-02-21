@@ -29,7 +29,8 @@ class MpinfoService extends BaseService {
     if ($this->tokenService->isadmin)
       $field = $this->field;
     else {
-      $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year'];
+      $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
+      $field = $this->getAuthField($field);
     }
 
     $result = $this->mpinfoModel->getListPage($where, $field, $page_num, $page_size);
@@ -39,12 +40,20 @@ class MpinfoService extends BaseService {
     return $this->show($result);
   }
 
-  public function getAuthField($field) {
+  /**
+   * 获取权限字段
+   * @param $field
+   * @return array
+   */
+  private function getAuthField($field) {
     //通过权限获取到权限，与字段合并返回。
+    $permission = $this->permissionService->getManagePermission($this->tokenService->manage_id);
 
+    $authorityField = [];
+    if (isset($permission['result']['permission_data']['mpinfo']) && $permission['result']['permission_data']['mpinfo'])
+      $authorityField = $permission['result']['permission_data']['mpinfo'];
 
-
-
+    return array_merge($field, $authorityField);
   }
 
   /**
@@ -82,7 +91,14 @@ class MpinfoService extends BaseService {
     export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录数据_' . time());
   }
 
-
+  /**
+   * @param $where
+   * @param $date_type
+   * @param int $report_id <require|number> 分析id不能为空
+   * @return array
+   * @throws Exception
+   * @throws InvalideException
+   */
   public function getReportData($where, $date_type, $report_id) {
     //结合权限，组合字段
     $srcAuthorityField = $authorityField = [];
@@ -448,9 +464,19 @@ class MpinfoService extends BaseService {
    * @param string $fileds
    * @return mixed
    */
-  public function getOne($id, $fileds = '*') {
-    $fileds === '*' && $fileds = $this->field;
-    $result = $this->mpinfoModel->getOne($id, $fileds);
+  public function getOne($id) {
+    $field = [];
+    if ($this->tokenService->isadmin)
+      $field = $this->field;
+    else {
+      $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
+      $field = $this->getAuthField($field);
+    }
+    
+    $result = $this->mpinfoModel->getOne($id, $field);
+    if ($result)
+      $this->_format($result);
+
     return $result ? $this->show($result) : $this->show([], StatusCode::DATA_NOT_EXISTS);
   }
 
