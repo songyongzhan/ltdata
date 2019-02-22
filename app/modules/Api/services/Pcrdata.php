@@ -116,7 +116,7 @@ class PcrdataService extends BaseService {
     else {
       $lastId = $this->mppinpaiModel->insert([
         'ppname' => $mppinpaiId,
-        'pid=' => 45,
+        'pid' => 45,
         'status' => 1
       ]);
       $this->redisModel->redis->hSet('mppinpai', $lastId, $mppinpaiId);
