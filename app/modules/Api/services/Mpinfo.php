@@ -567,12 +567,13 @@ class MpinfoService extends BaseService {
 
     if (isset($pinpaiData[$mppinpaiId]))
       return $pinpaiData[$mppinpaiId];
-    else{
+    else {
       $lastId = $this->mppinpaiModel->insert([
         'ppname' => $mppinpaiId,
         'pid' => 45,
         'status' => 1
       ]);
+      $pinpaiData[$mppinpaiId] = $lastId;
       $this->redisModel->redis->hSet('mppinpai', $lastId, $mppinpaiId);
       return $lastId;
     };

@@ -119,6 +119,7 @@ class PcrdataService extends BaseService {
         'pid' => 45,
         'status' => 1
       ]);
+      $pinpaiData[$mppinpaiId] = $lastId;
       $this->redisModel->redis->hSet('mppinpai', $lastId, $mppinpaiId);
       return $lastId;
     }

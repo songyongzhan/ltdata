@@ -159,8 +159,8 @@ class ManageService extends BaseService {
         $timeout = time() + TOKEN_EXPIRE_LONG;
         $this->_updateTokenTimeout($result['id'], $timeout);
         $flag = TRUE;
-        $data['token'] = $tokenData['src_token'];
-        $data['timeout'] = $timeout;
+        //$data['token'] = $tokenData['src_token'];
+        //$data['timeout'] = $timeout;
         $data['manage_id'] = $tokenData['manage_id'];
       }
     }
