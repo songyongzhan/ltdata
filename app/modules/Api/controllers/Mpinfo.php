@@ -106,6 +106,14 @@ class MpinfoController extends ApiBaseController {
   }
 
   /**
+   * 代理商名录列表导出
+   */
+  public function mplistdownloadAction(){
+    $where = $this->_where();
+    $this->mpinfoService->mplistdownload($where);
+  }
+
+  /**
    * 下载代理商名录列表
    * @throws InvalideException
    */

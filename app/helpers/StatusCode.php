@@ -47,6 +47,7 @@ class StatusCode {
   const RULE_NOT_ARRAY = 42024409;//验证规则不是数组
   const REPORTLIST_NOT_EXISTS = 42025409;//reportlist data 不存在
   const TABLE_COLUMN_EMPTY = 42026409;
+  const LOGINDATEEXPIRE = 42027409; //登录时间过期
 
 
   /**
@@ -90,6 +91,7 @@ class StatusCode {
       42025409 => 'reportlist data 不存在',
       42026409 => '导出数据表头为空',
       42203409 => '数据不存在',
+      42027409 => '登录时间过期'
     ];
 
     return isset($data[$code]) ? $data[$code] : '';

@@ -32,7 +32,7 @@ class MpinfoService extends BaseService {
       $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
       $field = $this->getAuthField($field);
     }
-    
+
     $result = $this->mpinfoModel->getListPage($where, $field, $page_num, $page_size);
     foreach ($result['list'] as $key => &$value) {
       $this->_format($value);
@@ -55,6 +55,7 @@ class MpinfoService extends BaseService {
 
     return array_merge($field, $authorityField);
   }
+
 
   /**
    * 下载代理商列表
@@ -85,6 +86,38 @@ class MpinfoService extends BaseService {
     }
 
     $csvDatas = $result['result']['list'];
+
+    $header = [];
+    $footer = [];
+    export_csv(['header' => $header, 'title' => $csvHeader, 'data' => $csvDatas, 'footer' => $footer], '代理商名录数据_' . time());
+  }
+
+  /**
+   * 下载代理详细数据
+   * @param $where
+   * @throws InvalideException
+   */
+  public function mplistdownload($where) {
+    $field = [];
+    if ($this->tokenService->isadmin)
+      $field = $this->field;
+    else {
+      $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
+      $field = $this->getAuthField($field);
+    }
+    $list = $this->mpinfoModel->getList($where, $field);
+    $csvHeader = ['品类', '省份', '城市', '代理商公司名称', '法人', '股东', '地址', '电话', '手机', '签约年份', '生产企业', '品牌', '销售区域', '年销售量(条)', '核实日期', '是否续约'];
+    $field = ['wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'tel', 'mobile', 'contract_year', 'manufacturer', 'mppinpaiId', 'sell_area', 'year_sell', 'verification_date', 'contract'];
+
+    $csvDatas = [];
+    foreach ($list as $val) {
+      $this->_format($val);
+      $temp = [];
+      foreach ($field as $f) {
+        $temp[] = isset($val[$f]) ? $val[$f] : '-';
+      }
+      $csvDatas[] = $temp;
+    }
 
     $header = [];
     $footer = [];
@@ -743,5 +776,6 @@ class MpinfoService extends BaseService {
     return $this->show($pinpaiResult);
 
   }
+
 
 }
