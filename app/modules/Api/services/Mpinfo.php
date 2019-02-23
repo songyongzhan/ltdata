@@ -32,7 +32,7 @@ class MpinfoService extends BaseService {
       $field = ['id', 'wn_np_type', 'sheng_id', 'shi', 'title', 'legal_person', 'partner', 'address', 'person', 'mppinpaiId', 'contract_year', 'contract', 'createtime'];
       $field = $this->getAuthField($field);
     }
-
+    
     $result = $this->mpinfoModel->getListPage($where, $field, $page_num, $page_size);
     foreach ($result['list'] as $key => &$value) {
       $this->_format($value);
